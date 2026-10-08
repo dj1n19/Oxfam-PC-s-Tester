@@ -133,7 +133,8 @@ src/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp}   (no _win/_linux: smartctl is the same on both)
-    (drivers/ license/ audio/ camera/ keyboard/ : to come)
+    drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
+    (license/ audio/ camera/ keyboard/ : to come)
   ui/          MainWindow.{h,cpp}
   main.cpp
 config/        thresholds.json
@@ -160,7 +161,7 @@ CMakeLists.txt
 **M0 + M1 verified on Arch and in CI** (zero warnings, ctest green, Linux and Windows CI jobs green).
 Still to check by hand: START on a real machine, and the Windows CI artifact on a real Windows PC.
 
-**M2 in progress.** Done: SystemInfo, Disk (to verify on hardware). Next: Drivers, Windows licence, multi-battery.
+**M2 in progress.** Done: SystemInfo, Disk (verified on Windows), Drivers (to verify on Windows). Next: Windows licence, multi-battery.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
@@ -174,6 +175,10 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
   (USB stick) is Skipped, but "no disk with SMART" is Error. smartctl is found in `<app>/tools/`, then `PATH`;
   Windows CI bundles it via Chocolatey into `dist/tools/`.
+- Test: `DriversTest`: Windows `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` (PowerShell JSON parsed by
+  `parsePnpEntities()`); code 45 "not connected" is ignored (previous owner's USB devices). Linux reads
+  `/sys/bus/pci/devices` (no lspci) and flags only buyer-relevant classes without a driver (storage, network, display,
+  multimedia, wireless, USB): many chipset functions normally have no Linux driver. A driver problem is **Warn**, not Fail.
 - `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
   battery at 36 % correctly reported FAIL).
 
@@ -183,7 +188,11 @@ Known limitations:
 - SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
-- **DiskTest is untested on real hardware.** `smartctl_*.json` samples are hand-made from the smartctl 7.x format: replace them with real outputs.
+- DiskTest verified on Windows (admin). On Linux, smartctl is not bundled: system one only (M4).
+- **`drivers_win.cpp` is untested on real Windows hardware.** `pnp_problems.json` is hand-made.
+- Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
+- `sysinfo_win.cpp` and `drivers_win.cpp` duplicate the PowerShell/QProcess code: extract a helper with the licence test (third user).
+- DiskTest `smartctl_*.json` samples are hand-made from the smartctl 7.x format: replace them with real outputs.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
