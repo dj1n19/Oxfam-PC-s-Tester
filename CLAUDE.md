@@ -183,7 +183,7 @@ Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `ox
   instead of moving focus or closing; its buttons are `Qt::NoFocus` so Space/Enter never click them.
   On GNOME/Wayland mute, volume and PrtSc are taken by the desktop and never reach the app (explained in the dialog).
 - Test: `AudioTest` (interactive): `QAudioSink` on the default output, 48 kHz 16-bit stereo (`makeTone()` in oxcore).
-  Tone on the LEFT only (440 Hz), then RIGHT only (880 Hz); the technician answers Left / Right / Both / Nothing, without
+  Tone on the LEFT only (440 Hz), then RIGHT only (660 Hz), 750 ms each; the technician answers Left / Right / Both / Nothing, without
   being told the side. Both correct = Pass; "Both" = Warn (mono speaker); wrong side = Fail (swapped); nothing = Fail.
   No output device or unsupported format = Error.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
@@ -225,6 +225,9 @@ Known limitations:
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - **Keyboard scan codes on real Windows are untested** (from Microsoft/Qt docs). Labels are Belgian AZERTY only.
 - Windows admin manifest and hidden console window not done (M4).
+- **Linux root vs user session (M4):** SMART (Disk) needs root, but audio (and camera) need the user session:
+  run with sudo, the app cannot reach PipeWire/PulseAudio and the Audio test reports ERROR. Planned fix: run the app
+  as the normal user and elevate only the smartctl call (e.g. `pkexec smartctl ...`). Windows is not affected.
 
 ## 9. Roadmap
 
@@ -236,7 +239,7 @@ Part-time solo work. Every milestone must end with something usable.
 | **M1 Vertical slice** | One real test (Battery) end to end: ITest -> TestRunner -> window -> verdict. Unit tests green. *(done; real-hardware check pending)* |
 | **M2 Automatic tests** | SystemInfo (model, serial, CPU, RAM, form factor); **Disk** via bundled `smartctl --json` (overall health, reallocated/pending sectors, NVMe `percentage_used`, power-on hours, temperature); **Drivers** (Windows: `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` via PowerShell; Linux: `lspci -k` / `dmesg` / `journalctl -k -p err`); **Windows licence status** (`SoftwareLicensingProduct.LicenseStatus == 1`, embedded OEM key presence; `Skipped` on Linux; never generate or store keys). Desktop vs laptop auto-detected (no battery -> Skipped). ~~Multi-battery support~~ (dropped). Start using it at work. *(done)* |
 | **M3 Interactive tests** | Keyboard (on-screen layout lighting up keys, `nativeScanCode()` so AZERTY/QWERTY both work, optional Fn/media keys, JSON layout); Audio (left tone, right tone, "did you hear it?"); Camera (grab a frame, detect black frame, user confirms only when ambiguous). Qt Multimedia. Modal `QDialog` per interactive test, automatic tests first. |
-| **M4 Polish and packaging** | Windows portable zip (`windeployqt`) and Linux AppImage; Windows `requireAdministrator` manifest and Linux privilege flow (`pkexec`/root) for SMART access; hide the Windows console; French/English via `tr()` and Qt Linguist; clear error messages. Tag **v1.0**. |
+| **M4 Polish and packaging** | Windows portable zip (`windeployqt`) and Linux AppImage; Windows `requireAdministrator` manifest and Linux privilege flow for SMART access (app as user, only `smartctl` via `pkexec`: root breaks audio/camera); hide the Windows console; French/English via `tr()` and Qt Linguist; clear error messages. Tag **v1.0**. |
 | **M5 Field feedback** | Run on many real, ugly refurbished machines; adjust thresholds with colleagues; fix parsing quirks; keep golden samples of real outputs in `unittests/`. |
 | **Phase 2** (later) | System updates, application bundle install (manifest + SHA-256), delivery-document form (on-screen/text only), secure disk wipe with explicit confirmation. Reuse the "something that runs and reports a result" idea; **do not build a workflow engine in advance.** |
 
