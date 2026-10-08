@@ -88,7 +88,10 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 
 ### External tools (smartctl, PowerShell, lspci, ...)
 - Use `QProcess`, always with a **timeout**, check `exitStatus()` and `exitCode()`, never trust the output format blindly.
-- Windows: PowerShell script passed as one `-Command` argument. **Avoid quotation marks inside the script.**
+- Windows PowerShell: always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
+  with `-EncodedCommand` (quotes are fine), makes errors fatal (`$ErrorActionPreference = 'Stop'`), hides progress and
+  forces UTF-8 output (French Windows would otherwise send CP850 and break the JSON). Scripts end with `ConvertTo-Json -Compress`.
+- Keep C++ sources ASCII-only (MSVC warning C4819 on non-UTF-8 code pages).
 - `smartctl` is shipped as a **separate executable** in `tools/` (GPL), never linked. Call `smartctl --json -a <device>` and parse with `QJsonDocument`.
 - Parse defensively: missing keys must produce an Error or Skipped, never a crash or a false Pass.
 
@@ -134,7 +137,9 @@ src/
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp}   (no _win/_linux: smartctl is the same on both)
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
-    (license/ audio/ camera/ keyboard/ : to come)
+    license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
+    common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
+    (audio/ camera/ keyboard/ : to come)
   ui/          MainWindow.{h,cpp}
   main.cpp
 config/        thresholds.json
@@ -161,7 +166,7 @@ CMakeLists.txt
 **M0 + M1 verified on Arch and in CI** (zero warnings, ctest green, Linux and Windows CI jobs green).
 Still to check by hand: START on a real machine, and the Windows CI artifact on a real Windows PC.
 
-**M2 in progress.** Done: SystemInfo, Disk (verified on Windows), Drivers (to verify on Windows). Next: Windows licence, multi-battery.
+**M2 in progress.** Done: SystemInfo, Disk (verified on Windows), Drivers, Windows licence (to verify on Windows). Next: multi-battery, then start using it at work.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
@@ -179,6 +184,9 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
   `parsePnpEntities()`); code 45 "not connected" is ignored (previous owner's USB devices). Linux reads
   `/sys/bus/pci/devices` (no lspci) and flags only buyer-relevant classes without a driver (storage, network, display,
   multimedia, wireless, USB): many chipset functions normally have no Linux driver. A driver problem is **Warn**, not Fail.
+- Test: `LicenseTest`: `SoftwareLicensingProduct` filtered on the Windows ApplicationID with a product key;
+  `LicenseStatus == 1` is Pass, anything else (or no licence) is **Warn**. Reports whether a firmware OEM key exists
+  (`OA3xOriginalProductKey`), turned into a boolean inside PowerShell: the key never reaches the program. Skipped on Linux.
 - `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
   battery at 36 % correctly reported FAIL).
 
@@ -189,9 +197,9 @@ Known limitations:
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux, smartctl is not bundled: system one only (M4).
-- **`drivers_win.cpp` is untested on real Windows hardware.** `pnp_problems.json` is hand-made.
+- **`license_win.cpp` and `powershell_win.cpp` are untested on real Windows.** SystemInfo and Drivers now go through
+  `runPowerShell()` too: re-check them. `pnp_problems.json` and `license_*.json` are hand-made.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
-- `sysinfo_win.cpp` and `drivers_win.cpp` duplicate the PowerShell/QProcess code: extract a helper with the licence test (third user).
 - DiskTest `smartctl_*.json` samples are hand-made from the smartctl 7.x format: replace them with real outputs.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
