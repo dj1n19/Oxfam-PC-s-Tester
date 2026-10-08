@@ -176,7 +176,10 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
 **M2 done** (automatic tests): SystemInfo, Battery, Disk, Drivers, Windows licence, all verified on real Windows.
 Multi-battery support was dropped by the developer (first battery only).
 
-**M3 in progress.** Done: Keyboard (verified on Arch), Audio, Camera (both to verify on hardware). Next: verify, then M4.
+**M3 done** (interactive tests): Keyboard, Audio, Camera, verified on Arch.
+
+**M4 in progress.** Done: Windows GUI subsystem (no console) + `requireAdministrator` manifest (to verify on Windows).
+Next: Linux privilege flow (smartctl via pkexec), French/English, AppImage, tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
@@ -233,7 +236,7 @@ Known limitations:
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
 - **Keyboard scan codes on real Windows are untested** (from Microsoft/Qt docs). Labels are Belgian AZERTY only.
-- Windows admin manifest and hidden console window not done (M4).
+- Windows: the app is a GUI program (`WIN32`), so `qDebug()` output is not visible; put diagnostics in `details`.
 - **Linux root vs user session (M4):** SMART (Disk) needs root, but audio (and camera) need the user session:
   run with sudo, the app cannot reach PipeWire/PulseAudio and the Audio test reports ERROR. Planned fix: run the app
   as the normal user and elevate only the smartctl call (e.g. `pkexec smartctl ...`). Windows is not affected.
@@ -247,7 +250,7 @@ Part-time solo work. Every milestone must end with something usable.
 | **M0 Setup** | Builds on Arch and on Windows via CI. *(done)* |
 | **M1 Vertical slice** | One real test (Battery) end to end: ITest -> TestRunner -> window -> verdict. Unit tests green. *(done; real-hardware check pending)* |
 | **M2 Automatic tests** | SystemInfo (model, serial, CPU, RAM, form factor); **Disk** via bundled `smartctl --json` (overall health, reallocated/pending sectors, NVMe `percentage_used`, power-on hours, temperature); **Drivers** (Windows: `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` via PowerShell; Linux: `lspci -k` / `dmesg` / `journalctl -k -p err`); **Windows licence status** (`SoftwareLicensingProduct.LicenseStatus == 1`, embedded OEM key presence; `Skipped` on Linux; never generate or store keys). Desktop vs laptop auto-detected (no battery -> Skipped). ~~Multi-battery support~~ (dropped). Start using it at work. *(done)* |
-| **M3 Interactive tests** | Keyboard (on-screen layout lighting up keys, `nativeScanCode()` so AZERTY/QWERTY both work, optional Fn/media keys, JSON layout); Audio (left tone, right tone, "did you hear it?"); Camera (grab a frame, detect black frame, user confirms only when ambiguous). Qt Multimedia. Modal `QDialog` per interactive test, automatic tests first. |
+| **M3 Interactive tests** *(done)* | Keyboard (on-screen layout lighting up keys, `nativeScanCode()` so AZERTY/QWERTY both work, optional Fn/media keys, JSON layout); Audio (left tone, right tone, "did you hear it?"); Camera (grab a frame, detect black frame, user confirms only when ambiguous). Qt Multimedia. Modal `QDialog` per interactive test, automatic tests first. |
 | **M4 Polish and packaging** | Windows portable zip (`windeployqt`) and Linux AppImage; Windows `requireAdministrator` manifest and Linux privilege flow for SMART access (app as user, only `smartctl` via `pkexec`: root breaks audio/camera); hide the Windows console; French/English via `tr()` and Qt Linguist; clear error messages. Tag **v1.0**. |
 | **M5 Field feedback** | Run on many real, ugly refurbished machines; adjust thresholds with colleagues; fix parsing quirks; keep golden samples of real outputs in `unittests/`. |
 | **Phase 2** (later) | System updates, application bundle install (manifest + SHA-256), delivery-document form (on-screen/text only), secure disk wipe with explicit confirmation. Reuse the "something that runs and reports a result" idea; **do not build a workflow engine in advance.** |
