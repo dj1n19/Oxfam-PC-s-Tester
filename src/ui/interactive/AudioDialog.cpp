@@ -10,9 +10,9 @@
 #include <QVBoxLayout>
 
 namespace {
-constexpr int kToneMs = 1500;
+constexpr int kToneMs = 750;
 constexpr int kLeftHz = 440;    // two different pitches: easier to tell the
-constexpr int kRightHz = 880;   // two tones apart if the technician replays
+constexpr int kRightHz = 660;   // two tones apart if the technician replays
 }
 
 AudioDialog::AudioDialog(const QAudioDevice& device, const QAudioFormat& format, QWidget* parent)
