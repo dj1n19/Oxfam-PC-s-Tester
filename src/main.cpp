@@ -5,6 +5,7 @@
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "tests/battery/BatteryTest.h"
+#include "tests/disk/DiskTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 #include "ui/MainWindow.h"
 
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
     TestRunner runner;                       // declared before the window: outlives it
     runner.add(std::make_unique<SystemInfoTest>());   // first: identifies the PC
     runner.add(std::make_unique<BatteryTest>(thresholds));
+    runner.add(std::make_unique<DiskTest>(thresholds));
 
     MainWindow window(runner);
     window.show();

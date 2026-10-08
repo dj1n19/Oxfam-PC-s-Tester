@@ -1,0 +1,14 @@
+{
+  "json_format_version": [1, 0],
+  "smartctl": { "version": [7, 4], "exit_status": 24 },
+  "device": { "name": "/dev/sda", "info_name": "/dev/sda [SAT]", "type": "sat", "protocol": "ATA" },
+  "model_name": "WDC WD5000LPVX-22V0TT0",
+  "user_capacity": { "blocks": 976773168, "bytes": 500107862016 },
+  "smart_support": { "available": true, "enabled": true },
+  "smart_status": { "passed": false },
+  "ata_smart_attributes": { "revision": 16, "table": [
+      { "id": 5, "name": "Reallocated_Sector_Ct", "value": 1, "worst": 1, "thresh": 140, "when_failed": "FAILING_NOW", "raw": { "value": 2000, "string": "2000" } }
+  ] },
+  "temperature": { "current": 38 },
+  "power_on_time": { "hours": 12000 }
+}

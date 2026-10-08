@@ -1,0 +1,8 @@
+{
+  "json_format_version": [1, 0],
+  "smartctl": { "version": [7, 4], "exit_status": 4,
+    "messages": [ { "string": "Read Device Identity failed: scsi error unsupported field in scsi command", "severity": "error" } ] },
+  "device": { "name": "/dev/sdb", "info_name": "/dev/sdb", "type": "scsi", "protocol": "SCSI" },
+  "model_name": "SanDisk Cruzer Blade",
+  "smart_support": { "available": false }
+}

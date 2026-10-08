@@ -37,6 +37,10 @@ add_library(oxcore STATIC
     src/tests/sysinfo/SystemInfo.h
     src/tests/sysinfo/SystemInfoTest.h
     src/tests/sysinfo/SystemInfoTest.cpp
+    src/tests/disk/DiskInfo.h
+    src/tests/disk/Smartctl.cpp           # same smartctl command line on both OSes: no _win/_linux
+    src/tests/disk/DiskTest.h
+    src/tests/disk/DiskTest.cpp
 )
 
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.

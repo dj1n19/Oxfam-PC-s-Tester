@@ -1,0 +1,21 @@
+{
+  "json_format_version": [1, 0],
+  "smartctl": { "version": [7, 4], "exit_status": 0 },
+  "device": { "name": "/dev/sda", "info_name": "/dev/sda [SAT]", "type": "sat", "protocol": "ATA" },
+  "model_name": "ST500LM021-1KJ152",
+  "serial_number": "REDACTED",
+  "user_capacity": { "blocks": 976773168, "bytes": 500107862016 },
+  "smart_support": { "available": true, "enabled": true },
+  "smart_status": { "passed": true },
+  "ata_smart_attributes": {
+    "revision": 10,
+    "table": [
+      { "id": 1,   "name": "Raw_Read_Error_Rate",    "value": 117, "worst": 99,  "thresh": 6,  "raw": { "value": 151483424, "string": "151483424" } },
+      { "id": 5,   "name": "Reallocated_Sector_Ct",  "value": 95,  "worst": 95,  "thresh": 36, "raw": { "value": 60, "string": "60" } },
+      { "id": 9,   "name": "Power_On_Hours",         "value": 65,  "worst": 65,  "thresh": 0,  "raw": { "value": 31000, "string": "31000" } },
+      { "id": 197, "name": "Current_Pending_Sector", "value": 100, "worst": 100, "thresh": 0,  "raw": { "value": 3, "string": "3" } }
+    ]
+  },
+  "temperature": { "current": 41 },
+  "power_on_time": { "hours": 31000 }
+}

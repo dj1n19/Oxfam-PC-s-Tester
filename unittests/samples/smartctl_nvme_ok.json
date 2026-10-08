@@ -1,0 +1,17 @@
+{
+  "json_format_version": [1, 0],
+  "smartctl": { "version": [7, 4], "exit_status": 0 },
+  "device": { "name": "/dev/nvme0", "info_name": "/dev/nvme0", "type": "nvme", "protocol": "NVMe" },
+  "model_name": "Micron MTFDKBA512QGN",
+  "serial_number": "REDACTED",
+  "nvme_total_capacity": 512110190592,
+  "user_capacity": { "blocks": 1000215216, "bytes": 512110190592 },
+  "smart_status": { "passed": true, "nvme": { "value": 0 } },
+  "nvme_smart_health_information_log": {
+    "critical_warning": 0, "temperature": 36, "available_spare": 100,
+    "available_spare_threshold": 5, "percentage_used": 2,
+    "power_on_hours": 1234, "media_errors": 0
+  },
+  "temperature": { "current": 36 },
+  "power_on_time": { "hours": 1234 }
+}
