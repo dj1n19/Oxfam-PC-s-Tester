@@ -74,7 +74,9 @@ KeyboardDialog::KeyboardDialog(const KeyLayout& layout, QWidget* parent)
     auto* top = new QVBoxLayout(this);
     auto* help = new QLabel(tr("Press every key once. Pressed keys turn green. "
                                "Dashed keys are optional (they may not exist on this keyboard). "
-                               "Hold Fn if F1-F12 change brightness or volume instead."), this);
+                               "Hold Fn if F1-F12 change brightness or volume instead.\n"
+                               "Mute, volume and PrtSc may be caught by the system and stay white: "
+                               "if the volume pop-up or the screenshot tool appears, the key works."), this);
     help->setWordWrap(true);
     top->addWidget(help);
     m_status = new QLabel(this);
