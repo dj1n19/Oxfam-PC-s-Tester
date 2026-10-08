@@ -129,7 +129,8 @@ src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp}
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} battery_linux.cpp battery_win.cpp
-    (disk/ drivers/ license/ sysinfo/ audio/ camera/ keyboard/ : to come)
+    sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
+    (disk/ drivers/ license/ audio/ camera/ keyboard/ : to come)
   ui/          MainWindow.{h,cpp}
   main.cpp
 config/        thresholds.json
@@ -152,16 +153,25 @@ CMakeLists.txt
 
 ## 8. Current state
 
-**M0 + M1 delivered (skeleton), compile not yet verified on the developer's machine.**
+**M0 + M1 verified on Arch and in CI** (zero warnings, ctest green, Linux and Windows CI jobs green).
+Still to check by hand: START on a real machine, and the Windows CI artifact on a real Windows PC.
+
+**M2 in progress.** Done: SystemInfo. Next: Disk (smartctl), Drivers, Windows licence, multi-battery.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`, Windows queries WMI via PowerShell).
-- **`battery_win.cpp` is untested on real Windows hardware.** If it reports ERROR, the details pane holds the raw output to debug with.
+- Test: `SystemInfoTest`: vendor, model, serial, CPU, usable RAM, form factor from the SMBIOS chassis type
+  (Linux `/sys/class/dmi/id` + `/proc`, Windows CIM via PowerShell). Runs first.
+- **`battery_win.cpp` and `sysinfo_win.cpp` are untested on real Windows hardware.** If they report ERROR, the details pane holds the raw output to debug with.
 
 Known limitations:
 - Only the first system battery is read (dual-battery ThinkPads under-report).
 - Battery cycle count `0` is treated as unknown.
+- SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
+- RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
+- Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
+- `battery_win.cpp` and `sysinfo_win.cpp` duplicate the PowerShell/QProcess code. Extract a shared helper when a third probe needs it (Drivers/licence).
 - No interactive test yet, though the runner supports `needsUser()`.
 - Windows admin manifest and hidden console window not done (M4).
 
@@ -171,8 +181,8 @@ Part-time solo work. Every milestone must end with something usable.
 
 | Milestone | Goal / done when... |
 |---|---|
-| **M0 Setup** | Builds on Arch and on Windows via CI. *(skeleton delivered)* |
-| **M1 Vertical slice** | One real test (Battery) end to end: ITest -> TestRunner -> window -> verdict. Unit tests green. *(delivered, to verify)* |
+| **M0 Setup** | Builds on Arch and on Windows via CI. *(done)* |
+| **M1 Vertical slice** | One real test (Battery) end to end: ITest -> TestRunner -> window -> verdict. Unit tests green. *(done; real-hardware check pending)* |
 | **M2 Automatic tests** | SystemInfo (model, serial, CPU, RAM, form factor); **Disk** via bundled `smartctl --json` (overall health, reallocated/pending sectors, NVMe `percentage_used`, power-on hours, temperature); **Drivers** (Windows: `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` via PowerShell; Linux: `lspci -k` / `dmesg` / `journalctl -k -p err`); **Windows licence status** (`SoftwareLicensingProduct.LicenseStatus == 1`, embedded OEM key presence; `Skipped` on Linux; never generate or store keys). Desktop vs laptop auto-detected (no battery -> Skipped). Multi-battery support. Start using it at work. |
 | **M3 Interactive tests** | Keyboard (on-screen layout lighting up keys, `nativeScanCode()` so AZERTY/QWERTY both work, optional Fn/media keys, JSON layout); Audio (left tone, right tone, "did you hear it?"); Camera (grab a frame, detect black frame, user confirms only when ambiguous). Qt Multimedia. Modal `QDialog` per interactive test, automatic tests first. |
 | **M4 Polish and packaging** | Windows portable zip (`windeployqt`) and Linux AppImage; Windows `requireAdministrator` manifest and Linux privilege flow (`pkexec`/root) for SMART access; hide the Windows console; French/English via `tr()` and Qt Linguist; clear error messages. Tag **v1.0**. |
