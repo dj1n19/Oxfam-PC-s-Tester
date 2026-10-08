@@ -38,7 +38,7 @@ add_library(oxcore STATIC
     src/tests/sysinfo/SystemInfoTest.h
     src/tests/sysinfo/SystemInfoTest.cpp
     src/tests/disk/DiskInfo.h
-    src/tests/disk/Smartctl.cpp           # same smartctl command line on both OSes: no _win/_linux
+    src/tests/disk/Smartctl.cpp           # shared: scan, direct calls, pkexec batch helpers
     src/tests/disk/DiskTest.h
     src/tests/disk/DiskTest.cpp
     src/tests/drivers/DriverInfo.h
@@ -66,14 +66,16 @@ if(WIN32)
         src/tests/license/license_win.cpp
         src/tests/common/PowerShell.h
         src/tests/common/powershell_win.cpp    # shared runPowerShell()
-        src/tests/keyboard/keyboard_win.cpp)
+        src/tests/keyboard/keyboard_win.cpp
+        src/tests/disk/smartctl_win.cpp)
 else()
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_linux.cpp
         src/tests/sysinfo/sysinfo_linux.cpp
         src/tests/drivers/drivers_linux.cpp
         src/tests/license/license_linux.cpp
-        src/tests/keyboard/keyboard_linux.cpp)
+        src/tests/keyboard/keyboard_linux.cpp
+        src/tests/disk/smartctl_linux.cpp)     # pkexec when not root
 endif()
 
 target_include_directories(oxcore PUBLIC src)
