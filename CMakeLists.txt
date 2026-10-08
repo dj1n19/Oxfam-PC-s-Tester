@@ -33,13 +33,20 @@ add_library(oxcore STATIC
     src/tests/battery/BatteryInfo.h
     src/tests/battery/BatteryTest.h
     src/tests/battery/BatteryTest.cpp
+    src/tests/sysinfo/SystemInfo.h
+    src/tests/sysinfo/SystemInfoTest.h
+    src/tests/sysinfo/SystemInfoTest.cpp
 )
 
-# OS-specific implementation of readBattery(), chosen here. No #ifdef in code.
+# OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.
 if(WIN32)
-    target_sources(oxcore PRIVATE src/tests/battery/battery_win.cpp)
+    target_sources(oxcore PRIVATE
+        src/tests/battery/battery_win.cpp
+        src/tests/sysinfo/sysinfo_win.cpp)
 else()
-    target_sources(oxcore PRIVATE src/tests/battery/battery_linux.cpp)
+    target_sources(oxcore PRIVATE
+        src/tests/battery/battery_linux.cpp
+        src/tests/sysinfo/sysinfo_linux.cpp)
 endif()
 
 target_include_directories(oxcore PUBLIC src)

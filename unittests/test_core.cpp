@@ -3,6 +3,7 @@
 #include "core/Thresholds.h"
 #include "core/Verdict.h"
 #include "tests/battery/BatteryTest.h"
+#include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
 char *toString(Status s)
@@ -32,6 +33,18 @@ class TestCore : public QObject {
         b.designCapacity = 50000;
         b.fullCapacity = full;
         return b;
+    }
+
+    static SystemInfo fullSystem()
+    {
+        SystemInfo s;
+        s.vendor = "LENOVO";
+        s.model = "ThinkPad T480";
+        s.serial = "PF1ABCDE";
+        s.cpu = "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz";
+        s.ramBytes = 8.0 * 1024 * 1024 * 1024;
+        s.chassisType = 10;   // Notebook
+        return s;
     }
 
 private slots:
@@ -84,6 +97,50 @@ private slots:
     void missingThresholdIsErrorNotPass()
     {
         QCOMPARE(BatteryTest::evaluate(battery(40000), Thresholds{}).status, Status::Error);
+    }
+
+    void chassisMapping()
+    {
+        using FF = FormFactor;
+        QCOMPARE(SystemInfoTest::formFactorFromChassis(3), FF::Desktop);
+        QCOMPARE(SystemInfoTest::formFactorFromChassis(35), FF::Desktop);
+        QCOMPARE(SystemInfoTest::formFactorFromChassis(10), FF::Laptop);
+        QCOMPARE(SystemInfoTest::formFactorFromChassis(31), FF::Laptop);
+        QCOMPARE(SystemInfoTest::formFactorFromChassis(2), FF::Unknown);
+        QCOMPARE(SystemInfoTest::formFactorFromChassis(0), FF::Unknown);
+    }
+
+    void systemInfoComplete()
+    {
+        const TestResult r = SystemInfoTest::evaluate(fullSystem());
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.contains("ThinkPad T480"));
+        QVERIFY(r.summary.contains("8.0 GiB"));
+        QVERIFY(r.summary.contains("Laptop"));
+        QVERIFY(r.details.contains("PF1ABCDE"));
+    }
+
+    void systemInfoMissingSerialIsError()
+    {
+        SystemInfo s = fullSystem();
+        s.serial.clear();
+        s.serialError = "Permission denied";
+        const TestResult r = SystemInfoTest::evaluate(s);
+        QCOMPARE(r.status, Status::Error);
+        QVERIFY(r.details.contains("root"));
+    }
+
+    void systemInfoMissingDataIsError()
+    {
+        SystemInfo s = fullSystem();
+        s.cpu.clear();
+        QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
+        s = fullSystem();
+        s.ramBytes = 0;
+        QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
+        s = fullSystem();
+        s.error = "PowerShell timed out";
+        QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
     }
 
     void verdictRules()
