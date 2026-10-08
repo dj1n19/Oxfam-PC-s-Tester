@@ -439,6 +439,46 @@ private slots:
         QCOMPARE(audioSkipped().status, Status::Skipped);
     }
 
+    void smartctlBatchScript()
+    {
+        const std::vector<ScannedDevice> devs{{"/dev/sda", "sat"}, {"/dev/nvme0", "nvme"}};
+        const QString script = buildBatchScript("/opt/my tools/smartctl", devs);
+        QCOMPARE(script.count('\n'), 1);   // one line per disk
+        QVERIFY(script.contains("'/opt/my tools/smartctl' '--json' '-a' '-d' 'sat' '/dev/sda'"));
+        QVERIFY(script.contains(QString(kBatchMarker) + "$?"));
+
+        QVERIFY(isSafeShellWord("/dev/nvme0"));
+        QVERIFY(isSafeShellWord("sntasmedia/sat"));
+        QVERIFY(!isSafeShellWord("/dev/sda; rm -rf /"));
+        QVERIFY(!isSafeShellWord("$(reboot)"));
+        QVERIFY(!isSafeShellWord(""));
+        // An unsafe word refuses the whole script (outputs are matched by position).
+        QVERIFY(buildBatchScript("/usr/bin/smartctl", {{"/dev/sda", "sat"}, {"/dev/x y", ""}}).isEmpty());
+    }
+
+    void smartctlBatchOutput()
+    {
+        const std::vector<ScannedDevice> devs{{"/dev/sda", "sat"}, {"/dev/nvme0", "nvme"}};
+        QByteArray out = sample("smartctl_ata_worn.json");
+        out += QByteArray(kBatchMarker) + "0\n";
+        out += sample("smartctl_nvme_ok.json");
+        out += QByteArray(kBatchMarker) + "4\n";
+        const auto runs = parseBatchOutput(out, devs);
+        QCOMPARE(runs.size(), size_t(2));
+        QCOMPARE(runs[0].device, QString("/dev/sda"));
+        QCOMPARE(runs[0].exitCode, 0);
+        QCOMPARE(runs[1].exitCode, 4);
+        QCOMPARE(DiskTest::evaluateDisk(runs[0], loaded()).status, Status::Fail);   // the worn disk
+        QCOMPARE(DiskTest::evaluateDisk(runs[1], loaded()).status, Status::Pass);
+
+        // Batch stopped after the first disk: the second one is an Error, not lost.
+        const QByteArray cut = sample("smartctl_ata_worn.json") + QByteArray(kBatchMarker) + "0\n";
+        const auto partial = parseBatchOutput(cut, devs);
+        QCOMPARE(partial.size(), size_t(2));
+        QVERIFY(!partial[1].error.isEmpty());
+        QCOMPARE(DiskTest::evaluateDisk(partial[1], loaded()).status, Status::Error);
+    }
+
     void cameraFrames()
     {
         const int w = 64, h = 48, stride = 72;   // stride > width: padding must be skipped
@@ -498,13 +538,15 @@ private slots:
         QVERIFY(r.details.contains("PF1ABCDE"));
     }
 
-    void systemInfoMissingSerialIsError()
+    void systemInfoMissingSerialIsOptional()
     {
         SystemInfo s = fullSystem();
         s.serial.clear();
         s.serialError = "Permission denied";
         const TestResult r = SystemInfoTest::evaluate(s);
-        QCOMPARE(r.status, Status::Error);
+        QCOMPARE(r.status, Status::Pass);   // serial optional (Linux: root only)
+        QVERIFY(r.summary.contains("serial unknown"));
+        QVERIFY(r.details.contains("Permission denied"));
         QVERIFY(r.details.contains("root"));
     }
 

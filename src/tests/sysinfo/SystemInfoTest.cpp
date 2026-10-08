@@ -61,7 +61,6 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
     if (info.model.isEmpty()) missing << QStringLiteral("model");
     if (info.cpu.isEmpty())   missing << QStringLiteral("CPU");
     if (info.ramBytes <= 0)   missing << QStringLiteral("RAM");
-    if (info.serial.isEmpty()) missing << QStringLiteral("serial");
 
     const double gib = info.ramBytes / (1024.0 * 1024.0 * 1024.0);
     QStringList parts;
@@ -71,16 +70,20 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
           << formFactorName(formFactorFromChassis(info.chassisType));
     parts.removeAll(QString());
 
-    r.details = QStringLiteral("Serial: %1\n\n%2")
-                    .arg(info.serial.isEmpty() ? QStringLiteral("unknown") : info.serial, info.raw);
+    // The serial is optional (developer's choice): on Linux it is root-only,
+    // and the app runs as the normal user. Shown as unknown, with the reason.
+    if (info.serial.isEmpty()) {
+        parts << QStringLiteral("serial unknown");
+        r.details = QStringLiteral("Serial not read: %1\n(Linux: /sys/class/dmi/id/product_serial "
+                                   "is readable by root only.)\n\n%2")
+                        .arg(info.serialError, info.raw);
+    } else {
+        r.details = QStringLiteral("Serial: %1\n\n%2").arg(info.serial, info.raw);
+    }
 
     if (!missing.isEmpty()) {
         r.status = Status::Error;
         r.summary = QStringLiteral("Missing: %1 | %2").arg(missing.join(", "), parts.join(" | "));
-        // The serial is the usual one: on Linux it needs root.
-        if (info.serial.isEmpty())
-            r.details = QStringLiteral("Serial not read: %1\nRun as root/administrator to read it.\n\n%2")
-                            .arg(info.serialError, info.raw);
         return r;
     }
 
