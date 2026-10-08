@@ -166,7 +166,8 @@ CMakeLists.txt
 **M0 + M1 verified on Arch and in CI** (zero warnings, ctest green, Linux and Windows CI jobs green).
 Still to check by hand: START on a real machine, and the Windows CI artifact on a real Windows PC.
 
-**M2 in progress.** Done: SystemInfo, Disk (verified on Windows), Drivers, Windows licence (to verify on Windows). Next: multi-battery, then start using it at work.
+**M2 done** (automatic tests): SystemInfo, Battery, Disk, Drivers, Windows licence, all verified on real Windows.
+Multi-battery support was dropped by the developer (first battery only). Next: M3 interactive tests.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
@@ -191,14 +192,14 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
   battery at 36 % correctly reported FAIL).
 
 Known limitations:
-- Only the first system battery is read (dual-battery ThinkPads under-report).
+- Only the first system battery is read (dual-battery ThinkPads under-report). Multi-battery: dropped, by decision.
 - Battery cycle count `0` is treated as unknown.
 - SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux, smartctl is not bundled: system one only (M4).
-- **`license_win.cpp` and `powershell_win.cpp` are untested on real Windows.** SystemInfo and Drivers now go through
-  `runPowerShell()` too: re-check them. `pnp_problems.json` and `license_*.json` are hand-made.
+- `license_win.cpp` and `runPowerShell()` (also used by SystemInfo and Drivers) verified on real Windows.
+  `pnp_problems.json` and `license_*.json` are hand-made.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
 - DiskTest `smartctl_*.json` samples are hand-made from the smartctl 7.x format: replace them with real outputs.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
@@ -215,7 +216,7 @@ Part-time solo work. Every milestone must end with something usable.
 |---|---|
 | **M0 Setup** | Builds on Arch and on Windows via CI. *(done)* |
 | **M1 Vertical slice** | One real test (Battery) end to end: ITest -> TestRunner -> window -> verdict. Unit tests green. *(done; real-hardware check pending)* |
-| **M2 Automatic tests** | SystemInfo (model, serial, CPU, RAM, form factor); **Disk** via bundled `smartctl --json` (overall health, reallocated/pending sectors, NVMe `percentage_used`, power-on hours, temperature); **Drivers** (Windows: `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` via PowerShell; Linux: `lspci -k` / `dmesg` / `journalctl -k -p err`); **Windows licence status** (`SoftwareLicensingProduct.LicenseStatus == 1`, embedded OEM key presence; `Skipped` on Linux; never generate or store keys). Desktop vs laptop auto-detected (no battery -> Skipped). Multi-battery support. Start using it at work. |
+| **M2 Automatic tests** | SystemInfo (model, serial, CPU, RAM, form factor); **Disk** via bundled `smartctl --json` (overall health, reallocated/pending sectors, NVMe `percentage_used`, power-on hours, temperature); **Drivers** (Windows: `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` via PowerShell; Linux: `lspci -k` / `dmesg` / `journalctl -k -p err`); **Windows licence status** (`SoftwareLicensingProduct.LicenseStatus == 1`, embedded OEM key presence; `Skipped` on Linux; never generate or store keys). Desktop vs laptop auto-detected (no battery -> Skipped). ~~Multi-battery support~~ (dropped). Start using it at work. *(done)* |
 | **M3 Interactive tests** | Keyboard (on-screen layout lighting up keys, `nativeScanCode()` so AZERTY/QWERTY both work, optional Fn/media keys, JSON layout); Audio (left tone, right tone, "did you hear it?"); Camera (grab a frame, detect black frame, user confirms only when ambiguous). Qt Multimedia. Modal `QDialog` per interactive test, automatic tests first. |
 | **M4 Polish and packaging** | Windows portable zip (`windeployqt`) and Linux AppImage; Windows `requireAdministrator` manifest and Linux privilege flow (`pkexec`/root) for SMART access; hide the Windows console; French/English via `tr()` and Qt Linguist; clear error messages. Tag **v1.0**. |
 | **M5 Field feedback** | Run on many real, ugly refurbished machines; adjust thresholds with colleagues; fix parsing quirks; keep golden samples of real outputs in `unittests/`. |
