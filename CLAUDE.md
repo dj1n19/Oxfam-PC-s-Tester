@@ -142,9 +142,9 @@ src/
     common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
-    (camera/ : to come)
+    camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
   ui/          MainWindow.{h,cpp}
-    interactive/ KeyboardTest.{h,cpp} KeyboardDialog.{h,cpp} AudioTest.{h,cpp} AudioDialog.{h,cpp}
+    interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
 config/        thresholds.json keyboard_layout.json   (copied next to the executable)
 tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
@@ -173,7 +173,7 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
 **M2 done** (automatic tests): SystemInfo, Battery, Disk, Drivers, Windows licence, all verified on real Windows.
 Multi-battery support was dropped by the developer (first battery only).
 
-**M3 in progress.** Done: Keyboard (verified on Arch), Audio (to verify). Next: Camera.
+**M3 in progress.** Done: Keyboard (verified on Arch), Audio, Camera (both to verify on hardware). Next: verify, then M4.
 Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
@@ -186,6 +186,11 @@ Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `ox
   Tone on the LEFT only (440 Hz), then RIGHT only (660 Hz), 750 ms each; the technician answers Left / Right / Both / Nothing, without
   being told the side. Both correct = Pass; "Both" = Warn (mono speaker); wrong side = Fail (swapped); nothing = Fail.
   No output device or unsupported format = Error.
+- Test: `CameraTest` (interactive, asks only when ambiguous): `QCamera` + `QMediaCaptureSession` -> `QVideoSink`
+  (no MultimediaWidgets). Live preview in a QLabel; every 250 ms the frame is converted to Grayscale8 and
+  `lumaStats()`/`classifyFrame()` (oxcore) give brightness and detail. ~1 s of real picture = automatic Pass.
+  Black/uniform for 3 s = prompt (shutter? lens?) and the technician may click "Camera is broken" (Fail).
+  No camera = Skipped (desktops); camera error or no frame in 6 s = Error.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
@@ -223,6 +228,7 @@ Known limitations:
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
+- Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
 - **Keyboard scan codes on real Windows are untested** (from Microsoft/Qt docs). Labels are Belgian AZERTY only.
 - Windows admin manifest and hidden console window not done (M4).
 - **Linux root vs user session (M4):** SMART (Disk) needs root, but audio (and camera) need the user session:
