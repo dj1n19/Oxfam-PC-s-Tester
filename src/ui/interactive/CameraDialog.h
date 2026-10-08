@@ -30,10 +30,14 @@ private:
     void onNoFrameTimeout();
     void finish(CameraOutcome o, const QString& error = {});
 
+    // Order matters: C++ destroys members in REVERSE order, so the session
+    // (which links camera -> sink) goes first, then the camera, then the sink.
+    // The other way round, the camera backend delivered one more frame into a
+    // destroyed sink: segmentation fault in libffmpegmediaplugin.
     QCameraDevice m_device;
+    QVideoSink m_sink;
     QCamera m_camera;
     QMediaCaptureSession m_session;
-    QVideoSink m_sink;
     QTimer m_noFrameTimer;       // camera opened but silent
     QElapsedTimer m_lastAnalysis;
     QElapsedTimer m_badSince;    // how long the picture has been black/flat

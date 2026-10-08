@@ -68,7 +68,12 @@ CameraDialog::CameraDialog(const QCameraDevice& device, QWidget* parent)
 
 CameraDialog::~CameraDialog()
 {
-    m_camera.stop();   // turns the camera LED off
+    // Stop and unlink explicitly, before any member is destroyed, so no frame
+    // can arrive in a half-destroyed dialog (see the member order in the .h).
+    disconnect(&m_sink, nullptr, this, nullptr);
+    m_camera.stop();   // also turns the camera LED off
+    m_session.setVideoOutput(nullptr);
+    m_session.setCamera(nullptr);
 }
 
 void CameraDialog::onFrame(const QVideoFrame& frame)
