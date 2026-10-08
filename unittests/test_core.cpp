@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
 #include <QtTest>
 
 #include "core/Thresholds.h"
@@ -7,6 +10,7 @@
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
 #include "tests/keyboard/KeyLayout.h"
+#include "tests/audio/AudioCheck.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
@@ -400,6 +404,37 @@ private slots:
         QVERIFY(t.allRequiredPressed());
         QVERIFY(t.missingRequired().isEmpty());
         QCOMPARE(t.result(KeyTracker::Outcome::AllPressed).status, Status::Pass);
+    }
+
+    void audioToneOneChannel()
+    {
+        const QByteArray d = makeTone(Channel::Left, 48000, 440, 1000);
+        QCOMPARE(d.size(), qsizetype(48000 * 2 * 2));   // 1 s, 2 channels, 2 bytes
+        const auto* s = reinterpret_cast<const std::int16_t*>(d.constData());
+        int maxLeft = 0, maxRight = 0;
+        for (int i = 0; i < 48000; ++i) {
+            maxLeft = std::max(maxLeft, std::abs(int(s[2 * i])));
+            maxRight = std::max(maxRight, std::abs(int(s[2 * i + 1])));
+        }
+        QVERIFY(maxLeft > 10000);      // clearly audible
+        QVERIFY(maxLeft < 32767);      // no clipping
+        QCOMPARE(maxRight, 0);         // the other side is silent
+        QCOMPARE(int(s[0]), 0);        // fade in: starts at 0, no click
+
+        const QByteArray r = makeTone(Channel::Right, 44100, 880, 500);
+        QCOMPARE(int(reinterpret_cast<const std::int16_t*>(r.constData())[2 * 1000]), 0);   // left silent
+    }
+
+    void audioAnswers()
+    {
+        QCOMPARE(audioResult(Heard::Left, Heard::Right).status, Status::Pass);
+        QCOMPARE(audioResult(Heard::Both, Heard::Right).status, Status::Warn);    // mono speaker
+        QCOMPARE(audioResult(Heard::Both, Heard::Both).status, Status::Warn);
+        QCOMPARE(audioResult(Heard::Right, Heard::Left).status, Status::Fail);    // swapped
+        QCOMPARE(audioResult(Heard::Left, Heard::Nothing).status, Status::Fail);  // right dead
+        QCOMPARE(audioResult(Heard::Nothing, Heard::Both).status, Status::Fail);  // fail beats warn
+        QVERIFY(audioResult(Heard::Right, Heard::Left).summary.contains("swapped"));
+        QCOMPARE(audioSkipped().status, Status::Skipped);
     }
 
     void chassisMapping()

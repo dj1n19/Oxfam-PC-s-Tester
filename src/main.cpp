@@ -11,6 +11,7 @@
 #include "tests/license/LicenseTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 #include "ui/MainWindow.h"
+#include "ui/interactive/AudioTest.h"
 #include "ui/interactive/KeyboardTest.h"
 
 int main(int argc, char* argv[])
@@ -44,7 +45,8 @@ int main(int argc, char* argv[])
     runner.add(std::make_unique<DiskTest>(thresholds));
     runner.add(std::make_unique<DriversTest>());
     runner.add(std::make_unique<LicenseTest>());
-    runner.add(std::make_unique<KeyboardTest>(keyLayout));   // interactive: runs last
+    runner.add(std::make_unique<KeyboardTest>(keyLayout));   // interactive: run last, in this order
+    runner.add(std::make_unique<AudioTest>());
 
     MainWindow window(runner);
     window.show();
