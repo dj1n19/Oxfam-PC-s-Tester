@@ -177,7 +177,7 @@ Known limitations:
 - SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
-- `unittests/samples/powercfg_laptop.xml` is hand-made from the documented format; replace it with a real report.
+- `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - No interactive test yet, though the runner supports `needsUser()`.
 - Windows admin manifest and hidden console window not done (M4).
 

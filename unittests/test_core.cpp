@@ -108,15 +108,18 @@ private slots:
         QCOMPARE(BatteryTest::evaluate(battery(40000), Thresholds{}).status, Status::Error);
     }
 
-    void powercfgLaptop()
+    // Real report from a Dell Latitude 7420, Windows 11 (UTF-8 BOM, CRLF).
+    // <RuntimeEstimates> holds a second <DesignCapacity>: it must be ignored.
+    void powercfgLatitude7420()
     {
-        const BatteryInfo b = parseBatteryReport(sample("powercfg_laptop.xml"));
-        QVERIFY(b.error.isEmpty());
+        const BatteryInfo b = parseBatteryReport(sample("powercfg_latitude7420.xml"));
+        QVERIFY2(b.error.isEmpty(), qPrintable(b.error));
         QVERIFY(b.present);
-        QCOMPARE(b.designCapacity, 42000.0);
+        QCOMPARE(b.name, QString("DELL 4M1JN18"));
+        QCOMPARE(b.designCapacity, 61834.0);
         QCOMPARE(b.fullCapacity, 22359.0);
         QCOMPARE(b.cycles, -1);   // 0 = not reported
-        QCOMPARE(BatteryTest::evaluate(b, loaded()).status, Status::Warn);   // 53 %
+        QCOMPARE(BatteryTest::evaluate(b, loaded()).status, Status::Fail);   // 36 %
     }
 
     void powercfgDesktopIsSkipped()
@@ -129,8 +132,8 @@ private slots:
 
     void powercfgBadDataIsError()
     {
-        QByteArray xml = sample("powercfg_laptop.xml");
-        xml.replace("<DesignCapacity>42000</DesignCapacity>", "");
+        QByteArray xml = sample("powercfg_latitude7420.xml");
+        xml.replace("<DesignCapacity>61834</DesignCapacity>", "");
         QCOMPARE(BatteryTest::evaluate(parseBatteryReport(xml), loaded()).status, Status::Error);
         QCOMPARE(BatteryTest::evaluate(parseBatteryReport(""), loaded()).status, Status::Error);
         QCOMPARE(BatteryTest::evaluate(parseBatteryReport("not xml"), loaded()).status, Status::Error);

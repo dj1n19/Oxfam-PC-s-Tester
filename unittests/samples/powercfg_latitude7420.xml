@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type='text/xsl' href='C:\battery-stylesheet.xsl'?>
+<!-- Real powercfg report from a Dell Latitude 7420, Windows 11, trimmed to the
+     parts the parser reads. BOM and CRLF kept as powercfg writes them. -->
+<BatteryReport xmlns="http://schemas.microsoft.com/battery/2012">
+  <Batteries>
+    <Battery>
+      <Id>DELL 4M1JN18</Id>
+      <Manufacturer>BYD</Manufacturer>
+      <ManufactureDate></ManufactureDate>
+      <Chemistry>LiP</Chemistry>
+      <LongTerm>1</LongTerm>
+      <RelativeCapacity>0</RelativeCapacity>
+      <DesignCapacity>61834</DesignCapacity>
+      <FullChargeCapacity>22359</FullChargeCapacity>
+      <CycleCount>0</CycleCount>
+    </Battery>
+  </Batteries>
+  <RuntimeEstimates>
+    <DesignCapacity>
+      <Capacity>61834</Capacity>
+      <ActiveRuntime>PT0S</ActiveRuntime>
+      <ConnectedStandbyRuntime>PT0S</ConnectedStandbyRuntime>
+    </DesignCapacity>
+    <FullChargeCapacity>
+      <Capacity>22359</Capacity>
+      <ActiveRuntime>PT0S</ActiveRuntime>
+      <ConnectedStandbyRuntime>PT0S</ConnectedStandbyRuntime>
+    </FullChargeCapacity>
+  </RuntimeEstimates>
+</BatteryReport>
