@@ -132,11 +132,12 @@ src/
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
-    (disk/ drivers/ license/ audio/ camera/ keyboard/ : to come)
+    disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp}   (no _win/_linux: smartctl is the same on both)
+    (drivers/ license/ audio/ camera/ keyboard/ : to come)
   ui/          MainWindow.{h,cpp}
   main.cpp
 config/        thresholds.json
-tools/         external executables to ship (smartctl, to come)
+tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
   samples/     golden samples of real tool output (loaded with QFINDTESTDATA)
 .github/workflows/build.yml
@@ -159,7 +160,7 @@ CMakeLists.txt
 **M0 + M1 verified on Arch and in CI** (zero warnings, ctest green, Linux and Windows CI jobs green).
 Still to check by hand: START on a real machine, and the Windows CI artifact on a real Windows PC.
 
-**M2 in progress.** Done: SystemInfo. Next: Disk (smartctl), Drivers, Windows licence, multi-battery.
+**M2 in progress.** Done: SystemInfo, Disk (to verify on hardware). Next: Drivers, Windows licence, multi-battery.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
@@ -168,8 +169,13 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
 - Test: `SystemInfoTest`: vendor, model, serial, CPU, usable RAM, form factor from the SMBIOS chassis type
   (Linux `/sys/class/dmi/id` + `/proc`, Windows CIM via PowerShell). Runs first.
-- `sysinfo_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11).
-- **The powercfg version of `battery_win.cpp` is untested on real Windows hardware.** If it reports ERROR, the details pane holds the raw output to debug with.
+- Test: `DiskTest`: `smartctl --scan --json` then `smartctl --json -a -d <type> <dev>` per disk. One shared probe
+  (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
+  sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
+  (USB stick) is Skipped, but "no disk with SMART" is Error. smartctl is found in `<app>/tools/`, then `PATH`;
+  Windows CI bundles it via Chocolatey into `dist/tools/`.
+- `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
+  battery at 36 % correctly reported FAIL).
 
 Known limitations:
 - Only the first system battery is read (dual-battery ThinkPads under-report).
@@ -177,6 +183,9 @@ Known limitations:
 - SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
+- **DiskTest is untested on real hardware.** `smartctl_*.json` samples are hand-made from the smartctl 7.x format: replace them with real outputs.
+- Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
+- Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - No interactive test yet, though the runner supports `needsUser()`.
 - Windows admin manifest and hidden console window not done (M4).
