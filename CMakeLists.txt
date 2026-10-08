@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # for clangd (Pulsar)
 set(CMAKE_AUTOMOC ON)                   # Qt's moc runs automatically
 
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Multimedia)   # Multimedia: app only (audio test)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Multimedia)   # Multimedia: app only (audio, camera)
 
 function(ox_enable_warnings target)
     if(MSVC)
@@ -53,6 +53,8 @@ add_library(oxcore STATIC
     src/tests/keyboard/KeyLayout.cpp      # layout, scan codes, result: logic of the keyboard test
     src/tests/audio/AudioCheck.h
     src/tests/audio/AudioCheck.cpp        # tone generation + result: logic of the audio test
+    src/tests/camera/FrameCheck.h
+    src/tests/camera/FrameCheck.cpp       # frame statistics + result: logic of the camera test
 )
 
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.
@@ -94,6 +96,10 @@ add_executable(oxfam-tester
     src/ui/interactive/AudioTest.cpp
     src/ui/interactive/AudioDialog.h
     src/ui/interactive/AudioDialog.cpp
+    src/ui/interactive/CameraTest.h
+    src/ui/interactive/CameraTest.cpp
+    src/ui/interactive/CameraDialog.h
+    src/ui/interactive/CameraDialog.cpp
 )
 target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
 ox_enable_warnings(oxfam-tester)

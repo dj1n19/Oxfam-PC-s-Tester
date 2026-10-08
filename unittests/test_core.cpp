@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
+#include <vector>
 #include <QtTest>
 
 #include "core/Thresholds.h"
@@ -11,6 +12,7 @@
 #include "tests/license/LicenseTest.h"
 #include "tests/keyboard/KeyLayout.h"
 #include "tests/audio/AudioCheck.h"
+#include "tests/camera/FrameCheck.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
@@ -435,6 +437,44 @@ private slots:
         QCOMPARE(audioResult(Heard::Nothing, Heard::Both).status, Status::Fail);  // fail beats warn
         QVERIFY(audioResult(Heard::Right, Heard::Left).summary.contains("swapped"));
         QCOMPARE(audioSkipped().status, Status::Skipped);
+    }
+
+    void cameraFrames()
+    {
+        const int w = 64, h = 48, stride = 72;   // stride > width: padding must be skipped
+        std::vector<unsigned char> img(size_t(stride) * h, 255);   // padding = white
+
+        std::fill(img.begin(), img.end(), 0);
+        for (int y = 0; y < h; ++y)
+            std::fill_n(img.begin() + y * stride + w, stride - w, 255);   // white padding only
+        FrameStats s = lumaStats(img.data(), w, h, stride);
+        QCOMPARE(s.mean, 0.0);
+        QCOMPARE(classifyFrame(s), FrameKind::Black);
+
+        for (int y = 0; y < h; ++y)
+            std::fill_n(img.begin() + y * stride, w, 128);
+        QCOMPARE(classifyFrame(lumaStats(img.data(), w, h, stride)), FrameKind::Flat);   // all grey
+
+        for (int y = 0; y < h; ++y)
+            for (int x = 0; x < w; ++x)
+                img[size_t(y * stride + x)] = static_cast<unsigned char>((x * 4 + y * 2) % 256);
+        s = lumaStats(img.data(), w, h, stride);
+        QCOMPARE(classifyFrame(s), FrameKind::Good);   // a real scene has detail
+
+        QCOMPARE(lumaStats(nullptr, w, h, stride).mean, 0.0);   // no crash
+    }
+
+    void cameraOutcomes()
+    {
+        const FrameStats s{120, 40};
+        QCOMPARE(cameraResult(CameraOutcome::Good, "cam", s).status, Status::Pass);
+        QCOMPARE(cameraResult(CameraOutcome::Broken, "cam", s).status, Status::Fail);
+        QCOMPARE(cameraResult(CameraOutcome::Skipped, "cam", s).status, Status::Skipped);
+        QCOMPARE(cameraResult(CameraOutcome::NoCamera, {}, {}).status, Status::Skipped);
+        QCOMPARE(cameraResult(CameraOutcome::NoFrames, "cam", s).status, Status::Error);
+        const TestResult e = cameraResult(CameraOutcome::CameraError, "cam", s, "busy");
+        QCOMPARE(e.status, Status::Error);
+        QVERIFY(e.details.contains("busy"));
     }
 
     void chassisMapping()
