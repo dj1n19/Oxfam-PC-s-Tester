@@ -41,6 +41,14 @@ jobs:
           Copy-Item build/Release/oxfam-tester.exe dist/
           Copy-Item config/thresholds.json dist/
           windeployqt --release dist/oxfam-tester.exe
+      # smartctl is a separate GPL program, shipped next to the app (see tools/README.md)
+      - name: Bundle smartctl
+        run: |
+          choco install smartmontools -y --no-progress
+          New-Item -ItemType Directory dist/tools | Out-Null
+          Copy-Item "$env:ProgramFiles/smartmontools/bin/smartctl.exe" dist/tools/
+          Copy-Item tools/README.md dist/tools/
+          dist/tools/smartctl.exe --version
       - uses: actions/upload-artifact@v4
         with:
           name: oxfam-tester-windows
