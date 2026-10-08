@@ -139,7 +139,7 @@ src/
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
-    disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp}   (no _win/_linux: smartctl is the same on both)
+    disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
     common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
@@ -179,7 +179,8 @@ Multi-battery support was dropped by the developer (first battery only).
 **M3 done** (interactive tests): Keyboard, Audio, Camera, verified on Arch.
 
 **M4 in progress.** Done: Windows GUI subsystem (no console) + `requireAdministrator` manifest (to verify on Windows).
-Next: Linux privilege flow (smartctl via pkexec), French/English, AppImage, tag v1.0.
+Linux privilege flow done (to verify): app runs as the normal user, only smartctl is elevated.
+Next: French/English, AppImage, tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
@@ -223,7 +224,8 @@ Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `ox
 Known limitations:
 - Only the first system battery is read (dual-battery ThinkPads under-report). Multi-battery: dropped, by decision.
 - Battery cycle count `0` is treated as unknown.
-- SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
+- The serial number is **optional** (developer's decision): on Linux, as a normal user, `product_serial` is root-only,
+  so System info shows "serial unknown" and stays Pass.
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux, smartctl is not bundled: system one only (M4).
@@ -237,9 +239,12 @@ Known limitations:
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
 - **Keyboard scan codes on real Windows are untested** (from Microsoft/Qt docs). Labels are Belgian AZERTY only.
 - Windows: the app is a GUI program (`WIN32`), so `qDebug()` output is not visible; put diagnostics in `details`.
-- **Linux root vs user session (M4):** SMART (Disk) needs root, but audio (and camera) need the user session:
-  run with sudo, the app cannot reach PipeWire/PulseAudio and the Audio test reports ERROR. Planned fix: run the app
-  as the normal user and elevate only the smartctl call (e.g. `pkexec smartctl ...`). Windows is not affected.
+- **Linux privileges:** run the app as the normal user (sudo breaks audio and camera: PipeWire/PulseAudio belong to the
+  user session). `smartctl_linux.cpp` elevates only smartctl: if not root, ONE `pkexec /bin/sh -c <batch>` reads every
+  disk (one password prompt, 50 s to type it before the 60 s watchdog). Device names/types are checked with
+  `isSafeShellWord()` and single-quoted; outputs are split by the `OXFAM_SMARTCTL_EXIT=<code>` marker
+  (`parseBatchOutput()`). pkexec exit 126/127 = password refused/cancelled -> Error. No pkexec = direct call.
+  The technician must be at the PC when pressing START (password prompt). Windows: admin via manifest, direct calls.
 
 ## 9. Roadmap
 
