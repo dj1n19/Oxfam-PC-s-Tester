@@ -12,10 +12,10 @@ struct TestResult {
     QString details;   // raw readings, shown when the row is selected
 };
 
-inline QString toString(Status s)
+inline QString statusLabel(Status s)
 {
     switch (s) {
-	case Status::Pass:    return QStringLiteral("PASS");
+    case Status::Pass:    return QStringLiteral("PASS");
     case Status::Warn:    return QStringLiteral("WARN");
     case Status::Fail:    return QStringLiteral("FAIL");
     case Status::Skipped: return QStringLiteral("SKIPPED");
