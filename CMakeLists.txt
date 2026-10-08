@@ -92,12 +92,17 @@ add_executable(oxfam-tester
 target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets)
 ox_enable_warnings(oxfam-tester)
 
-# Config files are copied next to the executable (portable app)
+# Config files are copied next to the executable (portable app).
+# One command per file, with the full destination path: copying several
+# files at once needs the folder to exist, and on a fresh Windows build
+# build/Release does not exist yet when this runs.
 add_custom_target(copy_config ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_SOURCE_DIR}/config/thresholds.json
+            $<TARGET_FILE_DIR:oxfam-tester>/thresholds.json
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_SOURCE_DIR}/config/keyboard_layout.json
-            $<TARGET_FILE_DIR:oxfam-tester>)
+            $<TARGET_FILE_DIR:oxfam-tester>/keyboard_layout.json)
 add_dependencies(oxfam-tester copy_config)
 
 # ---------------------------------------------------------------------------
