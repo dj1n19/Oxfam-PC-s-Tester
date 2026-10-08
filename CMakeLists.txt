@@ -83,7 +83,8 @@ ox_enable_warnings(oxcore)
 # ---------------------------------------------------------------------------
 # The application (UI layer)
 # ---------------------------------------------------------------------------
-add_executable(oxfam-tester
+# WIN32: a Windows GUI program (no console window). Ignored on Linux.
+add_executable(oxfam-tester WIN32
     src/main.cpp
     src/ui/MainWindow.h
     src/ui/MainWindow.cpp
@@ -102,6 +103,12 @@ add_executable(oxfam-tester
     src/ui/interactive/CameraDialog.cpp
 )
 target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
+
+# Windows asks for administrator rights at start (UAC prompt): SMART, WMI
+# licence and driver queries need them. Embedded in the .exe by the linker.
+if(MSVC)
+    target_link_options(oxfam-tester PRIVATE "/MANIFESTUAC:level='requireAdministrator'")
+endif()
 ox_enable_warnings(oxfam-tester)
 
 # Config files are copied next to the executable (portable app).

@@ -43,6 +43,10 @@ jobs:
           Copy-Item config/thresholds.json dist/
           Copy-Item config/keyboard_layout.json dist/
           windeployqt --release dist/oxfam-tester.exe
+          # The UAC manifest must be embedded, otherwise SMART silently needs "Run as administrator"
+          if (-not (Select-String -Path dist/oxfam-tester.exe -Pattern requireAdministrator -SimpleMatch -Quiet)) {
+            throw "requireAdministrator manifest missing from oxfam-tester.exe"
+          }
       # smartctl is a separate GPL program, shipped next to the app (see tools/README.md)
       - name: Bundle smartctl
         run: |
