@@ -4,6 +4,7 @@
 #include "core/Verdict.h"
 #include "tests/battery/BatteryTest.h"
 #include "tests/disk/DiskTest.h"
+#include "tests/drivers/DriversTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
@@ -234,6 +235,50 @@ private slots:
         scan = DiskScan{};
         scan.error = "smartctl not found";
         QCOMPARE(DiskTest::evaluate(scan, loaded()).status, Status::Error);
+    }
+
+    // pnp_problems.json is hand-made from the PowerShell script's output
+    // shape. Replace it with a real one from a PC with a driver problem.
+    void driversWindowsProblems()
+    {
+        const DriverInfo info = parsePnpEntities(sample("pnp_problems.json"));
+        QVERIFY2(info.error.isEmpty(), qPrintable(info.error));
+        QCOMPARE(info.problems.size(), size_t(4));
+        QCOMPARE(info.problems[1].name, QString("ACPI\\INT33A1\\1"));   // no name: DeviceID used
+
+        const TestResult r = DriversTest::evaluate(info);
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY2(r.summary.startsWith("3 device(s)"), qPrintable(r.summary));   // code 45 ignored
+        QVERIFY(r.summary.contains("no driver installed"));
+        QVERIFY(r.summary.contains("disabled"));
+        QVERIFY(!r.summary.contains("SanDisk"));
+        QVERIFY(r.details.contains("SanDisk"));   // still visible in details
+    }
+
+    void driversWindowsNoProblem()
+    {
+        const DriverInfo info = parsePnpEntities("[]");
+        QVERIFY(info.error.isEmpty());
+        QCOMPARE(DriversTest::evaluate(info).status, Status::Pass);
+    }
+
+    void driversBadOutputIsError()
+    {
+        QCOMPARE(DriversTest::evaluate(parsePnpEntities("")).status, Status::Error);
+        QCOMPARE(DriversTest::evaluate(parsePnpEntities("{\"Name\":1}")).status, Status::Error);
+    }
+
+    void driversPciClasses()
+    {
+        QVERIFY(pciClassMatters(0x020000));    // Ethernet
+        QVERIFY(pciClassMatters(0x028000));    // Wi-Fi
+        QVERIFY(pciClassMatters(0x030000));    // VGA
+        QVERIFY(pciClassMatters(0x040300));    // HD audio
+        QVERIFY(pciClassMatters(0x0c0330));    // USB xHCI
+        QVERIFY(!pciClassMatters(0x0c0500));   // SMBus
+        QVERIFY(!pciClassMatters(0x088000));   // system peripheral
+        QVERIFY(!pciClassMatters(0x050000));   // RAM
+        QVERIFY(!pciClassMatters(0x060100));   // ISA bridge
     }
 
     void chassisMapping()

@@ -41,17 +41,23 @@ add_library(oxcore STATIC
     src/tests/disk/Smartctl.cpp           # same smartctl command line on both OSes: no _win/_linux
     src/tests/disk/DiskTest.h
     src/tests/disk/DiskTest.cpp
+    src/tests/drivers/DriverInfo.h
+    src/tests/drivers/DriverParsing.cpp   # pure helpers for both OSes, unit tested on Linux
+    src/tests/drivers/DriversTest.h
+    src/tests/drivers/DriversTest.cpp
 )
 
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.
 if(WIN32)
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_win.cpp
-        src/tests/sysinfo/sysinfo_win.cpp)
+        src/tests/sysinfo/sysinfo_win.cpp
+        src/tests/drivers/drivers_win.cpp)
 else()
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_linux.cpp
-        src/tests/sysinfo/sysinfo_linux.cpp)
+        src/tests/sysinfo/sysinfo_linux.cpp
+        src/tests/drivers/drivers_linux.cpp)
 endif()
 
 target_include_directories(oxcore PUBLIC src)
