@@ -141,9 +141,10 @@ src/
     license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
     common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
-    (audio/ camera/ : to come)
+    audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
+    (camera/ : to come)
   ui/          MainWindow.{h,cpp}
-    interactive/ KeyboardTest.{h,cpp} KeyboardDialog.{h,cpp}   (ITest + dialog of interactive tests)
+    interactive/ KeyboardTest.{h,cpp} KeyboardDialog.{h,cpp} AudioTest.{h,cpp} AudioDialog.{h,cpp}
   main.cpp
 config/        thresholds.json keyboard_layout.json   (copied next to the executable)
 tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
@@ -172,13 +173,19 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
 **M2 done** (automatic tests): SystemInfo, Battery, Disk, Drivers, Windows licence, all verified on real Windows.
 Multi-battery support was dropped by the developer (first battery only).
 
-**M3 in progress.** Done: Keyboard (to verify on real keyboards, Linux and Windows). Next: Audio, Camera (Qt Multimedia: approved).
+**M3 in progress.** Done: Keyboard (verified on Arch), Audio (to verify). Next: Camera.
+Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
   Windows, xkb keycode -> set 1 on Linux (`scanCodeFromXkb`, unit tested). All required keys pressed = Pass (automatic),
   "A key does not work" = Fail (lists missing keys), "Skip" or closing the window = Skipped. Optional (dashed) keys may
   not exist or may be taken by the OS (Win key, PrtSc...). The dialog catches keys in `event()` so Tab/Esc are tested
   instead of moving focus or closing; its buttons are `Qt::NoFocus` so Space/Enter never click them.
+  On GNOME/Wayland mute, volume and PrtSc are taken by the desktop and never reach the app (explained in the dialog).
+- Test: `AudioTest` (interactive): `QAudioSink` on the default output, 48 kHz 16-bit stereo (`makeTone()` in oxcore).
+  Tone on the LEFT only (440 Hz), then RIGHT only (880 Hz); the technician answers Left / Right / Both / Nothing, without
+  being told the side. Both correct = Pass; "Both" = Warn (mono speaker); wrong side = Fail (swapped); nothing = Fail.
+  No output device or unsupported format = Error.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
