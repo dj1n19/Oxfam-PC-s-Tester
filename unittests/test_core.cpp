@@ -6,6 +6,7 @@
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
+#include "tests/keyboard/KeyLayout.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
@@ -324,6 +325,81 @@ private slots:
         LicenseInfo info;
         info.applicable = false;
         QCOMPARE(LicenseTest::evaluate(info).status, Status::Skipped);
+    }
+
+    // The real config file: a typo in it would fail here, not in the shop.
+    static KeyLayout shippedLayout()
+    {
+        QFile f(QFINDTESTDATA("../config/keyboard_layout.json"));
+        if (!f.open(QIODevice::ReadOnly))
+            qFatal("config/keyboard_layout.json not found");
+        return parseKeyLayout(f.readAll());
+    }
+
+    void keyLayoutShipped()
+    {
+        const KeyLayout l = shippedLayout();
+        QVERIFY2(l.error.isEmpty(), qPrintable(l.error));
+        const KeyTracker t(l);
+        QVERIFY(t.requiredCount() > 60);
+        QVERIFY(t.missingRequired().contains("Esc"));
+        QVERIFY(!t.missingRequired().contains("PrtSc"));   // optional
+    }
+
+    void keyLayoutBadJsonIsError()
+    {
+        QVERIFY(!parseKeyLayout("nope").error.isEmpty());
+        QVERIFY(!parseKeyLayout("{\"rows\": []}").error.isEmpty());
+        QVERIFY(!parseKeyLayout("{\"rows\": [[{\"label\": \"A\", \"code\": \"zz\"}]]}").error.isEmpty());
+    }
+
+    void scanCodesLinux()
+    {
+        // xkb keycode = evdev + 8
+        QCOMPARE(scanCodeFromXkb(1 + 8), 0x01);      // Esc
+        QCOMPARE(scanCodeFromXkb(30 + 8), 0x1E);     // A on QWERTY = Q on AZERTY: same key
+        QCOMPARE(scanCodeFromXkb(86 + 8), 0x56);     // ISO < key
+        QCOMPARE(scanCodeFromXkb(88 + 8), 0x58);     // F12
+        QCOMPARE(scanCodeFromXkb(29 + 8), 0x1D);     // left Ctrl
+        QCOMPARE(scanCodeFromXkb(97 + 8), 0x11D);    // right Ctrl
+        QCOMPARE(scanCodeFromXkb(100 + 8), 0x138);   // AltGr
+        QCOMPARE(scanCodeFromXkb(103 + 8), 0x148);   // Up
+        QCOMPARE(scanCodeFromXkb(69 + 8), 0x145);    // NumLock, not Pause
+        QCOMPARE(scanCodeFromXkb(119 + 8), 0x45);    // Pause
+        QCOMPARE(scanCodeFromXkb(3), 0);             // invalid
+        QCOMPARE(scanCodeFromXkb(240 + 8), 0);       // unknown key
+    }
+
+    void scanCodesWindows()
+    {
+        QCOMPARE(scanCodeFromWindows(0x1E), 0x1E);
+        QCOMPARE(scanCodeFromWindows(0x11D), 0x11D);         // extended bit kept
+        QCOMPARE(scanCodeFromWindows(0x2000 | 0x38), 0x38);  // reserved bits dropped
+    }
+
+    void keyTrackerFlow()
+    {
+        KeyTracker t(shippedLayout());
+        QVERIFY(!t.press(0x7F));   // not in the layout
+        QVERIFY(t.press(0x01));
+        QVERIFY(t.press(0x137));   // optional PrtSc: counted, but not required
+        QCOMPARE(t.requiredPressedCount(), 1);
+        QVERIFY(!t.allRequiredPressed());
+
+        const TestResult broken = t.result(KeyTracker::Outcome::KeyBroken);
+        QCOMPARE(broken.status, Status::Fail);
+        QVERIFY(broken.summary.contains("F1"));
+        QVERIFY(broken.details.contains("0x7f"));
+        QCOMPARE(t.result(KeyTracker::Outcome::Skipped).status, Status::Skipped);
+
+        const KeyLayout l = shippedLayout();
+        for (const auto& row : l.rows)
+            for (const Key& k : row)
+                if (k.required)
+                    t.press(k.code);
+        QVERIFY(t.allRequiredPressed());
+        QVERIFY(t.missingRequired().isEmpty());
+        QCOMPARE(t.result(KeyTracker::Outcome::AllPressed).status, Status::Pass);
     }
 
     void chassisMapping()

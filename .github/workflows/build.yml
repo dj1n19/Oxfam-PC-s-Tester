@@ -40,6 +40,7 @@ jobs:
           New-Item -ItemType Directory dist | Out-Null
           Copy-Item build/Release/oxfam-tester.exe dist/
           Copy-Item config/thresholds.json dist/
+          Copy-Item config/keyboard_layout.json dist/
           windeployqt --release dist/oxfam-tester.exe
       # smartctl is a separate GPL program, shipped next to the app (see tools/README.md)
       - name: Bundle smartctl

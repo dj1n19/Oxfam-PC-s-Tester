@@ -49,6 +49,8 @@ add_library(oxcore STATIC
     src/tests/license/LicenseParsing.cpp   # pure, unit tested on Linux
     src/tests/license/LicenseTest.h
     src/tests/license/LicenseTest.cpp
+    src/tests/keyboard/KeyLayout.h
+    src/tests/keyboard/KeyLayout.cpp      # layout, scan codes, result: logic of the keyboard test
 )
 
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.
@@ -59,13 +61,15 @@ if(WIN32)
         src/tests/drivers/drivers_win.cpp
         src/tests/license/license_win.cpp
         src/tests/common/PowerShell.h
-        src/tests/common/powershell_win.cpp)   # shared runPowerShell()
+        src/tests/common/powershell_win.cpp    # shared runPowerShell()
+        src/tests/keyboard/keyboard_win.cpp)
 else()
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_linux.cpp
         src/tests/sysinfo/sysinfo_linux.cpp
         src/tests/drivers/drivers_linux.cpp
-        src/tests/license/license_linux.cpp)
+        src/tests/license/license_linux.cpp
+        src/tests/keyboard/keyboard_linux.cpp)
 endif()
 
 target_include_directories(oxcore PUBLIC src)
@@ -79,15 +83,21 @@ add_executable(oxfam-tester
     src/main.cpp
     src/ui/MainWindow.h
     src/ui/MainWindow.cpp
+    # Interactive tests: ITest + dialog here (they need widgets), logic in oxcore.
+    src/ui/interactive/KeyboardTest.h
+    src/ui/interactive/KeyboardTest.cpp
+    src/ui/interactive/KeyboardDialog.h
+    src/ui/interactive/KeyboardDialog.cpp
 )
 target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets)
 ox_enable_warnings(oxfam-tester)
 
-# thresholds.json is copied next to the executable (portable app)
+# Config files are copied next to the executable (portable app)
 add_custom_target(copy_config ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_SOURCE_DIR}/config/thresholds.json
-            $<TARGET_FILE_DIR:oxfam-tester>/thresholds.json)
+            ${CMAKE_SOURCE_DIR}/config/keyboard_layout.json
+            $<TARGET_FILE_DIR:oxfam-tester>)
 add_dependencies(oxfam-tester copy_config)
 
 # ---------------------------------------------------------------------------
