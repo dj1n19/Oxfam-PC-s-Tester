@@ -33,6 +33,7 @@ add_library(oxcore STATIC
     src/tests/battery/BatteryInfo.h
     src/tests/battery/BatteryTest.h
     src/tests/battery/BatteryTest.cpp
+    src/tests/battery/BatteryReport.cpp   # parses Windows powercfg XML; plain Qt, unit tested on Linux too
     src/tests/sysinfo/SystemInfo.h
     src/tests/sysinfo/SystemInfoTest.h
     src/tests/sysinfo/SystemInfoTest.cpp

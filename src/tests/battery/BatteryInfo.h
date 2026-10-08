@@ -14,6 +14,11 @@ struct BatteryInfo {
     QString raw;                // raw values, copied into the test details
 };
 
-// Blocking function (may take ~1 s on Windows): BatteryTest calls it
-// from a worker thread, never from the UI thread.
+// Blocking function (may take a few seconds on Windows): BatteryTest calls
+// it from a worker thread, never from the UI thread.
 BatteryInfo readBattery();
+
+// Parses the XML written by "powercfg /batteryreport /xml" (Windows).
+// Kept out of battery_win.cpp so it is plain Qt code that the unit tests
+// can run on Linux with real sample files.
+BatteryInfo parseBatteryReport(const QByteArray& xml);

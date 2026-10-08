@@ -47,6 +47,15 @@ class TestCore : public QObject {
         return s;
     }
 
+    // Golden samples live in unittests/samples/ (found via QFINDTESTDATA).
+    static QByteArray sample(const QString& file)
+    {
+        QFile f(QFINDTESTDATA("samples/" + file));
+        if (!f.open(QIODevice::ReadOnly))
+            qFatal("Missing test sample %s", qPrintable(file));
+        return f.readAll();
+    }
+
 private slots:
     void lowerIsWorse()
     {
@@ -97,6 +106,34 @@ private slots:
     void missingThresholdIsErrorNotPass()
     {
         QCOMPARE(BatteryTest::evaluate(battery(40000), Thresholds{}).status, Status::Error);
+    }
+
+    void powercfgLaptop()
+    {
+        const BatteryInfo b = parseBatteryReport(sample("powercfg_laptop.xml"));
+        QVERIFY(b.error.isEmpty());
+        QVERIFY(b.present);
+        QCOMPARE(b.designCapacity, 42000.0);
+        QCOMPARE(b.fullCapacity, 22359.0);
+        QCOMPARE(b.cycles, -1);   // 0 = not reported
+        QCOMPARE(BatteryTest::evaluate(b, loaded()).status, Status::Warn);   // 53 %
+    }
+
+    void powercfgDesktopIsSkipped()
+    {
+        const BatteryInfo b = parseBatteryReport(sample("powercfg_desktop.xml"));
+        QVERIFY(b.error.isEmpty());
+        QVERIFY(!b.present);
+        QCOMPARE(BatteryTest::evaluate(b, loaded()).status, Status::Skipped);
+    }
+
+    void powercfgBadDataIsError()
+    {
+        QByteArray xml = sample("powercfg_laptop.xml");
+        xml.replace("<DesignCapacity>42000</DesignCapacity>", "");
+        QCOMPARE(BatteryTest::evaluate(parseBatteryReport(xml), loaded()).status, Status::Error);
+        QCOMPARE(BatteryTest::evaluate(parseBatteryReport(""), loaded()).status, Status::Error);
+        QCOMPARE(BatteryTest::evaluate(parseBatteryReport("not xml"), loaded()).status, Status::Error);
     }
 
     void chassisMapping()
