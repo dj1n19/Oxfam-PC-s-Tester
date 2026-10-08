@@ -5,6 +5,7 @@
 #include "tests/battery/BatteryTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
+#include "tests/license/LicenseTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
@@ -279,6 +280,50 @@ private slots:
         QVERIFY(!pciClassMatters(0x088000));   // system peripheral
         QVERIFY(!pciClassMatters(0x050000));   // RAM
         QVERIFY(!pciClassMatters(0x060100));   // ISA bridge
+    }
+
+    // license_*.json are hand-made from the script's output shape.
+    void licenseActivated()
+    {
+        const LicenseInfo info = parseLicenseJson(sample("license_activated.json"));
+        QVERIFY2(info.error.isEmpty(), qPrintable(info.error));
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.contains("Professional"));
+        QVERIFY(r.summary.contains("OEM key in firmware: yes"));
+    }
+
+    void licenseNotActivatedIsWarn()
+    {
+        const TestResult r = LicenseTest::evaluate(parseLicenseJson(sample("license_notification.json")));
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.contains("NOT activated"));
+        QVERIFY(r.details.startsWith("Hint"));   // firmware key exists
+    }
+
+    void licenseNoneIsWarn()
+    {
+        const LicenseInfo info = parseLicenseJson(sample("license_none.json"));
+        QVERIFY2(info.error.isEmpty(), qPrintable(info.error));
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.contains("OEM key in firmware: no"));
+    }
+
+    void licenseBadOutputIsError()
+    {
+        QCOMPARE(LicenseTest::evaluate(parseLicenseJson("")).status, Status::Error);
+        QCOMPARE(LicenseTest::evaluate(parseLicenseJson("{}")).status, Status::Error);
+        QByteArray noStatus = sample("license_activated.json");
+        noStatus.replace("\"status\":1", "\"status\":null");
+        QCOMPARE(LicenseTest::evaluate(parseLicenseJson(noStatus)).status, Status::Error);
+    }
+
+    void licenseOnLinuxIsSkipped()
+    {
+        LicenseInfo info;
+        info.applicable = false;
+        QCOMPARE(LicenseTest::evaluate(info).status, Status::Skipped);
     }
 
     void chassisMapping()

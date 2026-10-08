@@ -1,13 +1,12 @@
 #include "tests/sysinfo/SystemInfo.h"
+#include "tests/common/PowerShell.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QProcess>
 
 namespace {
 
-// No quotation marks inside: it is passed as one command-line argument.
 // ChassisTypes is an array; the first entry is the one that matters.
 const char* const kScript =
     "$cs = Get-CimInstance Win32_ComputerSystem; "
@@ -24,27 +23,13 @@ SystemInfo readSystemInfo()
 {
     SystemInfo info;
 
-    QProcess ps;
-    ps.start(QStringLiteral("powershell.exe"),
-             {"-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass",
-              "-Command", QString::fromLatin1(kScript)});
-    if (!ps.waitForStarted(5000)) {
-        info.error = QStringLiteral("Could not start PowerShell");
-        return info;
-    }
-    if (!ps.waitForFinished(20000)) {
-        ps.kill();
-        ps.waitForFinished();
-        info.error = QStringLiteral("PowerShell timed out");
-        return info;
-    }
-    if (ps.exitStatus() != QProcess::NormalExit || ps.exitCode() != 0) {
-        info.error = QStringLiteral("PowerShell failed: %1")
-                         .arg(QString::fromUtf8(ps.readAllStandardError()).trimmed());
+    const PowerShellResult ps = runPowerShell(QString::fromLatin1(kScript), 20000);
+    if (!ps.error.isEmpty()) {
+        info.error = ps.error;
         return info;
     }
 
-    const QByteArray out = ps.readAllStandardOutput().trimmed();
+    const QByteArray& out = ps.out;
     info.raw = QString::fromUtf8(out);
 
     QJsonParseError parseError;
