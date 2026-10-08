@@ -99,6 +99,8 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - UI strings use `tr()`. Core strings are plain English for now (translation planned for M4).
 - Headers use `#pragma once`. Include paths are relative to `src/` (e.g. `#include "core/ITest.h"`).
 - Any header with `Q_OBJECT` and no matching `.cpp` must be listed in `add_library` / `add_executable` so AUTOMOC runs on it (see `ITest.h`).
+- Golden samples go in `unittests/samples/` as files, not as raw string literals in `test_core.cpp`:
+  XML raw strings there made moc output nothing (link error "undefined reference to vtable for TestCore").
 
 ### Git
 - Small commits, imperative messages ("Add disk test"). Keep `main` buildable.
@@ -128,7 +130,7 @@ CI: `.github/workflows/build.yml`.
 src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp}
   tests/
-    battery/   BatteryInfo.h BatteryTest.{h,cpp} battery_linux.cpp battery_win.cpp
+    battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
     (disk/ drivers/ license/ audio/ camera/ keyboard/ : to come)
   ui/          MainWindow.{h,cpp}
@@ -136,6 +138,7 @@ src/
 config/        thresholds.json
 tools/         external executables to ship (smartctl, to come)
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
+  samples/     golden samples of real tool output (loaded with QFINDTESTDATA)
 .github/workflows/build.yml
 CMakeLists.txt
 ```
@@ -160,10 +163,13 @@ Still to check by hand: START on a real machine, and the Windows CI artifact on 
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
-- Test: `BatteryTest` (Linux reads `/sys/class/power_supply`, Windows queries WMI via PowerShell).
+- Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows runs `powercfg /batteryreport /xml` into a
+  `QTemporaryDir`, parsed by `parseBatteryReport()` in `BatteryReport.cpp`, unit tested on Linux).
+  WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
 - Test: `SystemInfoTest`: vendor, model, serial, CPU, usable RAM, form factor from the SMBIOS chassis type
   (Linux `/sys/class/dmi/id` + `/proc`, Windows CIM via PowerShell). Runs first.
-- **`battery_win.cpp` and `sysinfo_win.cpp` are untested on real Windows hardware.** If they report ERROR, the details pane holds the raw output to debug with.
+- `sysinfo_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11).
+- **The powercfg version of `battery_win.cpp` is untested on real Windows hardware.** If it reports ERROR, the details pane holds the raw output to debug with.
 
 Known limitations:
 - Only the first system battery is read (dual-battery ThinkPads under-report).
@@ -171,7 +177,7 @@ Known limitations:
 - SystemInfo is ERROR without root on Linux: `product_serial` is root-only (expected until the M4 privilege flow).
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
-- `battery_win.cpp` and `sysinfo_win.cpp` duplicate the PowerShell/QProcess code. Extract a shared helper when a third probe needs it (Drivers/licence).
+- `unittests/samples/powercfg_laptop.xml` is hand-made from the documented format; replace it with a real report.
 - No interactive test yet, though the runner supports `needsUser()`.
 - Windows admin manifest and hidden console window not done (M4).
 
