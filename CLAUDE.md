@@ -100,6 +100,9 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - C++20, `-Wall -Wextra -Wpedantic` (`/W4` on MSVC). **Zero warnings policy.**
 - No raw `new`/`delete`. Use `std::unique_ptr` or Qt parent-child ownership.
 - Don't block the UI thread. Don't create widgets from a worker thread.
+- Qt Multimedia signals (`QVideoSink::videoFrameChanged`, `QCamera::errorOccurred`...) are emitted from inside the
+  backend: connect them with `Qt::QueuedConnection` if the slot may stop or destroy the device. A direct call that
+  stopped the camera crashed the FFmpeg backend (use of its freed buffers).
 - UI strings use `tr()`. Core strings are plain English for now (translation planned for M4).
 - Headers use `#pragma once`. Include paths are relative to `src/` (e.g. `#include "core/ITest.h"`).
 - Any header with `Q_OBJECT` and no matching `.cpp` must be listed in `add_library` / `add_executable` so AUTOMOC runs on it (see `ITest.h`).

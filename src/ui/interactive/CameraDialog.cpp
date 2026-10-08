@@ -53,12 +53,19 @@ CameraDialog::CameraDialog(const QCameraDevice& device, QWidget* parent)
 
     m_session.setCamera(&m_camera);
     m_session.setVideoOutput(&m_sink);   // frames come to us, not to a widget
-    connect(&m_sink, &QVideoSink::videoFrameChanged, this, &CameraDialog::onFrame);
+    // QueuedConnection is essential: the camera backend emits these signals
+    // from INSIDE its own frame-reading code. With a direct call, finish()
+    // stopped the camera while the backend was still using its buffers, and
+    // it crashed right after handing us the frame (SIGSEGV in
+    // libffmpegmediaplugin). Queued, our slot runs after the backend returned.
+    connect(&m_sink, &QVideoSink::videoFrameChanged, this, &CameraDialog::onFrame,
+            Qt::QueuedConnection);
     connect(&m_camera, &QCamera::errorOccurred, this,
             [this](QCamera::Error e, const QString& text) {
                 if (e != QCamera::NoError)
                     finish(CameraOutcome::CameraError, text);
-            });
+            },
+            Qt::QueuedConnection);
 
     m_noFrameTimer.setSingleShot(true);
     connect(&m_noFrameTimer, &QTimer::timeout, this, &CameraDialog::onNoFrameTimeout);
