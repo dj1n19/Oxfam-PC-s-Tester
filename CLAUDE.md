@@ -64,6 +64,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 | Composition root | `main.cpp` creates the tests and injects `Thresholds` |
 | Link-time platform selection | `BatteryInfo.h` declares `readBattery()`; CMake picks `battery_win.cpp` or `battery_linux.cpp` |
 | Pure functions for logic | `BatteryTest::evaluate()`, `Thresholds::evaluate()`, `computeVerdict()` take data, return data, and are unit tested |
+| Interactive test split (decided for M3) | logic in `src/tests/<name>/` (oxcore, unit tested, e.g. `KeyTracker`); the `ITest` + its `QDialog` in `src/ui/interactive/` (app target). The dialog only turns events into calls on the logic object and emits the `TestResult` it returns |
 
 ### Core contracts
 - `Status`: `Pass | Warn | Fail | Skipped | Error`.
@@ -139,10 +140,12 @@ src/
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
     common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
-    (audio/ camera/ keyboard/ : to come)
+    keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
+    (audio/ camera/ : to come)
   ui/          MainWindow.{h,cpp}
+    interactive/ KeyboardTest.{h,cpp} KeyboardDialog.{h,cpp}   (ITest + dialog of interactive tests)
   main.cpp
-config/        thresholds.json
+config/        thresholds.json keyboard_layout.json   (copied next to the executable)
 tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
   samples/     golden samples of real tool output (loaded with QFINDTESTDATA)
@@ -167,7 +170,15 @@ CMakeLists.txt
 Still to check by hand: START on a real machine, and the Windows CI artifact on a real Windows PC.
 
 **M2 done** (automatic tests): SystemInfo, Battery, Disk, Drivers, Windows licence, all verified on real Windows.
-Multi-battery support was dropped by the developer (first battery only). Next: M3 interactive tests.
+Multi-battery support was dropped by the developer (first battery only).
+
+**M3 in progress.** Done: Keyboard (to verify on real keyboards, Linux and Windows). Next: Audio, Camera (Qt Multimedia: approved).
+- Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
+  lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
+  Windows, xkb keycode -> set 1 on Linux (`scanCodeFromXkb`, unit tested). All required keys pressed = Pass (automatic),
+  "A key does not work" = Fail (lists missing keys), "Skip" or closing the window = Skipped. Optional (dashed) keys may
+  not exist or may be taken by the OS (Win key, PrtSc...). The dialog catches keys in `event()` so Tab/Esc are tested
+  instead of moving focus or closing; its buttons are `Qt::NoFocus` so Space/Enter never click them.
 - CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
@@ -205,7 +216,7 @@ Known limitations:
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
-- No interactive test yet, though the runner supports `needsUser()`.
+- **Keyboard scan codes on real Windows are untested** (from Microsoft/Qt docs). Labels are Belgian AZERTY only.
 - Windows admin manifest and hidden console window not done (M4).
 
 ## 9. Roadmap
