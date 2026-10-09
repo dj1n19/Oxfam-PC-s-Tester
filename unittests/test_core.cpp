@@ -381,6 +381,8 @@ private slots:
         QCOMPARE(scanCodeFromWindows(0x1E), 0x1E);
         QCOMPARE(scanCodeFromWindows(0x11D), 0x11D);         // extended bit kept
         QCOMPARE(scanCodeFromWindows(0x2000 | 0x38), 0x38);  // reserved bits dropped
+        QCOMPARE(scanCodeFromWindows(0xE04B), 0x14B);        // Qt 6.8+: Left arrow
+        QCOMPARE(scanCodeFromWindows(0xE038), 0x138);        // Qt 6.8+: AltGr
     }
 
     void keyTrackerFlow()

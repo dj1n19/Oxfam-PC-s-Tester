@@ -48,8 +48,11 @@ KeyLayout parseKeyLayout(const QByteArray& json)
 
 int scanCodeFromWindows(unsigned native)
 {
-    // Qt gives bits 16-27 of the WM_KEYDOWN lParam: scan code + extended flag
-    // (0x100). Higher bits are reserved, drop them.
+    // Qt 6.8+ marks an extended key with the real E0 prefix byte (Left = 0xE04B).
+    if ((native & 0xFF00) == 0xE000)
+        return static_cast<int>(0x100 | (native & 0xFF));
+    // Qt up to 6.7 gives bits 16-24 of the WM_KEYDOWN lParam: scan code +
+    // extended flag (0x100). Higher bits are other flags, drop them.
     return static_cast<int>(native & 0x1FF);
 }
 
