@@ -13,6 +13,7 @@
 #include "tests/keyboard/KeyLayout.h"
 #include "tests/audio/AudioCheck.h"
 #include "tests/camera/FrameCheck.h"
+#include "tests/cputemp/CpuTempTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
@@ -33,7 +34,8 @@ class TestCore : public QObject {
             "disk_reallocated_sectors": {"warn": 1,  "fail": 50},
             "disk_pending_sectors":     {"warn": 1,  "fail": 10},
             "nvme_percentage_used":     {"warn": 80, "fail": 100},
-            "disk_temperature_c":       {"warn": 55, "fail": 65}
+            "disk_temperature_c":       {"warn": 55, "fail": 65},
+            "cpu_temp_peak_c":          {"warn": 90, "fail": 97}
         })");
         Q_ASSERT(ok);
         Q_UNUSED(ok);
@@ -59,6 +61,16 @@ class TestCore : public QObject {
         s.ramBytes = 8.0 * 1024 * 1024 * 1024;
         s.chassisType = 10;   // Notebook
         return s;
+    }
+
+    static CpuLoadRun cpuRun(double idle, std::vector<double> samples)
+    {
+        CpuLoadRun run;
+        run.idle.available = true;
+        run.idle.celsius = idle;
+        run.idle.source = "test";
+        run.samples = std::move(samples);
+        return run;
     }
 
     // Golden samples live in unittests/samples/ (found via QFINDTESTDATA).
@@ -374,6 +386,48 @@ private slots:
         QCOMPARE(scanCodeFromXkb(119 + 8), 0x45);    // Pause
         QCOMPARE(scanCodeFromXkb(3), 0);             // invalid
         QCOMPARE(scanCodeFromXkb(240 + 8), 0);       // unknown key
+    }
+
+    void cpuTempPeak()
+    {
+        const Thresholds t = loaded();
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(40, {60, 75, 80}), t).status, Status::Pass);
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(40, {80, 92}), t).status, Status::Warn);
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(40, {90, 100}), t).status, Status::Fail);
+    }
+
+    void cpuTempStaticSensorIsNotPass()
+    {
+        // ACPI zone stuck at 27.8 C under full load: not the CPU.
+        const Thresholds t = loaded();
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(27.8, {27.8, 27.8}), t).status, Status::Skipped);
+        // Stuck but too hot is still reported.
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(99, {99, 99}), t).status, Status::Fail);
+    }
+
+    void cpuTempMissingDataIsNotPass()
+    {
+        const Thresholds t = loaded();
+        QCOMPARE(CpuTempTest::evaluate(CpuLoadRun{}, t).status, Status::Skipped);   // no sensor
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(40, {}), t).status, Status::Error);   // no sample
+        QCOMPARE(CpuTempTest::evaluate(cpuRun(40, {70}), Thresholds{}).status, Status::Error);
+        CpuLoadRun failed;
+        failed.idle.error = "boom";
+        QCOMPARE(CpuTempTest::evaluate(failed, t).status, Status::Error);
+    }
+
+    void acpiZonesParsing()
+    {
+        const CpuTempReading r = parseThermalZones(sample("acpi_zones.json"));
+        QVERIFY(r.error.isEmpty());
+        QVERIFY(r.available);
+        QCOMPARE(qRound(r.celsius), 60);   // hottest zone, 3332 = 60.05 C; the 0 K zone is ignored
+        QCOMPARE(r.source, QString("ACPI\\ThermalZone\\THM0_0"));
+
+        const CpuTempReading none = parseThermalZones(sample("acpi_unsupported.json"));
+        QVERIFY(none.error.isEmpty());
+        QVERIFY(!none.available);
+        QVERIFY(!parseThermalZones("not json").error.isEmpty());
     }
 
     void scanCodesWindows()

@@ -6,6 +6,7 @@
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "tests/battery/BatteryTest.h"
+#include "tests/cputemp/CpuTempTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
     runner.add(std::make_unique<DiskTest>(thresholds));
     runner.add(std::make_unique<DriversTest>());
     runner.add(std::make_unique<LicenseTest>());
+    runner.add(std::make_unique<CpuTempTest>(thresholds));   // last automatic: ~30 s of full load
     runner.add(std::make_unique<KeyboardTest>(keyLayout));   // interactive: run last, in this order
     runner.add(std::make_unique<AudioTest>());
     runner.add(std::make_unique<CameraTest>());

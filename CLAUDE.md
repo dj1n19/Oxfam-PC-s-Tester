@@ -20,7 +20,7 @@ to check **refurbished desktop and laptop PCs** before they are sold in Oxfam sh
 - Repository: GitHub `dj1n19/Oxfam-PC-s-Tester`, working branch `dev`.
 
 ### Planned tests (phase 1)
-Battery health, disk health (SMART), driver errors, keyboard, audio, camera,
+Battery health, disk health (SMART), driver errors, CPU temperature under load, keyboard, audio, camera,
 Windows licence activation status. Plus basic system info.
 
 ### Possible later (phase 2, do NOT build now)
@@ -142,6 +142,7 @@ src/
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
+    cputemp/   CpuTempInfo.h CpuTempParsing.cpp CpuTempTest.{h,cpp} cputemp_linux.cpp cputemp_win.cpp
     common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
@@ -218,6 +219,12 @@ Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `ox
 - Test: `LicenseTest`: `SoftwareLicensingProduct` filtered on the Windows ApplicationID with a product key;
   `LicenseStatus == 1` is Pass, anything else (or no licence) is **Warn**. Reports whether a firmware OEM key exists
   (`OA3xOriginalProductKey`), turned into a boolean inside PowerShell: the key never reaches the program. Skipped on Linux.
+- Test: `CpuTempTest` (last automatic test, ~30 s): one idle reading, then every core busy (`QThread`s at low
+  priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
+  Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
+  thermal zones `x86_pkg_temp`, `acpitz`. Windows: `MSAcpi_ThermalZoneTemperature` (tenths of kelvin, hottest zone,
+  "Not supported" caught in PowerShell); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
+  No sensor = Skipped. A sensor that rises < 1 C under load is not the CPU: Skipped instead of Pass (too hot still fails).
 - `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
   battery at 36 % correctly reported FAIL).
 
@@ -237,6 +244,9 @@ Known limitations:
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
+- CPU temperature: verified on Arch (coretemp, 52 -> 68 C in 15 s), **not yet on Windows**. `acpi_*.json` samples are
+  hand-made. Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on
+  Windows is a motherboard zone: expect many Skipped. No throttling detection.
 - Keyboard on real Windows: first run showed Qt 6.8 sends extended keys as `0xE0xx` (Qt 6.4: `0x1xx`); `scanCodeFromWindows()` now accepts both (fix not yet re-run on Windows). Labels are Belgian AZERTY only.
 - Windows: the app is a GUI program (`WIN32`), so `qDebug()` output is not visible; put diagnostics in `details`.
 - **Linux privileges:** run the app as the normal user (sudo breaks audio and camera: PipeWire/PulseAudio belong to the

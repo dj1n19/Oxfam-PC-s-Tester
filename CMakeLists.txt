@@ -49,6 +49,10 @@ add_library(oxcore STATIC
     src/tests/license/LicenseParsing.cpp   # pure, unit tested on Linux
     src/tests/license/LicenseTest.h
     src/tests/license/LicenseTest.cpp
+    src/tests/cputemp/CpuTempInfo.h
+    src/tests/cputemp/CpuTempParsing.cpp  # parses the Windows ACPI zones JSON; pure, unit tested on Linux
+    src/tests/cputemp/CpuTempTest.h
+    src/tests/cputemp/CpuTempTest.cpp
     src/tests/keyboard/KeyLayout.h
     src/tests/keyboard/KeyLayout.cpp      # layout, scan codes, result: logic of the keyboard test
     src/tests/audio/AudioCheck.h
@@ -64,6 +68,7 @@ if(WIN32)
         src/tests/sysinfo/sysinfo_win.cpp
         src/tests/drivers/drivers_win.cpp
         src/tests/license/license_win.cpp
+        src/tests/cputemp/cputemp_win.cpp
         src/tests/common/PowerShell.h
         src/tests/common/powershell_win.cpp    # shared runPowerShell()
         src/tests/keyboard/keyboard_win.cpp
@@ -74,6 +79,7 @@ else()
         src/tests/sysinfo/sysinfo_linux.cpp
         src/tests/drivers/drivers_linux.cpp
         src/tests/license/license_linux.cpp
+        src/tests/cputemp/cputemp_linux.cpp
         src/tests/keyboard/keyboard_linux.cpp
         src/tests/disk/smartctl_linux.cpp)     # pkexec when not root
 endif()
