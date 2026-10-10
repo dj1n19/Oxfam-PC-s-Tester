@@ -51,8 +51,8 @@ void setCell(QTableWidget* table, int row, int col, const QString& text, const Q
 
 } // namespace
 
-MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
-    : QMainWindow(parent), m_runner(runner)
+MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* parent)
+    : QMainWindow(parent), m_runner(runner), m_delivery(std::move(delivery))
 {
     resize(900, 600);
 
@@ -63,6 +63,12 @@ MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
     m_startButton = new QPushButton(central);
     m_startButton->setMinimumHeight(48);
     top->addWidget(m_startButton, 1);
+
+    // Only after a complete run: the sheet must get this PC's results.
+    m_deliveryButton = new QPushButton(central);
+    m_deliveryButton->setMinimumHeight(48);
+    m_deliveryButton->setEnabled(false);
+    top->addWidget(m_deliveryButton);
 
     // Each language in its own name, never translated: someone who does not
     // understand the current language must still find theirs. \u00e7 keeps
@@ -98,6 +104,7 @@ MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
     retranslateUi();
 
     connect(m_startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
+    connect(m_deliveryButton, &QPushButton::clicked, this, &MainWindow::onDeliveryClicked);
     connect(m_language, &QComboBox::currentIndexChanged, this,
             [this] { setLanguage(m_language->currentData().toString()); });
     connect(&m_runner, &TestRunner::testStarted, this, &MainWindow::onTestStarted);
@@ -121,6 +128,7 @@ void MainWindow::retranslateUi()
 {
     setWindowTitle(tr("Oxfam PC Tester"));
     m_startButton->setText(tr("START"));
+    m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
     m_details->setPlaceholderText(tr("Select a test to see the raw details."));
     for (int i = 0; i < m_runner.count(); ++i) {
@@ -156,12 +164,14 @@ void MainWindow::resetRows()
     m_verdict->clear();
     m_verdict->setStyleSheet(QString());
     m_statuses.clear();
+    m_results.assign(static_cast<size_t>(m_runner.count()), TestResult{});
 }
 
 void MainWindow::onStartClicked()
 {
     resetRows();
     m_startButton->setEnabled(false);
+    m_deliveryButton->setEnabled(false);
     m_language->setEnabled(false);   // the language is chosen before a run
     m_runner.startAll();
 }
@@ -178,6 +188,7 @@ void MainWindow::onTestFinished(int row, const TestResult& result)
     setCell(m_table, row, ColSummary, result.summary, bg);
     m_table->item(row, ColTest)->setData(Qt::UserRole, result.details);
     m_statuses.push_back(result.status);
+    m_results[static_cast<size_t>(row)] = result;
     if (m_table->currentRow() == row)
         showDetailsOf(row);
 }
@@ -190,7 +201,23 @@ void MainWindow::onAllFinished()
         QStringLiteral("background:%1; color:black; font-size:20px; font-weight:bold;")
             .arg(colorFor(v.level).name()));
     m_startButton->setEnabled(true);
+    m_deliveryButton->setEnabled(true);
     m_language->setEnabled(true);
+}
+
+void MainWindow::onDeliveryClicked()
+{
+    DeliveryInput input;
+    for (int i = 0; i < m_runner.count(); ++i) {
+        const ITest* test = &m_runner.test(i);
+        const TestResult& result = m_results[static_cast<size_t>(i)];
+        if (test == m_delivery.systemInfo)
+            input.systemModel = result.note;
+        const auto it = m_delivery.rows.find(test);
+        if (it != m_delivery.rows.end())
+            input.results[it->second] = result;
+    }
+    DeliveryAction::run(this, input);
 }
 
 void MainWindow::showDetailsOf(int row)

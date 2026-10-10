@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(OxfamPcTester VERSION 0.1.0 LANGUAGES CXX)
+project(OxfamPcTester VERSION 0.1.0 LANGUAGES C CXX)   # C: miniz
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,19 @@ function(ox_enable_warnings target)
         target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 endfunction()
+
+# ---------------------------------------------------------------------------
+# miniz: third-party zip library in C (third_party/miniz/README.md), used to
+# edit the delivery sheet. Not our code and never edited: built without our
+# warning flags, and SYSTEM so its header gives no warnings in our files.
+# ---------------------------------------------------------------------------
+add_library(miniz STATIC third_party/miniz/miniz.c third_party/miniz/miniz.h)
+target_include_directories(miniz SYSTEM PUBLIC third_party/miniz)
+if(MSVC)
+    target_compile_options(miniz PRIVATE /w)
+else()
+    target_compile_options(miniz PRIVATE -w)
+endif()
 
 # ---------------------------------------------------------------------------
 # oxcore: Core + diagnostic tests. Links QtCore and QtConcurrent ONLY,
@@ -60,6 +73,10 @@ add_library(oxcore STATIC
     src/tests/audio/AudioCheck.cpp        # tone generation + result: logic of the audio test
     src/tests/camera/FrameCheck.h
     src/tests/camera/FrameCheck.cpp       # frame statistics + result: logic of the camera test
+    src/delivery/XlsxEditor.h
+    src/delivery/XlsxEditor.cpp           # edits .xlsx cells in place (miniz)
+    src/delivery/DeliverySheet.h
+    src/delivery/DeliverySheet.cpp        # which cells of Oxfam's delivery sheet hold what
 )
 
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.
@@ -86,7 +103,7 @@ else()
 endif()
 
 target_include_directories(oxcore PUBLIC src)
-target_link_libraries(oxcore PUBLIC Qt6::Core Qt6::Concurrent)
+target_link_libraries(oxcore PUBLIC Qt6::Core Qt6::Concurrent PRIVATE miniz)
 ox_enable_warnings(oxcore)
 
 # ---------------------------------------------------------------------------
@@ -99,6 +116,8 @@ add_executable(oxfam-tester WIN32
     src/ui/MainWindow.cpp
     src/ui/Language.h
     src/ui/Language.cpp
+    src/ui/DeliveryAction.h
+    src/ui/DeliveryAction.cpp             # "Fill the delivery sheet" button: dialogs + files
     # Interactive tests: ITest + dialog here (they need widgets), logic in oxcore.
     src/ui/interactive/KeyboardTest.h
     src/ui/interactive/KeyboardTest.cpp

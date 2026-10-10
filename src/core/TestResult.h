@@ -11,6 +11,7 @@ struct TestResult {
     Status status = Status::Skipped;
     QString summary;   // one line, shown in the list
     QString details;   // raw readings, shown when the row is selected
+    QString note;      // key value alone, for the delivery sheet: "85 %" (battery), "Dell Latitude 7420" (model)
 };
 
 inline QString statusLabel(Status s)

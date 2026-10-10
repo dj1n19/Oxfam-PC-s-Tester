@@ -137,12 +137,12 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="48"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="49"/>
         <source>Health %1% of design capacity</source>
         <translation type="unfinished">Gezondheid %1% van de ontwerpcapaciteit</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="50"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="51"/>
         <source>, %1 cycles</source>
         <translation type="unfinished">, %1 cycli</translation>
     </message>
@@ -254,6 +254,92 @@ Waar hoorde u hem?</translation>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="133"/>
         <source>Sensor did not react to load (%1 C): not the CPU, cannot judge</source>
         <translation type="unfinished">Sensor reageerde niet op de belasting (%1 °C): niet de CPU, geen oordeel mogelijk</translation>
+    </message>
+</context>
+<context>
+    <name>DeliveryAction</name>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="61"/>
+        <source>Delivery sheet</source>
+        <translation type="unfinished">Pre-leveringsfiche</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="75"/>
+        <source>No delivery sheet on the Desktop (%1).
+Copy &quot;%2&quot; or &quot;%3&quot; there, then click again.</source>
+        <translation type="unfinished">Geen pre-leveringsfiche op het bureaublad (%1).
+Kopieer er &quot;%2&quot; of &quot;%3&quot; naartoe en klik opnieuw.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="82"/>
+        <source>The delivery sheet seems to be open in an office program. Close it first: otherwise saving it there will erase these results.
+
+Write anyway?</source>
+        <translation type="unfinished">De pre-leveringsfiche lijkt open te staan in een kantoorprogramma. Sluit ze eerst: anders wist opslaan daar deze resultaten.
+
+Toch schrijven?</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="98"/>
+        <source>The delivery sheet cannot be read:
+%1</source>
+        <translation type="unfinished">Kan de pre-leveringsfiche niet lezen:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="110"/>
+        <source>This PC reports &quot;%1&quot;, which is not in the model list.
+Choose its model in the list, or type the name of a new model:</source>
+        <translation type="unfinished">Deze pc meldt &quot;%1&quot;, dat niet in de modellenlijst staat.
+Kies het model in de lijst, of typ de naam van een nieuw model:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="122"/>
+        <source>Add &quot;%1&quot; to the model list?
+
+A copy of the sheet with the new model, without the results of this PC, will be saved next to the program folder, to share with the other technicians.</source>
+        <translation type="unfinished">&quot;%1&quot; toevoegen aan de modellenlijst?
+
+Een kopie van de fiche met het nieuwe model, zonder de resultaten van deze pc, wordt naast de programmamap opgeslagen, om te delen met de andere technici.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="127"/>
+        <source>The model could not be added:
+%1</source>
+        <translation type="unfinished">Kan het model niet toevoegen:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="135"/>
+        <source>The copy for the other technicians could not be saved:
+%1</source>
+        <translation type="unfinished">Kan de kopie voor de andere technici niet opslaan:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
+        <source>The delivery sheet could not be written. Is it open in an office program?
+%1</source>
+        <translation type="unfinished">Kan de pre-leveringsfiche niet schrijven. Staat ze open in een kantoorprogramma?
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="152"/>
+        <source>Delivery sheet filled:
+%1
+
+Open it to complete the other checks.</source>
+        <translation type="unfinished">Pre-leveringsfiche ingevuld:
+%1
+
+Open ze om de andere controles aan te vullen.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="156"/>
+        <source>Copy with the new model, for the other technicians:
+%1</source>
+        <translation type="unfinished">Kopie met het nieuwe model, voor de andere technici:
+%1</translation>
     </message>
 </context>
 <context>
@@ -646,42 +732,47 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="122"/>
+        <location filename="../src/ui/MainWindow.cpp" line="129"/>
         <source>Oxfam PC Tester</source>
         <translation type="unfinished">Oxfam PC Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="123"/>
+        <location filename="../src/ui/MainWindow.cpp" line="130"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="124"/>
+        <location filename="../src/ui/MainWindow.cpp" line="131"/>
+        <source>Fill the delivery sheet</source>
+        <translation type="unfinished">Pre-leveringsfiche invullen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="132"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="124"/>
+        <location filename="../src/ui/MainWindow.cpp" line="132"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="124"/>
+        <location filename="../src/ui/MainWindow.cpp" line="132"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="125"/>
+        <location filename="../src/ui/MainWindow.cpp" line="133"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="137"/>
+        <location filename="../src/ui/MainWindow.cpp" line="145"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="147"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
@@ -708,27 +799,27 @@ Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap 
 <context>
     <name>Status</name>
     <message>
-        <location filename="../src/core/TestResult.h" line="19"/>
+        <location filename="../src/core/TestResult.h" line="20"/>
         <source>PASS</source>
         <translation type="unfinished">OK</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="20"/>
+        <location filename="../src/core/TestResult.h" line="21"/>
         <source>WARN</source>
         <translation type="unfinished">LET OP</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="21"/>
+        <location filename="../src/core/TestResult.h" line="22"/>
         <source>FAIL</source>
         <translation type="unfinished">DEFECT</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="22"/>
+        <location filename="../src/core/TestResult.h" line="23"/>
         <source>SKIPPED</source>
         <translation type="unfinished">OVERGESLAGEN</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="23"/>
+        <location filename="../src/core/TestResult.h" line="24"/>
         <source>ERROR</source>
         <translation type="unfinished">FOUT</translation>
     </message>
@@ -776,17 +867,17 @@ Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap 
         <translation type="unfinished">RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="72"/>
         <source>%1 GiB RAM</source>
         <translation type="unfinished">%1 GiB RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="77"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="79"/>
         <source>serial unknown</source>
         <translation type="unfinished">serienummer onbekend</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="87"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="89"/>
         <source>Missing: %1 | %2</source>
         <translation type="unfinished">Ontbreekt: %1 | %2</translation>
     </message>

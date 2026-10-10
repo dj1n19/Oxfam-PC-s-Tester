@@ -45,18 +45,26 @@ int main(int argc, char* argv[])
         keyLayout.error = QStringLiteral("Cannot open %1: %2").arg(layoutFile.fileName(), layoutFile.errorString());
 
     // Composition root: the only place that knows every concrete test.
+    // add() returns the test's address: it tells the window which result
+    // goes to which row of the delivery sheet.
     TestRunner runner;                       // declared before the window: outlives it
-    runner.add(std::make_unique<SystemInfoTest>());   // first: identifies the PC
-    runner.add(std::make_unique<BatteryTest>(thresholds));
-    runner.add(std::make_unique<DiskTest>(thresholds));
-    runner.add(std::make_unique<DriversTest>());
-    runner.add(std::make_unique<LicenseTest>());
-    runner.add(std::make_unique<CpuTempTest>(thresholds));   // last automatic: ~30 s of full load
-    runner.add(std::make_unique<KeyboardTest>(keyLayout));   // interactive: run last, in this order
-    runner.add(std::make_unique<AudioTest>());
-    runner.add(std::make_unique<CameraTest>());
+    const auto add = [&runner](std::unique_ptr<ITest> test) {
+        const ITest* t = test.get();
+        runner.add(std::move(test));
+        return t;
+    };
+    DeliveryLinks delivery;
+    delivery.systemInfo = add(std::make_unique<SystemInfoTest>());   // first: identifies the PC
+    delivery.rows[add(std::make_unique<BatteryTest>(thresholds))] = SheetRow::Battery;
+    delivery.rows[add(std::make_unique<DiskTest>(thresholds))] = SheetRow::Disk;
+    add(std::make_unique<DriversTest>());
+    add(std::make_unique<LicenseTest>());
+    add(std::make_unique<CpuTempTest>(thresholds));   // background: ~30 s of load during the interactive tests
+    delivery.rows[add(std::make_unique<KeyboardTest>(keyLayout))] = SheetRow::Keyboard;   // interactive: last, in this order
+    delivery.rows[add(std::make_unique<AudioTest>())] = SheetRow::Audio;
+    delivery.rows[add(std::make_unique<CameraTest>())] = SheetRow::Camera;
 
-    MainWindow window(runner);
+    MainWindow window(runner, delivery);
     window.show();
     return app.exec();
 }

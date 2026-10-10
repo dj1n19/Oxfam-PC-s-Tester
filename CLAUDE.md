@@ -9,7 +9,9 @@ A portable Qt6/C++ (Widgets) desktop application used by a technician at Oxfam
 to check **refurbished desktop and laptop PCs** before they are sold in Oxfam shops.
 
 - Targets: **Windows 10/11 and Linux**. Portable: no installer, no registry or system writes.
-- Output: an **on-screen summary only**. No PDF, no print, no report export, no database.
+- Output: an **on-screen summary**, plus (button, never automatic) Oxfam's **delivery sheet** filled in place:
+  `Fiche Pré Livraison.xlsx` / `Pre- LeveringsFiche.xlsx` on the Desktop (decided by the developer, Oct 2026).
+  No PDF, no print, no other report export, no database.
 - Goal: **as little human intervention as possible**. Automatic tests run first, interactive tests come last.
 - Verdict shown to the technician (see `src/core/Verdict.h`):
   - any Fail -> "DO NOT SELL - needs repair"
@@ -24,8 +26,9 @@ Battery health, disk health (SMART), driver errors, CPU temperature under load, 
 Windows licence activation status. Plus basic system info.
 
 ### Possible later (phase 2, do NOT build now)
-System updates, installation or update of an application bundle, delivery document form,
+System updates, installation or update of an application bundle,
 secure disk wipe (needs explicit confirmation before any erase).
+(The delivery document was moved forward: see "Delivery sheet" in section 8.)
 
 ## 2. About the developer (important for how you work)
 
@@ -160,11 +163,13 @@ src/
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
-  ui/          MainWindow.{h,cpp} Language.{h,cpp}
+  delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
+  ui/          MainWindow.{h,cpp} Language.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
     interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
 config/        thresholds.json keyboard_layout.json   (copied next to the executable)
 translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable)
+third_party/   miniz/ (zip library, MIT, vendored unchanged; version + checksum in its README.md)
 tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
   samples/     golden samples of real tool output (loaded with QFINDTESTDATA)
@@ -199,6 +204,19 @@ French/Dutch/English done (to verify on screen and on Windows): system language 
 language selector. **Dutch texts were written by Claude: have a Dutch speaker check them** (left "unfinished" in
 the .ts so Linguist lists them). French texts to proofread by the developer.
 Clear error messages done (actionable ERROR summaries, see the TestResult contract).
+**Delivery sheet** done (to verify by opening the result in OnlyOffice/LibreOffice; no office suite on the dev machine):
+- Button "Fill the delivery sheet", enabled after a complete run. Finds the sheet on the Desktop
+  (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C7 (date, text
+  dd/MM/yyyy), C5 (model), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
+  (battery "85 %"), WARN = ticked + summary, SKIPPED = unticked + summary, FAIL/ERROR = not written (developer's choice). Manual rows/header are never touched.
+- Model not in the "Models" tab (Lenovo reports "20HD..."): editable list dialog; a new model is appended to Models and
+  a copy WITHOUT results is saved next to the program folder (`applicationDirPath()/..`: Documents in production) under
+  the same name, the previous one kept as `<name> (backup).xlsx`. AppImage (M4): use `$APPIMAGE`'s folder instead.
+- **Why in place:** QXlsx was tried on a copy and lost all 6 dropdowns and the page setup. `XlsxEditor` rewrites only
+  the changed cells (found with QXmlStreamReader offsets, inline strings, `s=` style kept) and copies every other zip
+  entry raw. The FR file is saved by OnlyOffice (dropdowns in x14 extLst), the NL one by LibreOffice (standard
+  `dataValidations`): both are unit-test samples (`delivery_sheet_{fr,nl}.xlsx`, operator names anonymised).
+- `TestResult::note` = the key value alone (battery %, "vendor model" from SystemInfo).
 Next: AppImage, tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)

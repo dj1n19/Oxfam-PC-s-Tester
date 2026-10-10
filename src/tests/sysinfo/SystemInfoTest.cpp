@@ -63,6 +63,8 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
     if (info.cpu.isEmpty())   missing << tr("CPU");
     if (info.ramBytes <= 0)   missing << tr("RAM");
 
+    r.note = QStringLiteral("%1 %2").arg(info.vendor, info.model).simplified();
+
     const double gib = info.ramBytes / (1024.0 * 1024.0 * 1024.0);
     QStringList parts;
     parts << QStringLiteral("%1 %2").arg(info.vendor, info.model).trimmed()

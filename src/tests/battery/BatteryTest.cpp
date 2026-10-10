@@ -45,6 +45,7 @@ TestResult BatteryTest::evaluate(const BatteryInfo& info, const Thresholds& thre
 
     const double health = info.fullCapacity / info.designCapacity * 100.0;
     r.status = thresholds.evaluate(QStringLiteral("battery_health_pct"), health);
+    r.note = QStringLiteral("%1 %").arg(health, 0, 'f', 0);
     r.summary = tr("Health %1% of design capacity").arg(health, 0, 'f', 0);
     if (info.cycles > 0)
         r.summary += tr(", %1 cycles").arg(info.cycles);

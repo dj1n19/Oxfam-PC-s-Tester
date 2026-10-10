@@ -8,6 +8,8 @@
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "core/Verdict.h"
+#include "delivery/DeliverySheet.h"
+#include "delivery/XlsxEditor.h"
 #include "tests/battery/BatteryTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
@@ -17,6 +19,7 @@
 #include "tests/camera/FrameCheck.h"
 #include "tests/cputemp/CpuTempTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
+#include "miniz.h"
 
 // Lets QCOMPARE print Status values on failure (found via ADL).
 char *toString(Status s)
@@ -103,6 +106,48 @@ class TestCore : public QObject {
         if (!f.open(QIODevice::ReadOnly))
             qFatal("Missing test sample %s", qPrintable(file));
         return f.readAll();
+    }
+
+    // Every file inside an .xlsx (a zip), in order: to compare two versions.
+    static std::vector<std::pair<QString, QByteArray>> zipEntries(const QByteArray& zip)
+    {
+        std::vector<std::pair<QString, QByteArray>> entries;
+        mz_zip_archive z{};
+        if (!mz_zip_reader_init_mem(&z, zip.constData(), size_t(zip.size()), 0))
+            return entries;
+        for (mz_uint i = 0; i < mz_zip_reader_get_num_files(&z); ++i) {
+            char name[512] = {};
+            mz_zip_reader_get_filename(&z, i, name, sizeof name);
+            size_t size = 0;
+            void* data = mz_zip_reader_extract_to_heap(&z, i, &size, 0);
+            entries.emplace_back(QString::fromUtf8(name), QByteArray(static_cast<const char*>(data), qsizetype(size)));
+            mz_free(data);
+        }
+        mz_zip_reader_end(&z);
+        return entries;
+    }
+
+    // Style number (s="...") of a cell in a sheet's raw XML, whatever the attribute order.
+    static QString cellStyle(const QByteArray& xml, const QString& ref)
+    {
+        const QRegularExpression cell(QStringLiteral("<c [^>]*r=\"%1\"[^>]*>").arg(ref));
+        const QRegularExpression style(QStringLiteral(" s=\"(\\d+)\""));
+        return style.match(cell.match(QString::fromUtf8(xml)).captured(0)).captured(1);
+    }
+
+    static const QString& checkTab()
+    {
+        static const QString tab = QStringLiteral("Double V\u00e9rification PC");
+        return tab;
+    }
+
+    // The French copy was saved by OnlyOffice, the Dutch one by LibreOffice:
+    // their XML differs (dropdowns stored differently), the layout does not.
+    static void sheetFiles()
+    {
+        QTest::addColumn<QString>("file");
+        QTest::newRow("fr OnlyOffice") << QStringLiteral("delivery_sheet_fr.xlsx");
+        QTest::newRow("nl LibreOffice") << QStringLiteral("delivery_sheet_nl.xlsx");
     }
 
 private slots:
@@ -732,6 +777,133 @@ private slots:
         u->answer(Status::Pass);
         QCOMPARE(all.count(), 1);
         QVERIFY(!runner.isRunning());
+    }
+
+    void deliverySheetReads_data() { sheetFiles(); }
+    void deliverySheetReads()
+    {
+        QFETCH(QString, file);
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY2(sheet.load(sample(file), &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::check(sheet, &error), qPrintable(error));
+        const QStringList models = DeliverySheet::models(sheet);
+        QCOMPARE(models.size(), 53);
+        QCOMPARE(models.first(), QStringLiteral("Dell Latitude 7400"));
+        QCOMPARE(models.last(), QStringLiteral("Samsung Galaxy Tab Active 2"));
+        QCOMPARE(sheet.cell(checkTab(), "C12"), QStringLiteral("\u2611"));
+        QCOMPARE(sheet.cell(checkTab(), "B14"), QStringLiteral("Clavier / Toetsenbord"));
+    }
+
+    // The point of editing in place: only the written cells change.
+    void deliverySheetKeepsEverythingElse_data() { sheetFiles(); }
+    void deliverySheetKeepsEverythingElse()
+    {
+        QFETCH(QString, file);
+        const QByteArray original = sample(file);
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY2(sheet.load(original, &error), qPrintable(error));
+        QVERIFY2(sheet.setCell(checkTab(), "C12", QStringLiteral("\u2610"), &error), qPrintable(error));  // text cell
+        QVERIFY2(sheet.setCell(checkTab(), "C7", "10/10/2026", &error), qPrintable(error));          // empty cell
+        QVERIFY2(sheet.setCell(checkTab(), "E12", "after D12", &error), qPrintable(error));          // no cell yet
+        QVERIFY2(sheet.setCell(checkTab(), "B30", "new row", &error), qPrintable(error));            // no row yet
+        QVERIFY2(sheet.setCell(checkTab(), "D12", "<85 % & \"ok\">", &error), qPrintable(error));  // XML escaping
+        const QByteArray saved = sheet.save(&error);
+        QVERIFY2(!saved.isEmpty(), qPrintable(error));
+
+        XlsxEditor reread;
+        QVERIFY2(reread.load(saved, &error), qPrintable(error));
+        QCOMPARE(reread.cell(checkTab(), "C12"), QStringLiteral("\u2610"));
+        QCOMPARE(reread.cell(checkTab(), "C7"), QStringLiteral("10/10/2026"));
+        QCOMPARE(reread.cell(checkTab(), "E12"), QStringLiteral("after D12"));
+        QCOMPARE(reread.cell(checkTab(), "B30"), QStringLiteral("new row"));
+        QCOMPARE(reread.cell(checkTab(), "D12"), QStringLiteral("<85 % & \"ok\">"));
+        QCOMPARE(reread.cell(checkTab(), "B12").trimmed(), QStringLiteral("Batterie / Batterij \n(avec/met XXX)"));
+
+        const auto before = zipEntries(original);
+        const auto after = zipEntries(saved);
+        QCOMPARE(after.size(), before.size());
+        for (size_t i = 0; i < before.size(); ++i) {
+            QCOMPARE(after[i].first, before[i].first);   // same files, same order
+            if (before[i].first != QStringLiteral("xl/worksheets/sheet1.xml")) {
+                QVERIFY2(after[i].second == before[i].second, qPrintable(before[i].first));
+                continue;
+            }
+            // The changed sheet: dropdowns, page setup and cell formats kept.
+            const QByteArray& a = before[i].second;
+            const QByteArray& b = after[i].second;
+            QCOMPARE(b.count("dataValidation "), a.count("dataValidation "));
+            QVERIFY(a.count("dataValidation ") >= 6);
+            const auto pageSetup = [](const QByteArray& xml) { return xml.mid(xml.indexOf("<pageSetup"), 200); };
+            QCOMPARE(pageSetup(b), pageSetup(a));
+            QCOMPARE(cellStyle(b, "C12"), cellStyle(a, "C12"));
+            QCOMPARE(cellStyle(b, "C7"), cellStyle(a, "C7"));
+            QVERIFY(!cellStyle(a, "C12").isEmpty());
+        }
+    }
+
+    void deliverySheetFill_data() { sheetFiles(); }
+    void deliverySheetFill()
+    {
+        QFETCH(QString, file);
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY2(sheet.load(sample(file), &error), qPrintable(error));
+        std::map<SheetRow, TestResult> results;
+        results[SheetRow::Battery] = {Status::Pass, "Health 85% of design capacity", "", "85 %"};
+        results[SheetRow::Keyboard] = {Status::Fail, "Not working: F5", "", ""};
+        results[SheetRow::Audio] = {Status::Warn, "no stereo separation", "", ""};
+        results[SheetRow::Camera] = {Status::Skipped, "No camera found", "", ""};
+        results[SheetRow::Disk] = {Status::Error, "Could not list the disks (see details)", "", ""};
+        QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", results, &error),
+                 qPrintable(error));
+
+        XlsxEditor reread;
+        QVERIFY2(reread.load(sheet.save(&error), &error), qPrintable(error));
+        const auto at = [&](const char* ref) { return reread.cell(checkTab(), ref); };
+        QCOMPARE(at("C5"), QStringLiteral("Dell Latitude 7420"));
+        QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));
+        QCOMPARE(at("C12"), QStringLiteral("\u2611"));
+        QCOMPARE(at("D12"), QStringLiteral("85 %"));
+        QCOMPARE(at("C13"), QStringLiteral("\u2611"));   // ERROR: not written either
+        QVERIFY(at("D13").isEmpty());
+        QCOMPARE(at("C14"), QStringLiteral("\u2611"));   // FAIL: not written, the sheet's own box stays
+        QVERIFY(at("D14").isEmpty());
+        QCOMPARE(at("C15"), QStringLiteral("\u2611"));   // WARN: ticked, with the reason
+        QCOMPARE(at("D15"), QStringLiteral("no stereo separation"));
+        QCOMPARE(at("C16"), QStringLiteral("\u2610"));
+        QCOMPARE(at("D16"), QStringLiteral("No camera found"));
+    }
+
+    void deliverySheetModels_data() { sheetFiles(); }
+    void deliverySheetModels()
+    {
+        QFETCH(QString, file);
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY2(sheet.load(sample(file), &error), qPrintable(error));
+        const QStringList models = DeliverySheet::models(sheet);
+        QCOMPARE(DeliverySheet::findModel(models, "  dell   LATITUDE 7420 "), QStringLiteral("Dell Latitude 7420"));
+        QVERIFY(DeliverySheet::findModel(models, "Lenovo T480").isEmpty());
+        QVERIFY(DeliverySheet::findModel(models, "").isEmpty());
+
+        QVERIFY2(DeliverySheet::addModel(sheet, "Lenovo  T480", &error), qPrintable(error));
+        XlsxEditor reread;
+        QVERIFY2(reread.load(sheet.save(&error), &error), qPrintable(error));
+        const QStringList after = DeliverySheet::models(reread);
+        QCOMPARE(after.size(), 54);
+        QCOMPARE(after.last(), QStringLiteral("Lenovo T480"));
+    }
+
+    void xlsxRejectsOtherFiles()
+    {
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY(!sheet.load("not a zip file", &error));
+        QVERIFY(!error.isEmpty());
+        QVERIFY(!sheet.setCell(checkTab(), "C5", "x", &error));   // nothing loaded
+        QVERIFY(!sheet.setCell(checkTab(), "5C", "x", &error));   // bad reference
     }
 
     void verdictRules()
