@@ -20,7 +20,7 @@ class CpuTempTest : public ITest {
 public:
     explicit CpuTempTest(Thresholds thresholds, QObject* parent = nullptr);
 
-    QString name() const override { return QStringLiteral("CPU temperature"); }
+    QString name() const override { return tr("CPU temperature"); }
     void run() override;
 
     // Blocking (~30 s): loads every core and samples the temperature.

@@ -8,7 +8,7 @@ class AudioTest : public ITest {
 public:
     using ITest::ITest;
 
-    QString name() const override { return QStringLiteral("Audio"); }
+    QString name() const override { return tr("Audio"); }
     bool needsUser() const override { return true; }
     void run() override;
 };

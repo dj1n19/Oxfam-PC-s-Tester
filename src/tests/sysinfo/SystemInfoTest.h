@@ -10,7 +10,7 @@ class SystemInfoTest : public ITest {
 public:
     explicit SystemInfoTest(QObject* parent = nullptr);
 
-    QString name() const override { return QStringLiteral("System info"); }
+    QString name() const override { return tr("System info"); }
     void run() override;
 
     // Pure functions: easy to unit test without any hardware.

@@ -9,7 +9,7 @@ class KeyboardTest : public ITest {
 public:
     explicit KeyboardTest(KeyLayout layout, QObject* parent = nullptr);
 
-    QString name() const override { return QStringLiteral("Keyboard"); }
+    QString name() const override { return tr("Keyboard"); }
     bool needsUser() const override { return true; }
     void run() override;
 

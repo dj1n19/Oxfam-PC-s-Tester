@@ -1,4 +1,5 @@
 #pragma once
+#include <QCoreApplication>
 #include <QString>
 
 // Error = the test could not run (no permission, tool missing...).
@@ -15,11 +16,11 @@ struct TestResult {
 inline QString statusLabel(Status s)
 {
     switch (s) {
-    case Status::Pass:    return QStringLiteral("PASS");
-    case Status::Warn:    return QStringLiteral("WARN");
-    case Status::Fail:    return QStringLiteral("FAIL");
-    case Status::Skipped: return QStringLiteral("SKIPPED");
-    case Status::Error:   return QStringLiteral("ERROR");
+    case Status::Pass:    return QCoreApplication::translate("Status", "PASS");
+    case Status::Warn:    return QCoreApplication::translate("Status", "WARN");
+    case Status::Fail:    return QCoreApplication::translate("Status", "FAIL");
+    case Status::Skipped: return QCoreApplication::translate("Status", "SKIPPED");
+    case Status::Error:   return QCoreApplication::translate("Status", "ERROR");
     }
     return QStringLiteral("?");
 }

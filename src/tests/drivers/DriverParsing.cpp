@@ -1,5 +1,6 @@
 #include "tests/drivers/DriverInfo.h"
 
+#include <QCoreApplication>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -56,12 +57,12 @@ bool pciClassMatters(unsigned classCode)
 QString pciClassName(unsigned classCode)
 {
     switch ((classCode >> 16) & 0xff) {
-    case 0x01: return QStringLiteral("Storage controller");
-    case 0x02: return QStringLiteral("Network controller");
-    case 0x03: return QStringLiteral("Display controller");
-    case 0x04: return QStringLiteral("Multimedia controller");
-    case 0x0c: return QStringLiteral("USB controller");
-    case 0x0d: return QStringLiteral("Wireless controller");
-    default:   return QStringLiteral("PCI device");
+    case 0x01: return QCoreApplication::translate("DriversTest", "Storage controller");
+    case 0x02: return QCoreApplication::translate("DriversTest", "Network controller");
+    case 0x03: return QCoreApplication::translate("DriversTest", "Display controller");
+    case 0x04: return QCoreApplication::translate("DriversTest", "Multimedia controller");
+    case 0x0c: return QCoreApplication::translate("DriversTest", "USB controller");
+    case 0x0d: return QCoreApplication::translate("DriversTest", "Wireless controller");
+    default:   return QCoreApplication::translate("DriversTest", "PCI device");
     }
 }

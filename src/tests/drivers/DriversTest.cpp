@@ -1,5 +1,6 @@
 #include "tests/drivers/DriversTest.h"
 
+#include <QCoreApplication>
 #include <QStringList>
 #include <QtConcurrent>
 
@@ -11,25 +12,25 @@ constexpr int kNotConnected = 45;
 QString meaning(int code)
 {
     switch (code) {
-    case -1: return QStringLiteral("no driver");
-    case 1:  return QStringLiteral("not configured");
-    case 3:  return QStringLiteral("driver corrupted or low memory");
-    case 10: return QStringLiteral("cannot start");
-    case 12: return QStringLiteral("not enough resources");
-    case 14: return QStringLiteral("restart needed");
-    case 18: return QStringLiteral("reinstall driver");
-    case 19: return QStringLiteral("registry problem");
-    case 21: return QStringLiteral("being removed");
-    case 22: return QStringLiteral("disabled");
-    case 24: return QStringLiteral("not present or no driver");
-    case 28: return QStringLiteral("no driver installed");
-    case 31: return QStringLiteral("not working properly");
-    case 32: return QStringLiteral("driver service disabled");
-    case 37: return QStringLiteral("driver failed to initialise");
-    case 39: return QStringLiteral("driver missing or corrupted");
-    case 43: return QStringLiteral("stopped after reporting problems");
-    case 52: return QStringLiteral("unsigned driver");
-    default: return QStringLiteral("error code %1").arg(code);
+    case -1: return QCoreApplication::translate("DriversTest", "no driver");
+    case 1:  return QCoreApplication::translate("DriversTest", "not configured");
+    case 3:  return QCoreApplication::translate("DriversTest", "driver corrupted or low memory");
+    case 10: return QCoreApplication::translate("DriversTest", "cannot start");
+    case 12: return QCoreApplication::translate("DriversTest", "not enough resources");
+    case 14: return QCoreApplication::translate("DriversTest", "restart needed");
+    case 18: return QCoreApplication::translate("DriversTest", "reinstall driver");
+    case 19: return QCoreApplication::translate("DriversTest", "registry problem");
+    case 21: return QCoreApplication::translate("DriversTest", "being removed");
+    case 22: return QCoreApplication::translate("DriversTest", "disabled");
+    case 24: return QCoreApplication::translate("DriversTest", "not present or no driver");
+    case 28: return QCoreApplication::translate("DriversTest", "no driver installed");
+    case 31: return QCoreApplication::translate("DriversTest", "not working properly");
+    case 32: return QCoreApplication::translate("DriversTest", "driver service disabled");
+    case 37: return QCoreApplication::translate("DriversTest", "driver failed to initialise");
+    case 39: return QCoreApplication::translate("DriversTest", "driver missing or corrupted");
+    case 43: return QCoreApplication::translate("DriversTest", "stopped after reporting problems");
+    case 52: return QCoreApplication::translate("DriversTest", "unsigned driver");
+    default: return QCoreApplication::translate("DriversTest", "error code %1").arg(code);
     }
 }
 
@@ -52,7 +53,7 @@ TestResult DriversTest::evaluate(const DriverInfo& info)
     TestResult r;
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Could not list devices");
+        r.summary = tr("Could not list devices");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }
@@ -77,10 +78,10 @@ TestResult DriversTest::evaluate(const DriverInfo& info)
 
     if (problems.isEmpty()) {
         r.status = Status::Pass;
-        r.summary = QStringLiteral("No driver problem");
+        r.summary = tr("No driver problem");
         return r;
     }
     r.status = Status::Warn;
-    r.summary = QStringLiteral("%1 device(s): %2").arg(problems.size()).arg(problems.join(", "));
+    r.summary = tr("%1 device(s): %2").arg(problems.size()).arg(problems.join(", "));
     return r;
 }

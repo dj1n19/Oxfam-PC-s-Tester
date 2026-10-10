@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <QCoreApplication>
 
 namespace {
 constexpr int kStep = 4;
@@ -53,28 +54,28 @@ TestResult cameraResult(CameraOutcome outcome, const QString& device,
     switch (outcome) {
     case CameraOutcome::Good:
         r.status = Status::Pass;
-        r.summary = QStringLiteral("Camera gives a picture");
+        r.summary = QCoreApplication::translate("CameraTest", "Camera gives a picture");
         break;
     case CameraOutcome::Broken:
         r.status = Status::Fail;
-        r.summary = QStringLiteral("Camera picture black or wrong (confirmed by technician)");
+        r.summary = QCoreApplication::translate("CameraTest", "Camera picture black or wrong (confirmed by technician)");
         break;
     case CameraOutcome::Skipped:
         r.status = Status::Skipped;
-        r.summary = QStringLiteral("Skipped by the technician");
+        r.summary = QCoreApplication::translate("CameraTest", "Skipped by the technician");
         break;
     case CameraOutcome::NoCamera:
         // Desktops usually have no camera: not an error of the PC.
         r.status = Status::Skipped;
-        r.summary = QStringLiteral("No camera found (desktop? camera disabled in BIOS?)");
+        r.summary = QCoreApplication::translate("CameraTest", "No camera found (desktop? camera disabled in BIOS?)");
         break;
     case CameraOutcome::NoFrames:
         r.status = Status::Error;
-        r.summary = QStringLiteral("Camera gives no picture (used by another app? privacy setting?)");
+        r.summary = QCoreApplication::translate("CameraTest", "Camera gives no picture (used by another app? privacy setting?)");
         break;
     case CameraOutcome::CameraError:
         r.status = Status::Error;
-        r.summary = QStringLiteral("Camera error: %1").arg(error);
+        r.summary = QCoreApplication::translate("CameraTest", "Camera error: %1").arg(error);
         break;
     }
     return r;

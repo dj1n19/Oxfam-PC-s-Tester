@@ -89,13 +89,13 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
 
     if (!idle.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Could not read CPU temperature");
+        r.summary = tr("Could not read CPU temperature");
         r.details = idle.error + QLatin1Char('\n') + idle.raw;
         return r;
     }
     if (!idle.available) {
         r.status = Status::Skipped;
-        r.summary = QStringLiteral("No CPU temperature sensor readable on this PC");
+        r.summary = tr("No CPU temperature sensor readable on this PC");
         r.details = idle.raw;
         return r;
     }
@@ -110,27 +110,27 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
 
     if (run.samples.empty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("No temperature reading during the load test");
+        r.summary = tr("No temperature reading during the load test");
         return r;
     }
     // Without a rule we would silently show green: refuse instead.
     if (!thresholds.has(QStringLiteral("cpu_temp_peak_c"))) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("No threshold configured (thresholds.json)");
+        r.summary = tr("No threshold configured (thresholds.json)");
         return r;
     }
 
     const double peak = std::max(idle.celsius, *std::max_element(run.samples.begin(), run.samples.end()));
     const double rise = peak - idle.celsius;
     r.status = thresholds.evaluate(QStringLiteral("cpu_temp_peak_c"), peak);
-    r.summary = QStringLiteral("Peak %1 C under load (idle %2 C)")
+    r.summary = tr("Peak %1 C under load (idle %2 C)")
                     .arg(peak, 0, 'f', 0).arg(idle.celsius, 0, 'f', 0);
 
     // Too hot is reported whatever the sensor. But "cool" from a sensor that
     // ignores the load proves nothing: no green for it.
     if (r.status == Status::Pass && rise < kMinRiseC) {
         r.status = Status::Skipped;
-        r.summary = QStringLiteral("Sensor did not react to load (%1 C): not the CPU, cannot judge")
+        r.summary = tr("Sensor did not react to load (%1 C): not the CPU, cannot judge")
                         .arg(peak, 0, 'f', 0);
     }
     return r;

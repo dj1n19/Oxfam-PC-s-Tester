@@ -1,6 +1,9 @@
 #include "ui/MainWindow.h"
 
 #include <QColor>
+#include <QComboBox>
+#include <QEvent>
+#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
 #include <QPlainTextEdit>
@@ -10,10 +13,16 @@
 
 #include "core/TestRunner.h"
 #include "core/Verdict.h"
+#include "ui/Language.h"
 
 namespace {
 
 enum Column { ColStatus, ColTest, ColSummary, ColCount };
+
+// What the status cell shows, kept in the cell (Qt::UserRole) so its text
+// can be rebuilt when the language changes: a Status, or one of these.
+constexpr int kWaiting = -1;
+constexpr int kRunning = -2;
 
 QColor colorFor(Status s)
 {
@@ -45,18 +54,29 @@ void setCell(QTableWidget* table, int row, int col, const QString& text, const Q
 MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
     : QMainWindow(parent), m_runner(runner)
 {
-    setWindowTitle(tr("Oxfam PC Tester"));
     resize(900, 600);
 
     auto* central = new QWidget(this);
     auto* layout = new QVBoxLayout(central);
 
-    m_startButton = new QPushButton(tr("START"), central);
+    auto* top = new QHBoxLayout;
+    m_startButton = new QPushButton(central);
     m_startButton->setMinimumHeight(48);
-    layout->addWidget(m_startButton);
+    top->addWidget(m_startButton, 1);
+
+    // Each language in its own name, never translated: someone who does not
+    // understand the current language must still find theirs. \u00e7 keeps
+    // this source file ASCII (MSVC C4819).
+    m_language = new QComboBox(central);
+    m_language->addItem(QStringLiteral("Fran\u00e7ais"), QStringLiteral("fr"));
+    m_language->addItem(QStringLiteral("Nederlands"), QStringLiteral("nl"));
+    m_language->addItem(QStringLiteral("English"), QStringLiteral("en"));
+    m_language->setCurrentIndex(m_language->findData(currentLanguage()));
+    m_language->setMinimumHeight(48);
+    top->addWidget(m_language);
+    layout->addLayout(top);
 
     m_table = new QTableWidget(m_runner.count(), ColCount, central);
-    m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
     m_table->verticalHeader()->hide();
     m_table->horizontalHeader()->setStretchLastSection(true);
     m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -66,7 +86,6 @@ MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
 
     m_details = new QPlainTextEdit(central);
     m_details->setReadOnly(true);
-    m_details->setPlaceholderText(tr("Select a test to see the raw details."));
     layout->addWidget(m_details, 1);
 
     m_verdict = new QLabel(central);
@@ -76,8 +95,11 @@ MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
 
     setCentralWidget(central);
     resetRows();
+    retranslateUi();
 
     connect(m_startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
+    connect(m_language, &QComboBox::currentIndexChanged, this,
+            [this] { setLanguage(m_language->currentData().toString()); });
     connect(&m_runner, &TestRunner::testStarted, this, &MainWindow::onTestStarted);
     connect(&m_runner, &TestRunner::testFinished, this, &MainWindow::onTestFinished);
     connect(&m_runner, &TestRunner::allFinished, this, &MainWindow::onAllFinished);
@@ -85,10 +107,47 @@ MainWindow::MainWindow(TestRunner& runner, QWidget* parent)
             [this](int row, int, int, int) { showDetailsOf(row); });
 }
 
+// setLanguage() makes Qt send LanguageChange to every widget.
+void MainWindow::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+    QMainWindow::changeEvent(event);
+}
+
+// Every text that tr() gives, set again in the current language. Summaries
+// and details of tests already run are not here: they stay as they were made.
+void MainWindow::retranslateUi()
+{
+    setWindowTitle(tr("Oxfam PC Tester"));
+    m_startButton->setText(tr("START"));
+    m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
+    m_details->setPlaceholderText(tr("Select a test to see the raw details."));
+    for (int i = 0; i < m_runner.count(); ++i) {
+        m_table->item(i, ColTest)->setText(m_runner.test(i).name());
+        setStatusCell(i, m_table->item(i, ColStatus)->data(Qt::UserRole).toInt());
+    }
+    if (!m_verdict->text().isEmpty())
+        m_verdict->setText(computeVerdict(m_statuses).text);
+}
+
+void MainWindow::setStatusCell(int row, int state)
+{
+    if (state == kWaiting) {
+        setCell(m_table, row, ColStatus, tr("WAITING"), QColor("#ffffff"));
+    } else if (state == kRunning) {
+        setCell(m_table, row, ColStatus, tr("RUNNING"), QColor("#bbdefb"));
+    } else {
+        const auto s = static_cast<Status>(state);
+        setCell(m_table, row, ColStatus, statusLabel(s), colorFor(s));
+    }
+    m_table->item(row, ColStatus)->setData(Qt::UserRole, state);
+}
+
 void MainWindow::resetRows()
 {
     for (int i = 0; i < m_runner.count(); ++i) {
-        setCell(m_table, i, ColStatus, tr("WAITING"), QColor("#ffffff"));
+        setStatusCell(i, kWaiting);
         setCell(m_table, i, ColTest, m_runner.test(i).name(), QColor("#ffffff"));
         setCell(m_table, i, ColSummary, QString(), QColor("#ffffff"));
         m_table->item(i, ColTest)->setData(Qt::UserRole, QString());
@@ -103,18 +162,19 @@ void MainWindow::onStartClicked()
 {
     resetRows();
     m_startButton->setEnabled(false);
+    m_language->setEnabled(false);   // the language is chosen before a run
     m_runner.startAll();
 }
 
 void MainWindow::onTestStarted(int row)
 {
-    setCell(m_table, row, ColStatus, tr("RUNNING"), QColor("#bbdefb"));
+    setStatusCell(row, kRunning);
 }
 
 void MainWindow::onTestFinished(int row, const TestResult& result)
 {
     const QColor bg = colorFor(result.status);
-    setCell(m_table, row, ColStatus, statusLabel(result.status), bg);
+    setStatusCell(row, static_cast<int>(result.status));
     setCell(m_table, row, ColSummary, result.summary, bg);
     m_table->item(row, ColTest)->setData(Qt::UserRole, result.details);
     m_statuses.push_back(result.status);
@@ -130,6 +190,7 @@ void MainWindow::onAllFinished()
         QStringLiteral("background:%1; color:black; font-size:20px; font-weight:bold;")
             .arg(colorFor(v.level).name()));
     m_startButton->setEnabled(true);
+    m_language->setEnabled(true);
 }
 
 void MainWindow::showDetailsOf(int row)

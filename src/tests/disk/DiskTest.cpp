@@ -81,7 +81,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
 
     if (!run.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("%1: could not run smartctl").arg(run.device);
+        r.summary = tr("%1: could not run smartctl").arg(run.device);
         r.details = header + QLatin1Char('\n') + run.error;
         return r;
     }
@@ -90,7 +90,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
     const QJsonDocument doc = QJsonDocument::fromJson(run.json, &parseError);
     if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("%1: unreadable smartctl output").arg(run.device);
+        r.summary = tr("%1: unreadable smartctl output").arg(run.device);
         return r;
     }
     const QJsonObject root = doc.object();
@@ -102,7 +102,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
 
     if (run.exitCode & (kBitCommandLine | kBitOpenFailed)) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("%1: cannot open disk (run as root/administrator?)").arg(run.device);
+        r.summary = tr("%1: cannot open disk (run as root/administrator?)").arg(run.device);
         r.details = header + QStringLiteral("\nsmartctl could not open the device. Reading SMART "
                                             "data usually needs root (Linux) or administrator (Windows).\n")
                     + messages.join('\n') + QStringLiteral("\n\n") + QString::fromUtf8(run.json);
@@ -126,14 +126,14 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
         const QJsonValue available = root["smart_support"].toObject()["available"];
         r.status = (available.isBool() && !available.toBool()) ? Status::Skipped : Status::Error;
         r.summary = r.status == Status::Skipped
-                        ? QStringLiteral("%1: no SMART (USB stick or card reader?)").arg(label)
-                        : QStringLiteral("%1: no SMART health status").arg(label);
+                        ? tr("%1: no SMART (USB stick or card reader?)").arg(label)
+                        : tr("%1: no SMART health status").arg(label);
         return r;
     }
 
     Status status = passed.toBool() ? Status::Pass : Status::Fail;
     QStringList parts;
-    parts << (passed.toBool() ? QStringLiteral("SMART OK") : QStringLiteral("SMART FAILED"));
+    parts << (passed.toBool() ? tr("SMART OK") : tr("SMART FAILED"));
 
     // Each check: threshold key, value (if the disk reports it), text.
     struct Check { const char* key; std::optional<double> value; QString text; };
@@ -143,9 +143,9 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
     const std::optional<double> used = number(nvme["percentage_used"]);
     const std::optional<double> temp = number(root["temperature"].toObject()["current"]);
     const Check checks[] = {
-        {"disk_reallocated_sectors", realloc, QStringLiteral("%1 reallocated").arg(whole(realloc.value_or(0)))},
-        {"disk_pending_sectors",     pending, QStringLiteral("%1 pending").arg(whole(pending.value_or(0)))},
-        {"nvme_percentage_used",     used,    QStringLiteral("%1% worn").arg(whole(used.value_or(0)))},
+        {"disk_reallocated_sectors", realloc, tr("%1 reallocated").arg(whole(realloc.value_or(0)))},
+        {"disk_pending_sectors",     pending, tr("%1 pending").arg(whole(pending.value_or(0)))},
+        {"nvme_percentage_used",     used,    tr("%1% worn").arg(whole(used.value_or(0)))},
         {"disk_temperature_c",       temp,    QStringLiteral("%1 C").arg(whole(temp.value_or(0)))},
     };
     for (const Check& c : checks) {
@@ -155,7 +155,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
         // Without a rule we would silently show green: refuse instead.
         if (!thresholds.has(key)) {
             status = worse(status, Status::Error);
-            parts << QStringLiteral("no threshold %1").arg(key);
+            parts << tr("no threshold %1").arg(key);
             continue;
         }
         const Status s = thresholds.evaluate(key, *c.value);
@@ -177,13 +177,13 @@ TestResult DiskTest::evaluate(const DiskScan& scan, const Thresholds& thresholds
     TestResult r;
     if (!scan.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Could not read disks");
+        r.summary = tr("Could not read disks");
         r.details = scan.error + QStringLiteral("\n\n") + QString::fromUtf8(scan.scanJson);
         return r;
     }
     if (scan.disks.empty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("No disk found");
+        r.summary = tr("No disk found");
         r.details = QStringLiteral("smartctl --scan found nothing:\n") + QString::fromUtf8(scan.scanJson);
         return r;
     }
@@ -199,7 +199,7 @@ TestResult DiskTest::evaluate(const DiskScan& scan, const Thresholds& thresholds
     // Every disk skipped = we checked nothing: that must not look like a pass.
     if (status == Status::Skipped) {
         status = Status::Error;
-        summaries.prepend(QStringLiteral("No disk with SMART data"));
+        summaries.prepend(tr("No disk with SMART data"));
     }
 
     r.status = status;

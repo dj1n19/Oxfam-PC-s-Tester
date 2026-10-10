@@ -12,7 +12,7 @@ void KeyboardTest::run()
     if (!m_layout.error.isEmpty()) {
         TestResult r;
         r.status = Status::Error;
-        r.summary = QStringLiteral("Keyboard layout not loaded");
+        r.summary = tr("Keyboard layout not loaded");
         r.details = m_layout.error;
         emit finished(r);
         return;

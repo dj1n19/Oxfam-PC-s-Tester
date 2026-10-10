@@ -1,6 +1,7 @@
 #include "tests/keyboard/KeyLayout.h"
 
 #include <algorithm>
+#include <QCoreApplication>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -151,15 +152,15 @@ TestResult KeyTracker::result(Outcome outcome) const
     switch (outcome) {
     case Outcome::AllPressed:
         r.status = Status::Pass;
-        r.summary = QStringLiteral("All %1 keys work").arg(requiredCount());
+        r.summary = QCoreApplication::translate("KeyboardTest", "All %1 keys work").arg(requiredCount());
         break;
     case Outcome::KeyBroken:
         r.status = Status::Fail;
-        r.summary = QStringLiteral("Not working: %1").arg(missingRequired().join(' '));
+        r.summary = QCoreApplication::translate("KeyboardTest", "Not working: %1").arg(missingRequired().join(' '));
         break;
     case Outcome::Skipped:
         r.status = Status::Skipped;
-        r.summary = QStringLiteral("Skipped by the technician (%1 / %2 keys pressed)")
+        r.summary = QCoreApplication::translate("KeyboardTest", "Skipped by the technician (%1 / %2 keys pressed)")
                         .arg(requiredPressedCount()).arg(requiredCount());
         break;
     }

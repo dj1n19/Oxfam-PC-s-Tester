@@ -10,7 +10,7 @@ class LicenseTest : public ITest {
 public:
     explicit LicenseTest(QObject* parent = nullptr);
 
-    QString name() const override { return QStringLiteral("Windows licence"); }
+    QString name() const override { return tr("Windows licence"); }
     void run() override;
 
     // Pure function: easy to unit test without Windows.

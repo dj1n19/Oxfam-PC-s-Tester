@@ -88,7 +88,7 @@ void AudioDialog::play()
     if (m_sink->error() != QAudio::NoError) {
         TestResult r;
         r.status = Status::Error;
-        r.summary = QStringLiteral("Could not play sound");
+        r.summary = tr("Could not play sound");
         r.details = QStringLiteral("QAudioSink error %1 on device '%2'")
                         .arg(int(m_sink->error())).arg(m_device.description());
         finish(r);

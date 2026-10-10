@@ -22,31 +22,31 @@ TestResult BatteryTest::evaluate(const BatteryInfo& info, const Thresholds& thre
 
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Could not read battery");
+        r.summary = tr("Could not read battery");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }
     if (!info.present) {
         r.status = Status::Skipped;
-        r.summary = QStringLiteral("No battery (desktop?)");
+        r.summary = tr("No battery (desktop?)");
         return r;
     }
     if (info.designCapacity <= 0) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Battery reports no design capacity");
+        r.summary = tr("Battery reports no design capacity");
         return r;
     }
     // Without a rule we would silently show green: refuse instead.
     if (!thresholds.has(QStringLiteral("battery_health_pct"))) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("No threshold configured (thresholds.json)");
+        r.summary = tr("No threshold configured (thresholds.json)");
         return r;
     }
 
     const double health = info.fullCapacity / info.designCapacity * 100.0;
     r.status = thresholds.evaluate(QStringLiteral("battery_health_pct"), health);
-    r.summary = QStringLiteral("Health %1% of design capacity").arg(health, 0, 'f', 0);
+    r.summary = tr("Health %1% of design capacity").arg(health, 0, 'f', 0);
     if (info.cycles > 0)
-        r.summary += QStringLiteral(", %1 cycles").arg(info.cycles);
+        r.summary += tr(", %1 cycles").arg(info.cycles);
     return r;
 }

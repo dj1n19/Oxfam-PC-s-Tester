@@ -11,7 +11,7 @@ class DiskTest : public ITest {
 public:
     explicit DiskTest(Thresholds thresholds, QObject* parent = nullptr);
 
-    QString name() const override { return QStringLiteral("Disks (SMART)"); }
+    QString name() const override { return tr("Disks (SMART)"); }
     void run() override;
 
     // Pure functions: unit tested with sample smartctl outputs.

@@ -67,7 +67,7 @@ void TestRunner::onTimeout()
         return;
     TestResult r;
     r.status = Status::Error;
-    r.summary = QStringLiteral("Test did not answer in time");
+    r.summary = tr("Test did not answer in time");
     r.details = QStringLiteral("Timeout after %1 s").arg(kAutoTestTimeoutMs / 1000);
     finishCurrent(r);
 }

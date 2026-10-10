@@ -103,7 +103,14 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - Qt Multimedia signals (`QVideoSink::videoFrameChanged`, `QCamera::errorOccurred`...) are emitted from inside the
   backend: connect them with `Qt::QueuedConnection` if the slot may stop or destroy the device. A direct call that
   stopped the camera crashed the FFmpeg backend (use of its freed buffers).
-- UI strings use `tr()`. Core strings are plain English for now (translation planned for M4).
+- **Translations (fr, nl; English is the source text):** everything the technician reads goes through `tr()`
+  (in `Q_OBJECT` classes, static members too) or `QCoreApplication::translate("<TestClass>", "...")` in free
+  functions (context = the test's class, so Linguist groups them). That covers test names, summaries, status labels,
+  verdict, dialogs. **`details` stay English** (diagnostic, mixed with raw tool output). After changing texts:
+  `cmake --build build --target update_translations` (lupdate), translate in `translations/*.ts` (Qt Linguist or by
+  hand), rebuild (lrelease, `.qm` embedded as `:/i18n/`). Unit tests run without a translator: they see English.
+  The language is picked in `src/ui/Language.cpp` (system fr/nl, else en) and changed live by the selector in
+  `MainWindow` (disabled during a run; `retranslateUi()` on `QEvent::LanguageChange`).
 - Headers use `#pragma once`. Include paths are relative to `src/` (e.g. `#include "core/ITest.h"`).
 - Any header with `Q_OBJECT` and no matching `.cpp` must be listed in `add_library` / `add_executable` so AUTOMOC runs on it (see `ITest.h`).
 - Golden samples go in `unittests/samples/` as files, not as raw string literals in `test_core.cpp`:
@@ -147,10 +154,11 @@ src/
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
-  ui/          MainWindow.{h,cpp}
+  ui/          MainWindow.{h,cpp} Language.{h,cpp}
     interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
 config/        thresholds.json keyboard_layout.json   (copied next to the executable)
+translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable)
 tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
   samples/     golden samples of real tool output (loaded with QFINDTESTDATA)
@@ -181,7 +189,10 @@ Multi-battery support was dropped by the developer (first battery only).
 
 **M4 in progress.** Done: Windows GUI subsystem (no console) + `requireAdministrator` manifest (to verify on Windows).
 Linux privilege flow done (to verify): app runs as the normal user, only smartctl is elevated.
-Next: French/English, AppImage, tag v1.0.
+French/Dutch/English done (to verify on screen and on Windows): system language fr/nl, else English, plus a
+language selector. **Dutch texts were written by Claude: have a Dutch speaker check them** (left "unfinished" in
+the .ts so Linguist lists them). French texts to proofread by the developer.
+Next: AppImage, clear error messages, tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on

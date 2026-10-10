@@ -7,7 +7,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # for clangd (Pulsar)
 set(CMAKE_AUTOMOC ON)                   # Qt's moc runs automatically
 
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Multimedia)   # Multimedia: app only (audio, camera)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Multimedia   # Multimedia: app only (audio, camera)
+                                     LinguistTools)                        # lupdate/lrelease (translations)
 
 function(ox_enable_warnings target)
     if(MSVC)
@@ -96,6 +97,8 @@ add_executable(oxfam-tester WIN32
     src/main.cpp
     src/ui/MainWindow.h
     src/ui/MainWindow.cpp
+    src/ui/Language.h
+    src/ui/Language.cpp
     # Interactive tests: ITest + dialog here (they need widgets), logic in oxcore.
     src/ui/interactive/KeyboardTest.h
     src/ui/interactive/KeyboardTest.cpp
@@ -111,6 +114,21 @@ add_executable(oxfam-tester WIN32
     src/ui/interactive/CameraDialog.cpp
 )
 target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
+
+# Translations. English is the text in the code; fr and nl are in translations/.
+# lrelease compiles each .ts into a .qm, embedded in the executable as the
+# resource :/i18n/oxfam-tester_<lang>.qm (portable: no extra file to ship).
+# After changing texts in the code: cmake --build build --target update_translations
+# (runs lupdate on the sources below), then translate the new texts in the .ts files.
+get_target_property(OXCORE_SOURCES oxcore SOURCES)
+get_target_property(APP_SOURCES oxfam-tester SOURCES)
+qt_add_translations(oxfam-tester
+    TS_FILES
+        translations/oxfam-tester_fr.ts
+        translations/oxfam-tester_nl.ts
+    SOURCES ${OXCORE_SOURCES} ${APP_SOURCES}
+    INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/src   # includes are relative to src/
+    RESOURCE_PREFIX /i18n)
 
 # Windows asks for administrator rights at start (UAC prompt): SMART, WMI
 # licence and driver queries need them. Embedded in the .exe by the linker.

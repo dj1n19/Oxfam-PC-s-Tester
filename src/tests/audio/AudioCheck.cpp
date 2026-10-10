@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <numbers>
+#include <QCoreApplication>
 #include <QStringList>
 
 QByteArray makeTone(Channel channel, int sampleRate, int frequencyHz, int durationMs)
@@ -51,14 +52,14 @@ TestResult audioResult(Heard leftTone, Heard rightTone)
                     .arg(heardText(leftTone), heardText(rightTone));
 
     QStringList fails, warns;
-    if (leftTone == Heard::Nothing)  fails << QStringLiteral("left silent");
-    if (rightTone == Heard::Nothing) fails << QStringLiteral("right silent");
+    if (leftTone == Heard::Nothing)  fails << QCoreApplication::translate("AudioTest", "left silent");
+    if (rightTone == Heard::Nothing) fails << QCoreApplication::translate("AudioTest", "right silent");
     if (leftTone == Heard::Right || rightTone == Heard::Left)
-        fails << QStringLiteral("left/right swapped");
+        fails << QCoreApplication::translate("AudioTest", "left/right swapped");
     // Sound on both sides for a one-channel tone: mono speaker or wrong
     // mixing. It still works, so a note rather than a repair.
     if (leftTone == Heard::Both || rightTone == Heard::Both)
-        warns << QStringLiteral("no stereo separation (mono speaker?)");
+        warns << QCoreApplication::translate("AudioTest", "no stereo separation (mono speaker?)");
 
     if (!fails.isEmpty()) {
         r.status = Status::Fail;
@@ -68,7 +69,7 @@ TestResult audioResult(Heard leftTone, Heard rightTone)
         r.summary = warns.join(", ");
     } else {
         r.status = Status::Pass;
-        r.summary = QStringLiteral("Left and right speakers work");
+        r.summary = QCoreApplication::translate("AudioTest", "Left and right speakers work");
     }
     return r;
 }
@@ -77,6 +78,6 @@ TestResult audioSkipped()
 {
     TestResult r;
     r.status = Status::Skipped;
-    r.summary = QStringLiteral("Skipped by the technician (no speakers?)");
+    r.summary = QCoreApplication::translate("AudioTest", "Skipped by the technician (no speakers?)");
     return r;
 }

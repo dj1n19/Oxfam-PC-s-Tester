@@ -1,5 +1,6 @@
 #include "tests/sysinfo/SystemInfoTest.h"
 
+#include <QCoreApplication>
 #include <QStringList>
 #include <QtConcurrent>
 
@@ -8,11 +9,11 @@ namespace {
 QString formFactorName(FormFactor f)
 {
     switch (f) {
-    case FormFactor::Desktop: return QStringLiteral("Desktop");
-    case FormFactor::Laptop:  return QStringLiteral("Laptop");
+    case FormFactor::Desktop: return QCoreApplication::translate("SystemInfoTest", "Desktop");
+    case FormFactor::Laptop:  return QCoreApplication::translate("SystemInfoTest", "Laptop");
     case FormFactor::Unknown: break;
     }
-    return QStringLiteral("Unknown form factor");
+    return QCoreApplication::translate("SystemInfoTest", "Unknown form factor");
 }
 
 } // namespace
@@ -50,7 +51,7 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
     TestResult r;
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Could not read system info");
+        r.summary = tr("Could not read system info");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }
@@ -58,22 +59,22 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
     // Model, CPU and RAM are always readable without privileges. If one is
     // missing, the probe or its parsing is wrong: never show that as green.
     QStringList missing;
-    if (info.model.isEmpty()) missing << QStringLiteral("model");
-    if (info.cpu.isEmpty())   missing << QStringLiteral("CPU");
-    if (info.ramBytes <= 0)   missing << QStringLiteral("RAM");
+    if (info.model.isEmpty()) missing << tr("model");
+    if (info.cpu.isEmpty())   missing << tr("CPU");
+    if (info.ramBytes <= 0)   missing << tr("RAM");
 
     const double gib = info.ramBytes / (1024.0 * 1024.0 * 1024.0);
     QStringList parts;
     parts << QStringLiteral("%1 %2").arg(info.vendor, info.model).trimmed()
           << info.cpu
-          << QStringLiteral("%1 GiB RAM").arg(gib, 0, 'f', 1)
+          << tr("%1 GiB RAM").arg(gib, 0, 'f', 1)
           << formFactorName(formFactorFromChassis(info.chassisType));
     parts.removeAll(QString());
 
     // The serial is optional (developer's choice): on Linux it is root-only,
     // and the app runs as the normal user. Shown as unknown, with the reason.
     if (info.serial.isEmpty()) {
-        parts << QStringLiteral("serial unknown");
+        parts << tr("serial unknown");
         r.details = QStringLiteral("Serial not read: %1\n(Linux: /sys/class/dmi/id/product_serial "
                                    "is readable by root only.)\n\n%2")
                         .arg(info.serialError, info.raw);
@@ -83,7 +84,7 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
 
     if (!missing.isEmpty()) {
         r.status = Status::Error;
-        r.summary = QStringLiteral("Missing: %1 | %2").arg(missing.join(", "), parts.join(" | "));
+        r.summary = tr("Missing: %1 | %2").arg(missing.join(", "), parts.join(" | "));
         return r;
     }
 

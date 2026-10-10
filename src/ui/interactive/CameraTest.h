@@ -8,7 +8,7 @@ class CameraTest : public ITest {
 public:
     using ITest::ITest;
 
-    QString name() const override { return QStringLiteral("Camera"); }
+    QString name() const override { return tr("Camera"); }
     bool needsUser() const override { return true; }
     void run() override;
 };

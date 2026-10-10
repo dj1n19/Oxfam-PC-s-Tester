@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <QCoreApplication>
 #include <QString>
 #include "core/TestResult.h"
 
@@ -17,8 +18,8 @@ inline Verdict computeVerdict(const std::vector<Status>& statuses)
         error = error || s == Status::Error;
         warn  = warn  || s == Status::Warn;
     }
-    if (fail)  return {Status::Fail,  QStringLiteral("DO NOT SELL - needs repair")};
-    if (error) return {Status::Error, QStringLiteral("INCOMPLETE - a test could not run")};
-    if (warn)  return {Status::Warn,  QStringLiteral("SELL WITH NOTE - see warnings")};
-    return {Status::Pass, QStringLiteral("OK FOR SALE")};
+    if (fail)  return {Status::Fail,  QCoreApplication::translate("Verdict", "DO NOT SELL - needs repair")};
+    if (error) return {Status::Error, QCoreApplication::translate("Verdict", "INCOMPLETE - a test could not run")};
+    if (warn)  return {Status::Warn,  QCoreApplication::translate("Verdict", "SELL WITH NOTE - see warnings")};
+    return {Status::Pass, QCoreApplication::translate("Verdict", "OK FOR SALE")};
 }

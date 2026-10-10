@@ -11,6 +11,7 @@
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
 #include "tests/sysinfo/SystemInfoTest.h"
+#include "ui/Language.h"
 #include "ui/MainWindow.h"
 #include "ui/interactive/AudioTest.h"
 #include "ui/interactive/CameraTest.h"
@@ -20,6 +21,7 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Oxfam PC Tester"));
+    setLanguage(systemLanguage());   // before any text is shown; the window has a selector
 
     // thresholds.json sits next to the executable (portable app)
     Thresholds thresholds;

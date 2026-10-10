@@ -16,7 +16,7 @@ void AudioTest::run()
     // sudo cannot reach them and sees no device at all.
     const QAudioDevice device = QMediaDevices::defaultAudioOutput();
     if (device.isNull()) {
-        error.summary = QStringLiteral("No audio output found (sound driver? or started with sudo?)");
+        error.summary = tr("No audio output found (sound driver? or started with sudo?)");
         error.details = QStringLiteral(
             "QMediaDevices found no default audio output. Possible causes:\n"
             "- the sound driver is missing: see the Drivers test;\n"
@@ -33,7 +33,7 @@ void AudioTest::run()
     format.setSampleFormat(QAudioFormat::Int16);
     if (!device.isFormatSupported(format)) {
         const QAudioFormat pref = device.preferredFormat();
-        error.summary = QStringLiteral("Audio device refuses 48 kHz 16-bit stereo");
+        error.summary = tr("Audio device refuses 48 kHz 16-bit stereo");
         error.details = QStringLiteral("Device: %1\nPreferred: %2 Hz, %3 channel(s), sample format %4")
                             .arg(device.description())
                             .arg(pref.sampleRate()).arg(pref.channelCount())
