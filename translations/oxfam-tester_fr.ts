@@ -779,7 +779,7 @@ Les tests qui ont besoin de seuils indiqueront ERREUR.</translation>
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="70"/>
+        <location filename="../src/core/TestRunner.cpp" line="72"/>
         <source>Test did not answer in time</source>
         <translation>Le test n&apos;a pas répondu à temps</translation>
     </message>

@@ -779,7 +779,7 @@ Tests die drempels nodig hebben, melden FOUT.</translation>
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="70"/>
+        <location filename="../src/core/TestRunner.cpp" line="72"/>
         <source>Test did not answer in time</source>
         <translation type="unfinished">Test antwoordde niet op tijd</translation>
     </message>

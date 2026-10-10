@@ -1,9 +1,11 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
+#include <memory>
 #include <vector>
 #include <QtTest>
 
+#include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "core/Verdict.h"
 #include "tests/battery/BatteryTest.h"
@@ -21,6 +23,27 @@ char *toString(Status s)
 {
     return qstrdup(qPrintable(statusLabel(s)));
 }
+
+// Fake test for the runner: answers only when the unit test calls answer().
+class FakeTest : public ITest {
+public:
+    FakeTest(bool user, bool background) : m_user(user), m_background(background) {}
+    QString name() const override { return QStringLiteral("fake"); }
+    bool needsUser() const override { return m_user; }
+    bool runsInBackground() const override { return m_background; }
+    void run() override { ++runs; }
+    void answer(Status s)
+    {
+        TestResult r;
+        r.status = s;
+        emit finished(r);
+    }
+    int runs = 0;
+
+private:
+    bool m_user;
+    bool m_background;
+};
 
 class TestCore : public QObject {
     Q_OBJECT
@@ -619,6 +642,76 @@ private slots:
         QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
     }
 
+    // Automatic first, then background, then interactive, whatever the add() order.
+    void runnerOrdersTests()
+    {
+        TestRunner runner;
+        auto user = std::make_unique<FakeTest>(true, false);
+        auto background = std::make_unique<FakeTest>(false, true);
+        auto automatic = std::make_unique<FakeTest>(false, false);
+        const ITest* u = user.get();
+        const ITest* b = background.get();
+        const ITest* a = automatic.get();
+        runner.add(std::move(user));
+        runner.add(std::move(background));
+        runner.add(std::move(automatic));
+        QCOMPARE(&runner.test(0), a);
+        QCOMPARE(&runner.test(1), b);
+        QCOMPARE(&runner.test(2), u);
+    }
+
+    void runnerDoesNotWaitForBackgroundTest()
+    {
+        TestRunner runner;
+        auto automatic = std::make_unique<FakeTest>(false, false);
+        auto background = std::make_unique<FakeTest>(false, true);
+        auto user = std::make_unique<FakeTest>(true, false);
+        FakeTest* a = automatic.get();
+        FakeTest* b = background.get();
+        FakeTest* u = user.get();
+        runner.add(std::move(automatic));
+        runner.add(std::move(background));
+        runner.add(std::move(user));
+        QSignalSpy finished(&runner, &TestRunner::testFinished);
+        QSignalSpy all(&runner, &TestRunner::allFinished);
+
+        runner.startAll();
+        QCOMPARE(a->runs, 1);
+        QCOMPARE(b->runs, 0);              // automatic tests still one at a time
+        a->answer(Status::Pass);
+        QCOMPARE(b->runs, 1);
+        QCOMPARE(u->runs, 1);              // started without waiting for b
+        u->answer(Status::Pass);
+        QCOMPARE(all.count(), 0);          // b is still running
+        QVERIFY(runner.isRunning());
+        b->answer(Status::Warn);
+        b->answer(Status::Fail);           // duplicate: ignored
+        QCOMPARE(all.count(), 1);
+        QCOMPARE(finished.count(), 3);
+        QCOMPARE(finished.at(1).at(0).toInt(), 2);   // user answered before b
+        QCOMPARE(finished.at(2).at(0).toInt(), 1);
+        QCOMPARE(finished.at(2).at(1).value<TestResult>().status, Status::Warn);
+    }
+
+    void runnerBackgroundTestDoneFirst()
+    {
+        TestRunner runner;
+        auto background = std::make_unique<FakeTest>(false, true);
+        auto user = std::make_unique<FakeTest>(true, false);
+        FakeTest* b = background.get();
+        FakeTest* u = user.get();
+        runner.add(std::move(background));
+        runner.add(std::move(user));
+        QSignalSpy all(&runner, &TestRunner::allFinished);
+
+        runner.startAll();
+        b->answer(Status::Pass);
+        QCOMPARE(all.count(), 0);          // the interactive test is still open
+        u->answer(Status::Pass);
+        QCOMPARE(all.count(), 1);
+        QVERIFY(!runner.isRunning());
+    }
+
     void verdictRules()
     {
         QCOMPARE(computeVerdict({Status::Pass, Status::Skipped}).level, Status::Pass);
@@ -628,5 +721,6 @@ private slots:
     }
 };
 
-QTEST_APPLESS_MAIN(TestCore)
+// GUILESS, not APPLESS: TestRunner starts QTimers, which need a QCoreApplication.
+QTEST_GUILESS_MAIN(TestCore)
 #include "test_core.moc"
