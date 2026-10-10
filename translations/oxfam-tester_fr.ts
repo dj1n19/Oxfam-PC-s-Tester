@@ -57,8 +57,8 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioDialog.cpp" line="91"/>
-        <source>Could not play sound</source>
-        <translation>Impossible de jouer un son</translation>
+        <source>Could not play the sound (see details)</source>
+        <translation>Impossible de jouer le son (voir détails)</translation>
     </message>
 </context>
 <context>
@@ -100,13 +100,13 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioTest.cpp" line="19"/>
-        <source>No audio output found (sound driver? or started with sudo?)</source>
-        <translation>Aucune sortie audio (pilote son ? ou lancé avec sudo ?)</translation>
+        <source>No sound output found: check the sound driver (Linux: do not start the program with sudo)</source>
+        <translation>Aucune sortie son : vérifiez le pilote son (Linux : ne lancez pas le programme avec sudo)</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioTest.cpp" line="36"/>
-        <source>Audio device refuses 48 kHz 16-bit stereo</source>
-        <translation>La carte son refuse le 48 kHz 16 bits stéréo</translation>
+        <source>Sound card refuses the test sound, 48 kHz 16-bit stereo (see details)</source>
+        <translation>La carte son refuse le son de test, 48 kHz 16 bits stéréo (voir détails)</translation>
     </message>
 </context>
 <context>
@@ -117,24 +117,24 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Batterie</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="25"/>
-        <source>Could not read battery</source>
-        <translation>Impossible de lire la batterie</translation>
-    </message>
-    <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="31"/>
         <source>No battery (desktop?)</source>
         <translation>Pas de batterie (ordinateur fixe ?)</translation>
     </message>
     <message>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="25"/>
+        <source>Could not read the battery (see details)</source>
+        <translation>Impossible de lire la batterie (voir détails)</translation>
+    </message>
+    <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="36"/>
-        <source>Battery reports no design capacity</source>
-        <translation>La batterie n&apos;indique pas sa capacité d&apos;origine</translation>
+        <source>Battery gives no design capacity: health cannot be judged (see details)</source>
+        <translation>La batterie n&apos;indique pas sa capacité d&apos;origine : santé impossible à juger (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="42"/>
-        <source>No threshold configured (thresholds.json)</source>
-        <translation>Aucun seuil configuré (thresholds.json)</translation>
+        <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
+        <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="48"/>
@@ -204,8 +204,8 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
     <message>
         <location filename="../src/tests/camera/FrameCheck.cpp" line="74"/>
-        <source>Camera gives no picture (used by another app? privacy setting?)</source>
-        <translation>La caméra ne donne pas d&apos;image (utilisée par une autre application ? réglage de confidentialité ?)</translation>
+        <source>Camera gives no picture: close other apps using it and check the camera privacy setting</source>
+        <translation>La caméra ne donne pas d&apos;image : fermez les autres applications qui l&apos;utilisent et vérifiez le réglage de confidentialité de la caméra</translation>
     </message>
     <message>
         <location filename="../src/tests/camera/FrameCheck.cpp" line="78"/>
@@ -226,24 +226,24 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Température CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="92"/>
-        <source>Could not read CPU temperature</source>
-        <translation>Impossible de lire la température CPU</translation>
-    </message>
-    <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="98"/>
         <source>No CPU temperature sensor readable on this PC</source>
         <translation>Aucun capteur de température CPU lisible sur ce PC</translation>
     </message>
     <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="92"/>
+        <source>Could not read the CPU temperature (see details)</source>
+        <translation>Impossible de lire la température CPU (voir détails)</translation>
+    </message>
+    <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="113"/>
-        <source>No temperature reading during the load test</source>
-        <translation>Aucune mesure de température pendant le test en charge</translation>
+        <source>No temperature reading during the load test (see details)</source>
+        <translation>Aucune mesure de température pendant le test en charge (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="119"/>
-        <source>No threshold configured (thresholds.json)</source>
-        <translation>Aucun seuil configuré (thresholds.json)</translation>
+        <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
+        <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="126"/>
@@ -264,29 +264,29 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Disques (SMART)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="84"/>
-        <source>%1: could not run smartctl</source>
-        <translation>%1 : impossible de lancer smartctl</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
-        <source>%1: unreadable smartctl output</source>
-        <translation>%1 : sortie de smartctl illisible</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="105"/>
-        <source>%1: cannot open disk (run as root/administrator?)</source>
-        <translation>%1 : impossible d&apos;ouvrir le disque (lancer en root/administrateur ?)</translation>
-    </message>
-    <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="129"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation>%1 : pas de SMART (clé USB ou lecteur de cartes ?)</translation>
     </message>
     <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="84"/>
+        <source>%1: smartctl failed (see details)</source>
+        <translation>%1 : échec de smartctl (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
+        <source>%1: unreadable smartctl output (see details)</source>
+        <translation>%1 : sortie de smartctl illisible (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="105"/>
+        <source>%1: cannot open the disk, administrator rights needed (see details)</source>
+        <translation>%1 : impossible d&apos;ouvrir le disque, droits administrateur nécessaires (voir détails)</translation>
+    </message>
+    <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="130"/>
-        <source>%1: no SMART health status</source>
-        <translation>%1 : pas d&apos;état de santé SMART</translation>
+        <source>%1: no SMART health status (see details)</source>
+        <translation>%1 : pas d&apos;état de santé SMART (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
@@ -315,21 +315,36 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
     <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="158"/>
-        <source>no threshold %1</source>
-        <translation>pas de seuil %1</translation>
+        <source>no threshold %1 in thresholds.json</source>
+        <translation>pas de seuil %1 dans thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="180"/>
-        <source>Could not read disks</source>
-        <translation>Impossible de lire les disques</translation>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="181"/>
+        <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
+        <translation>smartctl introuvable : gardez le dossier tools à côté du programme (Linux : installez smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
-        <source>No disk found</source>
-        <translation>Aucun disque trouvé</translation>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="183"/>
+        <source>Could not list the disks (see details)</source>
+        <translation>Impossible de lister les disques (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
+        <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
+        <translation>Aucun disque trouvé : vérifiez le BIOS (les modes Intel RST, VMD ou RAID peuvent cacher les disques)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="201"/>
+        <source>Administrator password cancelled or wrong: press START again and type it</source>
+        <translation>Mot de passe administrateur annulé ou incorrect : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="202"/>
+        <source>Administrator password not typed in time: press START again and type it</source>
+        <translation>Mot de passe administrateur pas tapé à temps : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="218"/>
         <source>No disk with SMART data</source>
         <translation>Aucun disque avec des données SMART</translation>
     </message>
@@ -473,8 +488,8 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
     <message>
         <location filename="../src/tests/drivers/DriversTest.cpp" line="56"/>
-        <source>Could not list devices</source>
-        <translation>Impossible de lister les périphériques</translation>
+        <source>Could not list the devices (see details)</source>
+        <translation>Impossible de lister les périphériques (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/tests/drivers/DriversTest.cpp" line="81"/>
@@ -541,8 +556,8 @@ Muet, volume et Impr écran peuvent être captés par le système et rester blan
     </message>
     <message>
         <location filename="../src/ui/interactive/KeyboardTest.cpp" line="15"/>
-        <source>Keyboard layout not loaded</source>
-        <translation>Disposition du clavier non chargée</translation>
+        <source>keyboard_layout.json missing or broken: copy the whole program folder again</source>
+        <translation>keyboard_layout.json absent ou abîmé : recopiez tout le dossier du programme</translation>
     </message>
 </context>
 <context>
@@ -599,8 +614,8 @@ Muet, volume et Impr écran peuvent être captés par le système et rester blan
     </message>
     <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="47"/>
-        <source>Could not read Windows licence</source>
-        <translation>Impossible de lire la licence Windows</translation>
+        <source>Could not read the Windows licence (see details)</source>
+        <translation>Impossible de lire la licence Windows (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="53"/>
@@ -683,11 +698,11 @@ Muet, volume et Impr écran peuvent être captés par le système et rester blan
         <source>thresholds.json not loaded:
 %1
 
-Tests needing thresholds will report ERROR.</source>
+Tests needing thresholds will report ERROR. Copy the whole program folder again: thresholds.json must be next to the program.</source>
         <translation>thresholds.json non chargé :
 %1
 
-Les tests qui ont besoin de seuils indiqueront ERREUR.</translation>
+Les tests qui ont besoin de seuils indiqueront ERREUR. Recopiez tout le dossier du programme : thresholds.json doit être à côté du programme.</translation>
     </message>
 </context>
 <context>
@@ -742,8 +757,8 @@ Les tests qui ont besoin de seuils indiqueront ERREUR.</translation>
     </message>
     <message>
         <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="54"/>
-        <source>Could not read system info</source>
-        <translation>Impossible de lire les infos système</translation>
+        <source>Could not read system info (see details)</source>
+        <translation>Impossible de lire les infos système (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
@@ -780,8 +795,8 @@ Les tests qui ont besoin de seuils indiqueront ERREUR.</translation>
     <name>TestRunner</name>
     <message>
         <location filename="../src/core/TestRunner.cpp" line="72"/>
-        <source>Test did not answer in time</source>
-        <translation>Le test n&apos;a pas répondu à temps</translation>
+        <source>Test did not answer within %1 s: press START again</source>
+        <translation>Le test n&apos;a pas répondu en %1 s : appuyez à nouveau sur DÉMARRER</translation>
     </message>
 </context>
 <context>
@@ -793,8 +808,8 @@ Les tests qui ont besoin de seuils indiqueront ERREUR.</translation>
     </message>
     <message>
         <location filename="../src/core/Verdict.h" line="22"/>
-        <source>INCOMPLETE - a test could not run</source>
-        <translation>INCOMPLET - un test n&apos;a pas pu être fait</translation>
+        <source>INCOMPLETE - check the ERROR rows, then press START again</source>
+        <translation>INCOMPLET - voir les lignes ERREUR, puis appuyer à nouveau sur DÉMARRER</translation>
     </message>
     <message>
         <location filename="../src/core/Verdict.h" line="23"/>

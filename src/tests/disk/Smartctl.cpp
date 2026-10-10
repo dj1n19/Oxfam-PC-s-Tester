@@ -64,6 +64,7 @@ DiskScan readDisks(const QString& smartctlPath)
     DiskScan scan;
     if (smartctlPath.isEmpty()) {
         scan.error = QStringLiteral("smartctl not found (looked in tools/ next to the program, then in PATH)");
+        scan.failure = SmartctlFailure::NotFound;
         return scan;
     }
 

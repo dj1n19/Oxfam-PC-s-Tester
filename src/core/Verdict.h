@@ -19,7 +19,7 @@ inline Verdict computeVerdict(const std::vector<Status>& statuses)
         warn  = warn  || s == Status::Warn;
     }
     if (fail)  return {Status::Fail,  QCoreApplication::translate("Verdict", "DO NOT SELL - needs repair")};
-    if (error) return {Status::Error, QCoreApplication::translate("Verdict", "INCOMPLETE - a test could not run")};
+    if (error) return {Status::Error, QCoreApplication::translate("Verdict", "INCOMPLETE - check the ERROR rows, then press START again")};
     if (warn)  return {Status::Warn,  QCoreApplication::translate("Verdict", "SELL WITH NOTE - see warnings")};
     return {Status::Pass, QCoreApplication::translate("Verdict", "OK FOR SALE")};
 }

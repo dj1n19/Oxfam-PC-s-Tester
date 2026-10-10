@@ -89,7 +89,7 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
 
     if (!idle.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not read CPU temperature");
+        r.summary = tr("Could not read the CPU temperature (see details)");
         r.details = idle.error + QLatin1Char('\n') + idle.raw;
         return r;
     }
@@ -110,13 +110,13 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
 
     if (run.samples.empty()) {
         r.status = Status::Error;
-        r.summary = tr("No temperature reading during the load test");
+        r.summary = tr("No temperature reading during the load test (see details)");
         return r;
     }
     // Without a rule we would silently show green: refuse instead.
     if (!thresholds.has(QStringLiteral("cpu_temp_peak_c"))) {
         r.status = Status::Error;
-        r.summary = tr("No threshold configured (thresholds.json)");
+        r.summary = tr("thresholds.json missing or incomplete: copy the whole program folder again");
         return r;
     }
 

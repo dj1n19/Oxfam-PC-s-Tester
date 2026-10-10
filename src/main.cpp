@@ -30,7 +30,9 @@ int main(int argc, char* argv[])
     if (!thresholds.loadFromFile(path, &error)) {
         QMessageBox::warning(nullptr, QObject::tr("Configuration"),
                              QObject::tr("thresholds.json not loaded:\n%1\n\n"
-                                         "Tests needing thresholds will report ERROR.").arg(error));
+                                         "Tests needing thresholds will report ERROR. "
+                                         "Copy the whole program folder again: thresholds.json "
+                                         "must be next to the program.").arg(error));
     }
 
     // keyboard_layout.json also sits next to the executable. If it is missing,

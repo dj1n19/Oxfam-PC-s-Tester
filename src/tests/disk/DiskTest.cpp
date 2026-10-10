@@ -81,7 +81,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
 
     if (!run.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("%1: could not run smartctl").arg(run.device);
+        r.summary = tr("%1: smartctl failed (see details)").arg(run.device);
         r.details = header + QLatin1Char('\n') + run.error;
         return r;
     }
@@ -90,7 +90,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
     const QJsonDocument doc = QJsonDocument::fromJson(run.json, &parseError);
     if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
         r.status = Status::Error;
-        r.summary = tr("%1: unreadable smartctl output").arg(run.device);
+        r.summary = tr("%1: unreadable smartctl output (see details)").arg(run.device);
         return r;
     }
     const QJsonObject root = doc.object();
@@ -102,7 +102,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
 
     if (run.exitCode & (kBitCommandLine | kBitOpenFailed)) {
         r.status = Status::Error;
-        r.summary = tr("%1: cannot open disk (run as root/administrator?)").arg(run.device);
+        r.summary = tr("%1: cannot open the disk, administrator rights needed (see details)").arg(run.device);
         r.details = header + QStringLiteral("\nsmartctl could not open the device. Reading SMART "
                                             "data usually needs root (Linux) or administrator (Windows).\n")
                     + messages.join('\n') + QStringLiteral("\n\n") + QString::fromUtf8(run.json);
@@ -127,7 +127,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
         r.status = (available.isBool() && !available.toBool()) ? Status::Skipped : Status::Error;
         r.summary = r.status == Status::Skipped
                         ? tr("%1: no SMART (USB stick or card reader?)").arg(label)
-                        : tr("%1: no SMART health status").arg(label);
+                        : tr("%1: no SMART health status (see details)").arg(label);
         return r;
     }
 
@@ -155,7 +155,7 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
         // Without a rule we would silently show green: refuse instead.
         if (!thresholds.has(key)) {
             status = worse(status, Status::Error);
-            parts << tr("no threshold %1").arg(key);
+            parts << tr("no threshold %1 in thresholds.json").arg(key);
             continue;
         }
         const Status s = thresholds.evaluate(key, *c.value);
@@ -177,14 +177,30 @@ TestResult DiskTest::evaluate(const DiskScan& scan, const Thresholds& thresholds
     TestResult r;
     if (!scan.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not read disks");
+        r.summary = scan.failure == SmartctlFailure::NotFound
+                        ? tr("smartctl not found: keep the tools folder next to the program "
+                             "(Linux: install smartmontools)")
+                        : tr("Could not list the disks (see details)");
         r.details = scan.error + QStringLiteral("\n\n") + QString::fromUtf8(scan.scanJson);
         return r;
     }
     if (scan.disks.empty()) {
         r.status = Status::Error;
-        r.summary = tr("No disk found");
+        r.summary = tr("No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)");
         r.details = QStringLiteral("smartctl --scan found nothing:\n") + QString::fromUtf8(scan.scanJson);
+        return r;
+    }
+
+    // A refused password fails every disk the same way (one pkexec call):
+    // one clear line with what to do, not the same error once per disk.
+    for (const SmartctlRun& d : scan.disks) {
+        if (d.failure != SmartctlFailure::PasswordRefused && d.failure != SmartctlFailure::PasswordTimeout)
+            continue;
+        r.status = Status::Error;
+        r.summary = d.failure == SmartctlFailure::PasswordRefused
+                        ? tr("Administrator password cancelled or wrong: press START again and type it")
+                        : tr("Administrator password not typed in time: press START again and type it");
+        r.details = d.error;
         return r;
     }
 

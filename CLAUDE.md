@@ -78,6 +78,10 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   interactive tests, and `allFinished` comes once every test answered. Each automatic test has its own 60 s
   watchdog (Error if silent); late or duplicate answers are ignored.
 - `TestResult`: `status`, one-line `summary` (list), `details` (raw readings shown on row selection). **Always put raw tool output in `details`**: it is how problems are diagnosed on real machines.
+- **Error summaries tell the technician what to do.** If they can fix it (password cancelled, smartctl or a config
+  file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end
+  with "(see details)"; the verdict already says "check the ERROR rows, then press START again". When the probe knows
+  a fixable cause, give it a small enum (see `SmartctlFailure`) instead of comparing English error strings.
 - `Thresholds`: `config/thresholds.json`, shape `{ "key": { "warn": X, "fail": Y } }`.
   Direction is deduced: `fail < warn` means lower is worse (battery %); otherwise higher is worse (bad sectors).
   `thresholds.json` is copied next to the executable by CMake and loaded from `applicationDirPath()`.
@@ -194,7 +198,8 @@ Linux privilege flow done (to verify): app runs as the normal user, only smartct
 French/Dutch/English done (to verify on screen and on Windows): system language fr/nl, else English, plus a
 language selector. **Dutch texts were written by Claude: have a Dutch speaker check them** (left "unfinished" in
 the .ts so Linguist lists them). French texts to proofread by the developer.
-Next: AppImage, clear error messages, tag v1.0.
+Clear error messages done (actionable ERROR summaries, see the TestResult contract).
+Next: AppImage, tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on

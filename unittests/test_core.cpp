@@ -280,6 +280,28 @@ private slots:
         QCOMPARE(DiskTest::evaluate(scan, loaded()).status, Status::Error);
     }
 
+    // Fixable failures get one line saying what to do, not one error per disk.
+    void diskFixableFailuresSayWhatToDo()
+    {
+        DiskScan scan;
+        scan.error = "smartctl not found";
+        scan.failure = SmartctlFailure::NotFound;
+        QVERIFY(DiskTest::evaluate(scan, loaded()).summary.contains("tools folder"));
+
+        scan = DiskScan{};
+        for (const char* dev : {"/dev/sda", "/dev/nvme0"}) {
+            SmartctlRun run;
+            run.device = dev;
+            run.error = "Administrator password refused or cancelled (pkexec exit code 126)";
+            run.failure = SmartctlFailure::PasswordRefused;
+            scan.disks.push_back(run);
+        }
+        const TestResult r = DiskTest::evaluate(scan, loaded());
+        QCOMPARE(r.status, Status::Error);
+        QVERIFY2(r.summary.contains("press START again"), qPrintable(r.summary));
+        QVERIFY2(!r.summary.contains("/dev/sda"), qPrintable(r.summary));   // said once, not per disk
+    }
+
     // pnp_problems.json is hand-made from the PowerShell script's output
     // shape. Replace it with a real one from a PC with a driver problem.
     void driversWindowsProblems()

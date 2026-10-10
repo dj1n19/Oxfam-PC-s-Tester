@@ -71,7 +71,7 @@ TestResult cameraResult(CameraOutcome outcome, const QString& device,
         break;
     case CameraOutcome::NoFrames:
         r.status = Status::Error;
-        r.summary = QCoreApplication::translate("CameraTest", "Camera gives no picture (used by another app? privacy setting?)");
+        r.summary = QCoreApplication::translate("CameraTest", "Camera gives no picture: close other apps using it and check the camera privacy setting");
         break;
     case CameraOutcome::CameraError:
         r.status = Status::Error;

@@ -128,6 +128,7 @@ qt_add_translations(oxfam-tester
         translations/oxfam-tester_nl.ts
     SOURCES ${OXCORE_SOURCES} ${APP_SOURCES}
     INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/src   # includes are relative to src/
+    LUPDATE_OPTIONS -no-obsolete                  # drop texts no longer in the code
     RESOURCE_PREFIX /i18n)
 
 # Windows asks for administrator rights at start (UAC prompt): SMART, WMI

@@ -12,7 +12,7 @@ void KeyboardTest::run()
     if (!m_layout.error.isEmpty()) {
         TestResult r;
         r.status = Status::Error;
-        r.summary = tr("Keyboard layout not loaded");
+        r.summary = tr("keyboard_layout.json missing or broken: copy the whole program folder again");
         r.details = m_layout.error;
         emit finished(r);
         return;

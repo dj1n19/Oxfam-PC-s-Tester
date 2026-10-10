@@ -17,7 +17,8 @@ std::vector<SmartctlRun> direct(const QString& smartctl, const std::vector<Scann
     return runs;
 }
 
-std::vector<SmartctlRun> allFailed(const std::vector<ScannedDevice>& devices, const QString& error)
+std::vector<SmartctlRun> allFailed(const std::vector<ScannedDevice>& devices, const QString& error,
+                                   SmartctlFailure failure = SmartctlFailure::None)
 {
     std::vector<SmartctlRun> runs;
     for (const ScannedDevice& dev : devices) {
@@ -25,6 +26,7 @@ std::vector<SmartctlRun> allFailed(const std::vector<ScannedDevice>& devices, co
         r.device = dev.name;
         r.type = dev.type;
         r.error = error;
+        r.failure = failure;
         runs.push_back(std::move(r));
     }
     return runs;
@@ -71,13 +73,15 @@ std::vector<SmartctlRun> readDevices(const QString& smartctl, const std::vector<
     } else if (!p.waitForFinished(kPasswordTimeoutMs)) {
         p.kill();
         p.waitForFinished();
-        runs = allFailed(safe, QStringLiteral("Administrator password not entered in time (pkexec)"));
+        runs = allFailed(safe, QStringLiteral("Administrator password not entered in time (pkexec)"),
+                         SmartctlFailure::PasswordTimeout);
     } else if (p.exitStatus() != QProcess::NormalExit) {
         runs = allFailed(safe, QStringLiteral("pkexec crashed"));
     } else if (p.exitCode() == 126 || p.exitCode() == 127) {
         // pkexec: 126 = dialog dismissed / not authorised, 127 = authentication failed
         runs = allFailed(safe, QStringLiteral("Administrator password refused or cancelled (pkexec exit code %1)")
-                                   .arg(p.exitCode()));
+                                   .arg(p.exitCode()),
+                         SmartctlFailure::PasswordRefused);
     } else {
         runs = parseBatchOutput(p.readAllStandardOutput(), safe);
     }

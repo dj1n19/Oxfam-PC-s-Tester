@@ -51,7 +51,7 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
     TestResult r;
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not read system info");
+        r.summary = tr("Could not read system info (see details)");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }

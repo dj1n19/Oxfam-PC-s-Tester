@@ -22,7 +22,7 @@ TestResult BatteryTest::evaluate(const BatteryInfo& info, const Thresholds& thre
 
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not read battery");
+        r.summary = tr("Could not read the battery (see details)");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }
@@ -33,13 +33,13 @@ TestResult BatteryTest::evaluate(const BatteryInfo& info, const Thresholds& thre
     }
     if (info.designCapacity <= 0) {
         r.status = Status::Error;
-        r.summary = tr("Battery reports no design capacity");
+        r.summary = tr("Battery gives no design capacity: health cannot be judged (see details)");
         return r;
     }
     // Without a rule we would silently show green: refuse instead.
     if (!thresholds.has(QStringLiteral("battery_health_pct"))) {
         r.status = Status::Error;
-        r.summary = tr("No threshold configured (thresholds.json)");
+        r.summary = tr("thresholds.json missing or incomplete: copy the whole program folder again");
         return r;
     }
 

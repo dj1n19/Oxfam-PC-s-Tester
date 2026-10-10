@@ -57,8 +57,8 @@ Waar hoorde u hem?</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioDialog.cpp" line="91"/>
-        <source>Could not play sound</source>
-        <translation type="unfinished">Kan geen geluid afspelen</translation>
+        <source>Could not play the sound (see details)</source>
+        <translation type="unfinished">Kan het geluid niet afspelen (zie details)</translation>
     </message>
 </context>
 <context>
@@ -100,13 +100,13 @@ Waar hoorde u hem?</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioTest.cpp" line="19"/>
-        <source>No audio output found (sound driver? or started with sudo?)</source>
-        <translation type="unfinished">Geen audio-uitgang gevonden (geluidsstuurprogramma? of gestart met sudo?)</translation>
+        <source>No sound output found: check the sound driver (Linux: do not start the program with sudo)</source>
+        <translation type="unfinished">Geen geluidsuitgang gevonden: controleer het geluidsstuurprogramma (Linux: start het programma niet met sudo)</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioTest.cpp" line="36"/>
-        <source>Audio device refuses 48 kHz 16-bit stereo</source>
-        <translation type="unfinished">Audioapparaat weigert 48 kHz 16-bit stereo</translation>
+        <source>Sound card refuses the test sound, 48 kHz 16-bit stereo (see details)</source>
+        <translation type="unfinished">Geluidskaart weigert het testgeluid, 48 kHz 16-bit stereo (zie details)</translation>
     </message>
 </context>
 <context>
@@ -117,24 +117,24 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">Batterij</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="25"/>
-        <source>Could not read battery</source>
-        <translation type="unfinished">Kan de batterij niet uitlezen</translation>
-    </message>
-    <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="31"/>
         <source>No battery (desktop?)</source>
         <translation type="unfinished">Geen batterij (desktop?)</translation>
     </message>
     <message>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="25"/>
+        <source>Could not read the battery (see details)</source>
+        <translation type="unfinished">Kan de batterij niet uitlezen (zie details)</translation>
+    </message>
+    <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="36"/>
-        <source>Battery reports no design capacity</source>
-        <translation type="unfinished">Batterij geeft geen ontwerpcapaciteit op</translation>
+        <source>Battery gives no design capacity: health cannot be judged (see details)</source>
+        <translation type="unfinished">Batterij geeft geen ontwerpcapaciteit: gezondheid niet te beoordelen (zie details)</translation>
     </message>
     <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="42"/>
-        <source>No threshold configured (thresholds.json)</source>
-        <translation type="unfinished">Geen drempel ingesteld (thresholds.json)</translation>
+        <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
+        <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
         <location filename="../src/tests/battery/BatteryTest.cpp" line="48"/>
@@ -204,8 +204,8 @@ Waar hoorde u hem?</translation>
     </message>
     <message>
         <location filename="../src/tests/camera/FrameCheck.cpp" line="74"/>
-        <source>Camera gives no picture (used by another app? privacy setting?)</source>
-        <translation type="unfinished">Camera geeft geen beeld (in gebruik door een andere app? privacy-instelling?)</translation>
+        <source>Camera gives no picture: close other apps using it and check the camera privacy setting</source>
+        <translation type="unfinished">Camera geeft geen beeld: sluit andere apps die hem gebruiken en controleer de privacy-instelling van de camera</translation>
     </message>
     <message>
         <location filename="../src/tests/camera/FrameCheck.cpp" line="78"/>
@@ -226,24 +226,24 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">CPU-temperatuur</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="92"/>
-        <source>Could not read CPU temperature</source>
-        <translation type="unfinished">Kan de CPU-temperatuur niet uitlezen</translation>
-    </message>
-    <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="98"/>
         <source>No CPU temperature sensor readable on this PC</source>
         <translation type="unfinished">Geen leesbare CPU-temperatuursensor op deze pc</translation>
     </message>
     <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="92"/>
+        <source>Could not read the CPU temperature (see details)</source>
+        <translation type="unfinished">Kan de CPU-temperatuur niet uitlezen (zie details)</translation>
+    </message>
+    <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="113"/>
-        <source>No temperature reading during the load test</source>
-        <translation type="unfinished">Geen temperatuurmeting tijdens de belastingstest</translation>
+        <source>No temperature reading during the load test (see details)</source>
+        <translation type="unfinished">Geen temperatuurmeting tijdens de belastingstest (zie details)</translation>
     </message>
     <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="119"/>
-        <source>No threshold configured (thresholds.json)</source>
-        <translation type="unfinished">Geen drempel ingesteld (thresholds.json)</translation>
+        <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
+        <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="126"/>
@@ -264,29 +264,29 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">Schijven (SMART)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="84"/>
-        <source>%1: could not run smartctl</source>
-        <translation type="unfinished">%1: kan smartctl niet uitvoeren</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
-        <source>%1: unreadable smartctl output</source>
-        <translation type="unfinished">%1: onleesbare uitvoer van smartctl</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="105"/>
-        <source>%1: cannot open disk (run as root/administrator?)</source>
-        <translation type="unfinished">%1: kan de schijf niet openen (uitvoeren als root/beheerder?)</translation>
-    </message>
-    <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="129"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation type="unfinished">%1: geen SMART (USB-stick of kaartlezer?)</translation>
     </message>
     <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="84"/>
+        <source>%1: smartctl failed (see details)</source>
+        <translation type="unfinished">%1: smartctl mislukt (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
+        <source>%1: unreadable smartctl output (see details)</source>
+        <translation type="unfinished">%1: onleesbare uitvoer van smartctl (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="105"/>
+        <source>%1: cannot open the disk, administrator rights needed (see details)</source>
+        <translation type="unfinished">%1: kan de schijf niet openen, beheerdersrechten nodig (zie details)</translation>
+    </message>
+    <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="130"/>
-        <source>%1: no SMART health status</source>
-        <translation type="unfinished">%1: geen SMART-gezondheidsstatus</translation>
+        <source>%1: no SMART health status (see details)</source>
+        <translation type="unfinished">%1: geen SMART-gezondheidsstatus (zie details)</translation>
     </message>
     <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
@@ -315,21 +315,36 @@ Waar hoorde u hem?</translation>
     </message>
     <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="158"/>
-        <source>no threshold %1</source>
-        <translation type="unfinished">geen drempel %1</translation>
+        <source>no threshold %1 in thresholds.json</source>
+        <translation type="unfinished">geen drempel %1 in thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="180"/>
-        <source>Could not read disks</source>
-        <translation type="unfinished">Kan de schijven niet uitlezen</translation>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="181"/>
+        <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
+        <translation type="unfinished">smartctl niet gevonden: laat de map tools naast het programma staan (Linux: installeer smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
-        <source>No disk found</source>
-        <translation type="unfinished">Geen schijf gevonden</translation>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="183"/>
+        <source>Could not list the disks (see details)</source>
+        <translation type="unfinished">Kan de schijven niet oplijsten (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
+        <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
+        <translation type="unfinished">Geen schijf gevonden: controleer het BIOS (Intel RST-, VMD- of RAID-modus kan schijven verbergen)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="201"/>
+        <source>Administrator password cancelled or wrong: press START again and type it</source>
+        <translation type="unfinished">Beheerderswachtwoord geannuleerd of fout: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
         <location filename="../src/tests/disk/DiskTest.cpp" line="202"/>
+        <source>Administrator password not typed in time: press START again and type it</source>
+        <translation type="unfinished">Beheerderswachtwoord niet op tijd getypt: druk opnieuw op STARTEN en typ het in</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="218"/>
         <source>No disk with SMART data</source>
         <translation type="unfinished">Geen schijf met SMART-gegevens</translation>
     </message>
@@ -473,8 +488,8 @@ Waar hoorde u hem?</translation>
     </message>
     <message>
         <location filename="../src/tests/drivers/DriversTest.cpp" line="56"/>
-        <source>Could not list devices</source>
-        <translation type="unfinished">Kan de apparaten niet oplijsten</translation>
+        <source>Could not list the devices (see details)</source>
+        <translation type="unfinished">Kan de apparaten niet oplijsten (zie details)</translation>
     </message>
     <message>
         <location filename="../src/tests/drivers/DriversTest.cpp" line="81"/>
@@ -541,8 +556,8 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven
     </message>
     <message>
         <location filename="../src/ui/interactive/KeyboardTest.cpp" line="15"/>
-        <source>Keyboard layout not loaded</source>
-        <translation type="unfinished">Toetsenbordindeling niet geladen</translation>
+        <source>keyboard_layout.json missing or broken: copy the whole program folder again</source>
+        <translation type="unfinished">keyboard_layout.json ontbreekt of is beschadigd: kopieer de volledige programmamap opnieuw</translation>
     </message>
 </context>
 <context>
@@ -599,8 +614,8 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven
     </message>
     <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="47"/>
-        <source>Could not read Windows licence</source>
-        <translation type="unfinished">Kan de Windows-licentie niet uitlezen</translation>
+        <source>Could not read the Windows licence (see details)</source>
+        <translation type="unfinished">Kan de Windows-licentie niet uitlezen (zie details)</translation>
     </message>
     <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="53"/>
@@ -683,11 +698,11 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven
         <source>thresholds.json not loaded:
 %1
 
-Tests needing thresholds will report ERROR.</source>
+Tests needing thresholds will report ERROR. Copy the whole program folder again: thresholds.json must be next to the program.</source>
         <translation type="unfinished">thresholds.json niet geladen:
 %1
 
-Tests die drempels nodig hebben, melden FOUT.</translation>
+Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap opnieuw: thresholds.json moet naast het programma staan.</translation>
     </message>
 </context>
 <context>
@@ -742,8 +757,8 @@ Tests die drempels nodig hebben, melden FOUT.</translation>
     </message>
     <message>
         <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="54"/>
-        <source>Could not read system info</source>
-        <translation type="unfinished">Kan de systeeminfo niet uitlezen</translation>
+        <source>Could not read system info (see details)</source>
+        <translation type="unfinished">Kan de systeeminfo niet uitlezen (zie details)</translation>
     </message>
     <message>
         <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
@@ -780,8 +795,8 @@ Tests die drempels nodig hebben, melden FOUT.</translation>
     <name>TestRunner</name>
     <message>
         <location filename="../src/core/TestRunner.cpp" line="72"/>
-        <source>Test did not answer in time</source>
-        <translation type="unfinished">Test antwoordde niet op tijd</translation>
+        <source>Test did not answer within %1 s: press START again</source>
+        <translation type="unfinished">Test antwoordde niet binnen %1 s: druk opnieuw op STARTEN</translation>
     </message>
 </context>
 <context>
@@ -793,8 +808,8 @@ Tests die drempels nodig hebben, melden FOUT.</translation>
     </message>
     <message>
         <location filename="../src/core/Verdict.h" line="22"/>
-        <source>INCOMPLETE - a test could not run</source>
-        <translation type="unfinished">ONVOLLEDIG - een test kon niet worden uitgevoerd</translation>
+        <source>INCOMPLETE - check the ERROR rows, then press START again</source>
+        <translation type="unfinished">ONVOLLEDIG - bekijk de FOUT-regels en druk dan opnieuw op STARTEN</translation>
     </message>
     <message>
         <location filename="../src/core/Verdict.h" line="23"/>

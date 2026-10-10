@@ -44,7 +44,7 @@ TestResult LicenseTest::evaluate(const LicenseInfo& info)
     }
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not read Windows licence");
+        r.summary = tr("Could not read the Windows licence (see details)");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }

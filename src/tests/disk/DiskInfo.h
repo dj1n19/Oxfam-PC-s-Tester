@@ -8,6 +8,10 @@
 // probe (Smartctl.cpp) is shared. Only readDevices() differs: on Linux, as a
 // normal user, it elevates with pkexec (smartctl_linux.cpp / smartctl_win.cpp).
 
+// Failures the technician can fix: DiskTest then says what to do instead of
+// a generic "could not run". Anything else is None, with the cause in error.
+enum class SmartctlFailure { None, NotFound, PasswordRefused, PasswordTimeout };
+
 struct ScannedDevice {
     QString name;   // "/dev/sda", "/dev/nvme0"
     QString type;   // "sat", "nvme", ... passed back with -d
@@ -20,10 +24,12 @@ struct SmartctlRun {
     int exitCode = -1;   // bit field, see "man smartctl", section RETURN VALUES
     QByteArray json;
     QString error;       // non-empty = smartctl could not be run at all
+    SmartctlFailure failure = SmartctlFailure::None;
 };
 
 struct DiskScan {
     QString error;       // non-empty = smartctl missing, or --scan failed
+    SmartctlFailure failure = SmartctlFailure::None;
     QByteArray scanJson;
     std::vector<SmartctlRun> disks;
 };
