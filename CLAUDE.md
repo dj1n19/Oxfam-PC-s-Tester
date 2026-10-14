@@ -23,7 +23,7 @@ to check **refurbished desktop and laptop PCs** before they are sold in Oxfam sh
 - Repository: GitHub `dj1n19/Oxfam-PC-s-Tester`, working branch `dev`.
 
 ### Planned tests (phase 1)
-Battery health, disk health (SMART), driver errors, CPU temperature under load, keyboard, audio, camera,
+Battery health, disk health (SMART), driver errors, CPU temperature and throttling under load, keyboard, audio, camera,
 Windows licence activation status. Plus basic system info.
 
 ### Possible later (phase 2, do NOT build now)
@@ -272,7 +272,15 @@ Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
   thermal zones `x86_pkg_temp`, `acpitz`. Windows: `MSAcpi_ThermalZoneTemperature` (tenths of kelvin, hottest zone,
   "Not supported" caught in PowerShell); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
-  No sensor = Skipped. A sensor that rises < 1 C under load is not the CPU: Skipped instead of Pass (too hot still fails).
+  A sensor that rises < 1 C under load is not the CPU: Skipped instead of Pass (too hot still fails).
+  **Speed (throttling)**, read with the temperature in one `readCpu()` (one PowerShell call per sample): % of base speed;
+  Windows `Win32_PerfFormattedData_Counters_ProcessorInformation._Total.PercentProcessorPerformance` (CIM, not
+  `Get-Counter`: counter names are translated on fr/nl Windows), Linux average `scaling_cur_freq` / `base_frequency`
+  (intel_pstate only; AMD/acpi-cpufreq: no speed). Judged on the **median of the second half** of the load (single
+  readings dip: 220 % with dips to 162 % on Arch), first 5 s left out, `cpu_speed_min_pct` (warn < 100, fail < 70).
+  On battery (Windows `BatteryStatus == 1`; Linux charger input listed but offline) a slow CPU is Warn "plug in the
+  charger", never Fail. Temperature and speed are judged apart, the worse wins (`worse()` in `TestResult.h`).
+  Neither sensor nor speed = Skipped; then the CPU is not loaded at all.
 - `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
   battery at 36 % correctly reported FAIL).
 
@@ -292,9 +300,13 @@ Known limitations:
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
-- CPU temperature: verified on Arch (coretemp, 52 -> 68 C in 15 s), **not yet on Windows**. `acpi_*.json` samples are
-  hand-made. Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on
-  Windows is a motherboard zone: expect many Skipped. No throttling detection.
+- CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base). `acpi_zones.json` is
+  hand-made; `acpi_unsupported.json` matches the real Latitude 7420 (Win11) output byte for byte. Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on
+  Windows is a motherboard zone: expect many Skipped (Latitude 7420: "Not supported").
+- CPU speed: the counters were read by hand on the Latitude 7420 (`cpu_win_latitude7420_*.json`: rest on battery =
+  real output; load = real values in the script's shape). Under full load: 266 % falling to 241 % (charger) / 211 %
+  (battery) as the turbo budget runs out: normal. **The app's own probe is not yet run on Windows.** Limits 100/70 are
+  guesses: no throttling PC seen yet (M5).
 - Keyboard on real Windows: first run showed Qt 6.8 sends extended keys as `0xE0xx` (Qt 6.4: `0x1xx`); `scanCodeFromWindows()` now accepts both (fix not yet re-run on Windows). Labels are Belgian AZERTY only.
 - Windows: the app is a GUI program (`WIN32`), so `qDebug()` output is not visible; put diagnostics in `details`.
 - **Linux privileges:** run the app as the normal user (sudo breaks audio and camera: PipeWire/PulseAudio belong to the

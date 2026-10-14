@@ -4,5 +4,6 @@
   "disk_pending_sectors":     { "warn": 1,  "fail": 10 },
   "nvme_percentage_used":     { "warn": 80, "fail": 100 },
   "disk_temperature_c":       { "warn": 55, "fail": 65 },
-  "cpu_temp_peak_c":          { "warn": 90, "fail": 97 }
+  "cpu_temp_peak_c":          { "warn": 90, "fail": 97 },
+  "cpu_speed_min_pct":        { "warn": 100, "fail": 70 }
 }

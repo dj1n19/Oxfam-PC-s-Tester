@@ -8,8 +8,10 @@
 // What the load test measured: one reading at rest, then readings taken
 // while every core is busy.
 struct CpuLoadRun {
-    CpuTempReading idle;
-    std::vector<double> samples;   // C, during the load
+    CpuReading idle;
+    std::vector<double> samples;   // temperatures (C), during the load
+    std::vector<double> speeds;    // % of base speed, during the load (first seconds left out)
+    bool onBattery = false;        // at least one reading was on battery
     QString sampleErrors;          // readings that failed during the load
     int threads = 0;
     int seconds = 0;
@@ -31,6 +33,10 @@ public:
     static TestResult evaluate(const CpuLoadRun& run, const Thresholds& thresholds);
 
 private:
+    // The two halves of evaluate(): status + one part of the summary each.
+    static TestResult judgeTemperature(const CpuLoadRun& run, const Thresholds& thresholds);
+    static TestResult judgeSpeed(const CpuLoadRun& run, const Thresholds& thresholds);
+
     Thresholds m_thresholds;
     QFutureWatcher<CpuLoadRun> m_watcher;
 };

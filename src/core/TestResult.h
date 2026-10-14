@@ -25,3 +25,21 @@ inline QString statusLabel(Status s)
     }
     return QStringLiteral("?");
 }
+
+// The more serious of two results, to combine several checks into one row
+// (several disks, temperature + speed). Fail > Error > Warn > Pass > Skipped:
+// a Skipped part never hides what another part found.
+inline Status worse(Status a, Status b)
+{
+    const auto severity = [](Status s) {
+        switch (s) {
+        case Status::Fail:    return 4;
+        case Status::Error:   return 3;
+        case Status::Warn:    return 2;
+        case Status::Pass:    return 1;
+        case Status::Skipped: return 0;
+        }
+        return 3;
+    };
+    return severity(a) >= severity(b) ? a : b;
+}

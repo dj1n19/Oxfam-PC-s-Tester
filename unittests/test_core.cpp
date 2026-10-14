@@ -61,7 +61,8 @@ class TestCore : public QObject {
             "disk_pending_sectors":     {"warn": 1,  "fail": 10},
             "nvme_percentage_used":     {"warn": 80, "fail": 100},
             "disk_temperature_c":       {"warn": 55, "fail": 65},
-            "cpu_temp_peak_c":          {"warn": 90, "fail": 97}
+            "cpu_temp_peak_c":          {"warn": 90, "fail": 97},
+            "cpu_speed_min_pct":        {"warn": 100, "fail": 70}
         })");
         Q_ASSERT(ok);
         Q_UNUSED(ok);
@@ -92,10 +93,21 @@ class TestCore : public QObject {
     static CpuLoadRun cpuRun(double idle, std::vector<double> samples)
     {
         CpuLoadRun run;
-        run.idle.available = true;
+        run.idle.hasTemp = true;
         run.idle.celsius = idle;
         run.idle.source = "test";
         run.samples = std::move(samples);
+        return run;
+    }
+
+    // A PC with no temperature sensor but a speed counter (Latitude 7420).
+    static CpuLoadRun speedRun(std::vector<double> speeds, bool onBattery = false)
+    {
+        CpuLoadRun run;
+        run.idle.hasSpeed = true;
+        run.idle.speedPct = 85;
+        run.speeds = std::move(speeds);
+        run.onBattery = onBattery;
         return run;
     }
 
@@ -506,18 +518,79 @@ private slots:
         QCOMPARE(CpuTempTest::evaluate(failed, t).status, Status::Error);
     }
 
+    void cpuSpeedThrottling()
+    {
+        const Thresholds t = loaded();
+        // Real Latitude 7420 on the charger: turbo, then the slow fall of the turbo budget.
+        const TestResult ok = CpuTempTest::evaluate(speedRun({266, 266, 263, 256, 241}), t);
+        QCOMPARE(ok.status, Status::Pass);
+        QVERIFY(ok.summary.startsWith("Speed 256 %"));   // median of the second half: 263 256 241
+        // One dip is a snapshot, not throttling; a lasting drop is.
+        QCOMPARE(CpuTempTest::evaluate(speedRun({220, 220, 220, 90, 220, 220}), t).status, Status::Pass);
+        QCOMPARE(CpuTempTest::evaluate(speedRun({220, 220, 90, 90, 90}), t).status, Status::Warn);
+        QCOMPARE(CpuTempTest::evaluate(speedRun({180, 95}), t).status, Status::Warn);   // under base speed
+        QCOMPARE(CpuTempTest::evaluate(speedRun({180, 60}), t).status, Status::Fail);   // far under
+        QCOMPARE(CpuTempTest::evaluate(speedRun({100}), t).status, Status::Pass);       // exactly base
+        // On battery the OS slows the CPU on purpose: a hint, never a Fail.
+        const TestResult battery = CpuTempTest::evaluate(speedRun({180, 60}, true), t);
+        QCOMPARE(battery.status, Status::Warn);
+        QVERIFY(battery.summary.contains("charger"));
+        QCOMPARE(CpuTempTest::evaluate(speedRun({211}, true), t).status, Status::Pass);
+    }
+
+    void cpuTempAndSpeedWorseWins()
+    {
+        const Thresholds t = loaded();
+        CpuLoadRun run = cpuRun(40, {60, 70});
+        run.idle.hasSpeed = true;
+        run.speeds = {60};
+        QCOMPARE(CpuTempTest::evaluate(run, t).status, Status::Fail);    // cool but throttling
+        run.speeds = {240};
+        QCOMPARE(CpuTempTest::evaluate(run, t).status, Status::Pass);
+        QVERIFY(CpuTempTest::evaluate(run, t).summary.contains("240 %"));
+        // A sensor that ignores the load (Skipped) does not hide a good speed.
+        run.idle.celsius = 27.8;
+        run.samples = {27.8, 27.8};
+        QCOMPARE(CpuTempTest::evaluate(run, t).status, Status::Pass);
+    }
+
+    void cpuSpeedMissingDataIsNotPass()
+    {
+        QCOMPARE(CpuTempTest::evaluate(speedRun({}), loaded()).status, Status::Error);      // no sample
+        QCOMPARE(CpuTempTest::evaluate(speedRun({240}), Thresholds{}).status, Status::Error);
+    }
+
+    void cpuWindowsParsing()
+    {
+        // Real output, at rest on battery: no ACPI zone, battery as an object.
+        const CpuReading rest = parseWindowsCpu(sample("cpu_win_latitude7420_rest_battery.json"));
+        QVERIFY(rest.error.isEmpty());
+        QVERIFY(!rest.hasTemp);
+        QVERIFY(rest.hasSpeed);
+        QCOMPARE(rest.speedPct, 88.0);
+        QVERIFY(rest.onBattery);
+
+        const CpuReading load = parseWindowsCpu(sample("cpu_win_latitude7420_load.json"));
+        QCOMPARE(load.speedPct, 241.0);
+        QVERIFY(!load.onBattery);   // BatteryStatus 2 = on the charger
+
+        // A counter that is not ready gives 0: not a speed.
+        QVERIFY(!parseWindowsCpu(R"({"zones":[],"cpu":{"PercentProcessorPerformance":0}})").hasSpeed);
+    }
+
     void acpiZonesParsing()
     {
-        const CpuTempReading r = parseThermalZones(sample("acpi_zones.json"));
+        const CpuReading r = parseWindowsCpu(sample("acpi_zones.json"));
         QVERIFY(r.error.isEmpty());
-        QVERIFY(r.available);
+        QVERIFY(r.hasTemp);
         QCOMPARE(qRound(r.celsius), 60);   // hottest zone, 3332 = 60.05 C; the 0 K zone is ignored
         QCOMPARE(r.source, QString("ACPI\\ThermalZone\\THM0_0"));
 
-        const CpuTempReading none = parseThermalZones(sample("acpi_unsupported.json"));
+        const CpuReading none = parseWindowsCpu(sample("acpi_unsupported.json"));
         QVERIFY(none.error.isEmpty());
-        QVERIFY(!none.available);
-        QVERIFY(!parseThermalZones("not json").error.isEmpty());
+        QVERIFY(!none.hasTemp);
+        QVERIFY(!none.hasSpeed);   // older script: no "cpu" key
+        QVERIFY(!parseWindowsCpu("not json").error.isEmpty());
     }
 
     void scanCodesWindows()

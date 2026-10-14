@@ -221,39 +221,60 @@ Waar hoorde u hem?</translation>
 <context>
     <name>CpuTempTest</name>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.h" line="23"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.h" line="25"/>
         <source>CPU temperature</source>
         <translation type="unfinished">CPU-temperatuur</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="98"/>
-        <source>No CPU temperature sensor readable on this PC</source>
-        <translation type="unfinished">Geen leesbare CPU-temperatuursensor op deze pc</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="92"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="105"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation type="unfinished">Kan de CPU-temperatuur niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="113"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="111"/>
+        <source>No CPU temperature sensor or speed counter readable on this PC</source>
+        <translation type="unfinished">Geen CPU-temperatuursensor of snelheidsteller leesbaar op deze pc</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="160"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation type="unfinished">Geen temperatuurmeting tijdens de belastingstest (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="119"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="166"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="194"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="126"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="173"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation type="unfinished">Piek %1 °C onder belasting (in rust %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="133"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="179"/>
         <source>Sensor did not react to load (%1 C): not the CPU, cannot judge</source>
         <translation type="unfinished">Sensor reageerde niet op de belasting (%1 °C): niet de CPU, geen oordeel mogelijk</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="189"/>
+        <source>No speed reading during the load test (see details)</source>
+        <translation type="unfinished">Geen snelheidsmeting tijdens de belastingstest (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="208"/>
+        <source>speed %1 % of base</source>
+        <translation type="unfinished">snelheid %1 % van de basissnelheid</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="212"/>
+        <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
+        <translation type="unfinished">vertraagd tot %1 % van de basissnelheid op batterij: sluit de lader aan en druk opnieuw op STARTEN</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
+        <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
+        <translation type="unfinished">vertraagd tot %1 % van de basissnelheid onder belasting: oververhit? (ventilator, stof, koelpasta)</translation>
     </message>
 </context>
 <context>
@@ -350,87 +371,87 @@ Open ze om de andere controles aan te vullen.</translation>
         <translation type="unfinished">Schijven (SMART)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="129"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="114"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation type="unfinished">%1: geen SMART (USB-stick of kaartlezer?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="84"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="69"/>
         <source>%1: smartctl failed (see details)</source>
         <translation type="unfinished">%1: smartctl mislukt (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="78"/>
         <source>%1: unreadable smartctl output (see details)</source>
         <translation type="unfinished">%1: onleesbare uitvoer van smartctl (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="105"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="90"/>
         <source>%1: cannot open the disk, administrator rights needed (see details)</source>
         <translation type="unfinished">%1: kan de schijf niet openen, beheerdersrechten nodig (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="130"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="115"/>
         <source>%1: no SMART health status (see details)</source>
         <translation type="unfinished">%1: geen SMART-gezondheidsstatus (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="121"/>
         <source>SMART OK</source>
         <translation type="unfinished">SMART OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="121"/>
         <source>SMART FAILED</source>
         <translation type="unfinished">SMART MISLUKT</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="146"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="131"/>
         <source>%1 reallocated</source>
         <translation type="unfinished">%1 opnieuw toegewezen</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="147"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="132"/>
         <source>%1 pending</source>
         <translation type="unfinished">%1 in afwachting</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="148"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="133"/>
         <source>%1% worn</source>
         <translation type="unfinished">%1% versleten</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="158"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="143"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation type="unfinished">geen drempel %1 in thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="181"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="166"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation type="unfinished">smartctl niet gevonden: laat de map tools naast het programma staan (Linux: installeer smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="183"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="168"/>
         <source>Could not list the disks (see details)</source>
         <translation type="unfinished">Kan de schijven niet oplijsten (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="174"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation type="unfinished">Geen schijf gevonden: controleer het BIOS (Intel RST-, VMD- of RAID-modus kan schijven verbergen)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="201"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord geannuleerd of fout: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="202"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord niet op tijd getypt: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="218"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="203"/>
         <source>No disk with SMART data</source>
         <translation type="unfinished">Geen schijf met SMART-gegevens</translation>
     </message>
@@ -780,12 +801,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="33"/>
+        <location filename="../src/main.cpp" line="41"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="34"/>
+        <location filename="../src/main.cpp" line="42"/>
         <source>thresholds.json not loaded:
 %1
 

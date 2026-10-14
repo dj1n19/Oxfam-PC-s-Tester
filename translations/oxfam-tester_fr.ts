@@ -221,39 +221,60 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>CpuTempTest</name>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.h" line="23"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.h" line="25"/>
         <source>CPU temperature</source>
         <translation>Température CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="98"/>
-        <source>No CPU temperature sensor readable on this PC</source>
-        <translation>Aucun capteur de température CPU lisible sur ce PC</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="92"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="105"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation>Impossible de lire la température CPU (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="113"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="111"/>
+        <source>No CPU temperature sensor or speed counter readable on this PC</source>
+        <translation>Aucun capteur de température ni compteur de vitesse CPU lisible sur ce PC</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="160"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation>Aucune mesure de température pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="119"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="166"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="194"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="126"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="173"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation>Pic %1 °C en charge (au repos %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="133"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="179"/>
         <source>Sensor did not react to load (%1 C): not the CPU, cannot judge</source>
         <translation>Le capteur n&apos;a pas réagi à la charge (%1 °C) : ce n&apos;est pas le CPU, impossible de juger</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="189"/>
+        <source>No speed reading during the load test (see details)</source>
+        <translation>Aucune mesure de vitesse pendant le test en charge (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="208"/>
+        <source>speed %1 % of base</source>
+        <translation>vitesse %1 % de la fréquence de base</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="212"/>
+        <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
+        <translation>ralenti à %1 % de la fréquence de base sur batterie : branchez le chargeur et appuyez à nouveau sur DÉMARRER</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
+        <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
+        <translation>ralenti à %1 % de la fréquence de base en charge : surchauffe ? (ventilateur, poussière, pâte thermique)</translation>
     </message>
 </context>
 <context>
@@ -350,87 +371,87 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
         <translation>Disques (SMART)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="129"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="114"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation>%1 : pas de SMART (clé USB ou lecteur de cartes ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="84"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="69"/>
         <source>%1: smartctl failed (see details)</source>
         <translation>%1 : échec de smartctl (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="78"/>
         <source>%1: unreadable smartctl output (see details)</source>
         <translation>%1 : sortie de smartctl illisible (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="105"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="90"/>
         <source>%1: cannot open the disk, administrator rights needed (see details)</source>
         <translation>%1 : impossible d&apos;ouvrir le disque, droits administrateur nécessaires (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="130"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="115"/>
         <source>%1: no SMART health status (see details)</source>
         <translation>%1 : pas d&apos;état de santé SMART (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="121"/>
         <source>SMART OK</source>
         <translation>SMART OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="121"/>
         <source>SMART FAILED</source>
         <translation>SMART EN ÉCHEC</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="146"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="131"/>
         <source>%1 reallocated</source>
         <translation>%1 réalloués</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="147"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="132"/>
         <source>%1 pending</source>
         <translation>%1 en attente</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="148"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="133"/>
         <source>%1% worn</source>
         <translation>usure %1 %</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="158"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="143"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation>pas de seuil %1 dans thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="181"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="166"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation>smartctl introuvable : gardez le dossier tools à côté du programme (Linux : installez smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="183"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="168"/>
         <source>Could not list the disks (see details)</source>
         <translation>Impossible de lister les disques (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="174"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation>Aucun disque trouvé : vérifiez le BIOS (les modes Intel RST, VMD ou RAID peuvent cacher les disques)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="201"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation>Mot de passe administrateur annulé ou incorrect : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="202"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation>Mot de passe administrateur pas tapé à temps : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="218"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="203"/>
         <source>No disk with SMART data</source>
         <translation>Aucun disque avec des données SMART</translation>
     </message>
@@ -780,12 +801,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="33"/>
+        <location filename="../src/main.cpp" line="41"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="34"/>
+        <location filename="../src/main.cpp" line="42"/>
         <source>thresholds.json not loaded:
 %1
 

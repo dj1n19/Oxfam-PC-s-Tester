@@ -15,21 +15,6 @@ namespace {
 constexpr int kBitCommandLine = 0x01;   // bad arguments
 constexpr int kBitOpenFailed  = 0x02;   // device open failed: usually no root/admin
 
-// Order used to combine several disks into one row.
-int severity(Status s)
-{
-    switch (s) {
-    case Status::Fail:    return 4;
-    case Status::Error:   return 3;
-    case Status::Warn:    return 2;
-    case Status::Pass:    return 1;
-    case Status::Skipped: return 0;
-    }
-    return 3;
-}
-
-Status worse(Status a, Status b) { return severity(a) >= severity(b) ? a : b; }
-
 // 1234567 -> "1234567" (QString::arg(double) would give "1.23457e+06")
 QString whole(double v) { return QString::number(v, 'f', 0); }
 

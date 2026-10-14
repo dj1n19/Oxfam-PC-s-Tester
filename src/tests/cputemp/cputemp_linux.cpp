@@ -36,10 +36,10 @@ bool isCpuDriver(const QString& name)
 
 // One hwmon CPU driver: the package/die value if labelled, else the hottest
 // input. Tctl on some old Ryzen has a +20 C offset, so Tdie is preferred.
-std::optional<CpuTempReading> readHwmon(const QDir& dir, const QString& name, QString& raw)
+std::optional<CpuReading> readHwmon(const QDir& dir, const QString& name, QString& raw)
 {
-    std::optional<CpuTempReading> hottest;
-    std::optional<CpuTempReading> preferred;
+    std::optional<CpuReading> hottest;
+    std::optional<CpuReading> preferred;
     int preferredRank = 99;
     const QStringList preferredLabels = {QStringLiteral("Package id 0"), QStringLiteral("Tdie"),
                                          QStringLiteral("Tctl")};
@@ -52,8 +52,8 @@ std::optional<CpuTempReading> readHwmon(const QDir& dir, const QString& name, QS
         const QString label = readText(dir.filePath(prefix + QStringLiteral("_label"))).value_or(prefix);
         raw += QStringLiteral("%1 %2: %3 C\n").arg(name, label).arg(*c, 0, 'f', 1);
 
-        CpuTempReading r;
-        r.available = true;
+        CpuReading r;
+        r.hasTemp = true;
         r.celsius = *c;
         r.source = name + QLatin1Char(' ') + label;
         if (!hottest || r.celsius > hottest->celsius)
@@ -67,9 +67,8 @@ std::optional<CpuTempReading> readHwmon(const QDir& dir, const QString& name, QS
     return preferred ? preferred : hottest;
 }
 
-} // namespace
-
-CpuTempReading readCpuTemperature()
+// The temperature part of readCpu(): hwmon first, then thermal zones.
+CpuReading readTemperature()
 {
     QString raw;
 
@@ -99,8 +98,8 @@ CpuTempReading readCpuTemperature()
             if (!c)
                 continue;
             raw += QStringLiteral("%1 %2: %3 C\n").arg(zone, wanted).arg(*c, 0, 'f', 1);
-            CpuTempReading r;
-            r.available = true;
+            CpuReading r;
+            r.hasTemp = true;
             r.celsius = *c;
             r.source = wanted;
             r.raw = raw;
@@ -108,7 +107,75 @@ CpuTempReading readCpuTemperature()
         }
     }
 
-    CpuTempReading r;   // available = false: Skipped, not Error
-    r.raw = raw.isEmpty() ? QStringLiteral("No coretemp/k10temp/zenpower hwmon, no x86_pkg_temp/acpitz zone") : raw;
+    CpuReading r;   // hasTemp = false: no sensor, not Error
+    r.raw = raw.isEmpty() ? QStringLiteral("No coretemp/k10temp/zenpower hwmon, no x86_pkg_temp/acpitz zone\n") : raw;
+    return r;
+}
+
+std::optional<double> readKhz(const QString& path)
+{
+    bool ok = false;
+    const double khz = readText(path).value_or(QString()).toDouble(&ok);
+    return ok && khz > 0 ? std::optional<double>(khz) : std::nullopt;
+}
+
+// Average current speed of every core, in % of the base speed. Only the
+// intel_pstate driver gives the base speed (base_frequency, no root needed);
+// other drivers (AMD, acpi-cpufreq) leave hasSpeed false.
+void readSpeed(CpuReading& r)
+{
+    const QDir cpus(QStringLiteral("/sys/devices/system/cpu"));
+    double cur = 0, base = 0;
+    int cores = 0;
+    for (const QString& cpu : cpus.entryList({QStringLiteral("cpu[0-9]*")}, QDir::Dirs, QDir::Name)) {
+        const QString dir = cpus.filePath(cpu) + QStringLiteral("/cpufreq/");
+        const auto c = readKhz(dir + QStringLiteral("scaling_cur_freq"));
+        const auto b = readKhz(dir + QStringLiteral("base_frequency"));
+        if (!c || !b)
+            continue;
+        cur += *c;
+        base += *b;
+        ++cores;
+    }
+    if (cores == 0) {
+        r.raw += QStringLiteral("Speed: no cpufreq base_frequency (only intel_pstate has it)\n");
+        return;
+    }
+    r.hasSpeed = true;
+    r.speedPct = 100.0 * cur / base;
+    r.raw += QStringLiteral("Speed: %1 cores, average %2 MHz, base %3 MHz = %4 %\n")
+                 .arg(cores).arg(cur / cores / 1000, 0, 'f', 0).arg(base / cores / 1000, 0, 'f', 0)
+                 .arg(r.speedPct, 0, 'f', 0);
+}
+
+// On battery = a battery exists, and a charger input exists but none is
+// online. Unknown (no charger input listed) counts as "not on battery":
+// better no hint than a wrong one. USB-C chargers show up as type "USB".
+void readPower(CpuReading& r)
+{
+    const QDir supplies(QStringLiteral("/sys/class/power_supply"));
+    bool battery = false, charger = false, online = false;
+    for (const QString& entry : supplies.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
+        const QDir dir(supplies.filePath(entry));
+        const QString type = readText(dir.filePath(QStringLiteral("type"))).value_or(QString());
+        if (type == QLatin1String("Battery")) {
+            battery = true;
+        } else if (type == QLatin1String("Mains") || type == QLatin1String("USB")) {
+            charger = true;
+            online = online || readText(dir.filePath(QStringLiteral("online"))) == QLatin1String("1");
+        }
+    }
+    r.onBattery = battery && charger && !online;
+    if (r.onBattery)
+        r.raw += QStringLiteral("Power: on battery\n");
+}
+
+} // namespace
+
+CpuReading readCpu()
+{
+    CpuReading r = readTemperature();
+    readSpeed(r);
+    readPower(r);
     return r;
 }

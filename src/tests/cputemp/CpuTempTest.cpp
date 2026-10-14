@@ -18,6 +18,11 @@ constexpr int kLoadSeconds = 30;
 // does not move is not measuring the CPU (fixed ACPI zone on some PCs).
 constexpr double kMinRiseC = 1.0;
 
+// The first seconds of load do not count for the speed: the cores are still
+// waking up. Real Latitude 7420: 266 % of base from the start, then a slow fall
+// to ~240 % as Intel's turbo budget (~28 s) runs out: normal, not throttling.
+constexpr int kSettleMs = 5000;
+
 // Keeps one core busy until stop is set. The result goes to an atomic so the
 // compiler cannot remove the loop as "useless".
 void burn(const std::atomic<bool>& stop, std::atomic<double>& sink)
@@ -49,13 +54,14 @@ CpuLoadRun CpuTempTest::runLoad(int seconds)
 {
     CpuLoadRun run;
     run.seconds = seconds;
-    run.idle = readCpuTemperature();
-    if (!run.idle.error.isEmpty() || !run.idle.available)
+    run.idle = readCpu();
+    run.onBattery = run.idle.onBattery;
+    if (!run.idle.error.isEmpty() || (!run.idle.hasTemp && !run.idle.hasSpeed))
         return run;   // nothing to watch: do not heat the CPU for nothing
 
     // Plain QThreads, not the QtConcurrent pool: this function already runs
-    // in that pool. Low priority so the temperature readings (PowerShell on
-    // Windows) still get CPU time while every core is busy.
+    // in that pool. Low priority so the readings (PowerShell on Windows)
+    // still get CPU time while every core is busy.
     std::atomic<bool> stop{false};
     std::atomic<double> sink{0};
     std::vector<std::unique_ptr<QThread>> workers;
@@ -69,11 +75,18 @@ CpuLoadRun CpuTempTest::runLoad(int seconds)
     timer.start();
     while (timer.elapsed() < seconds * 1000LL) {
         QThread::msleep(1000);   // worker thread: sleeping here never blocks the UI
-        const CpuTempReading r = readCpuTemperature();
-        if (r.error.isEmpty() && r.available)
+        const CpuReading r = readCpu();
+        if (!r.error.isEmpty()) {
+            run.sampleErrors += r.error + QLatin1Char('\n');
+            continue;
+        }
+        if (r.hasTemp)
             run.samples.push_back(r.celsius);
-        else
-            run.sampleErrors += (r.error.isEmpty() ? QStringLiteral("no reading") : r.error) + QLatin1Char('\n');
+        else if (run.idle.hasTemp)
+            run.sampleErrors += QStringLiteral("no temperature\n");
+        if (r.hasSpeed && timer.elapsed() >= kSettleMs)
+            run.speeds.push_back(r.speedPct);
+        run.onBattery = run.onBattery || r.onBattery;
     }
 
     stop.store(true);
@@ -85,7 +98,7 @@ CpuLoadRun CpuTempTest::runLoad(int seconds)
 TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresholds)
 {
     TestResult r;
-    const CpuTempReading& idle = run.idle;
+    const CpuReading& idle = run.idle;
 
     if (!idle.error.isEmpty()) {
         r.status = Status::Error;
@@ -93,21 +106,55 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
         r.details = idle.error + QLatin1Char('\n') + idle.raw;
         return r;
     }
-    if (!idle.available) {
+    if (!idle.hasTemp && !idle.hasSpeed) {
         r.status = Status::Skipped;
-        r.summary = tr("No CPU temperature sensor readable on this PC");
+        r.summary = tr("No CPU temperature sensor or speed counter readable on this PC");
         r.details = idle.raw;
         return r;
     }
 
-    r.details = QStringLiteral("Sensor: %1\nIdle: %2 C\nLoad: %3 threads, %4 s\nSamples (C):")
-                    .arg(idle.source).arg(idle.celsius, 0, 'f', 1).arg(run.threads).arg(run.seconds);
-    for (double c : run.samples)
-        r.details += QStringLiteral(" %1").arg(c, 0, 'f', 1);
+    r.details = QStringLiteral("Load: %1 threads, %2 s\n").arg(run.threads).arg(run.seconds);
+    if (idle.hasTemp) {
+        r.details += QStringLiteral("Sensor: %1\nIdle: %2 C\nTemperatures (C):")
+                         .arg(idle.source).arg(idle.celsius, 0, 'f', 1);
+        for (double c : run.samples)
+            r.details += QStringLiteral(" %1").arg(c, 0, 'f', 1);
+        r.details += QLatin1Char('\n');
+    }
+    if (idle.hasSpeed) {
+        r.details += QStringLiteral("Idle speed: %1 % of base\nSpeeds under load (% of base, first %2 s left out):")
+                         .arg(idle.speedPct, 0, 'f', 0).arg(kSettleMs / 1000);
+        for (double p : run.speeds)
+            r.details += QStringLiteral(" %1").arg(p, 0, 'f', 0);
+        r.details += QLatin1Char('\n');
+    }
+    if (run.onBattery)
+        r.details += QStringLiteral("On battery during the test\n");
     if (!run.sampleErrors.isEmpty())
-        r.details += QStringLiteral("\nFailed readings:\n") + run.sampleErrors;
-    r.details += QStringLiteral("\n\nAt rest:\n") + idle.raw;
+        r.details += QStringLiteral("Failed readings:\n") + run.sampleErrors;
+    r.details += QStringLiteral("\nAt rest:\n") + idle.raw;
 
+    // Each half gives a status and a part of the summary; the worse status wins.
+    r.status = Status::Skipped;
+    QStringList parts;
+    if (idle.hasTemp) {
+        const TestResult temp = judgeTemperature(run, thresholds);
+        r.status = worse(r.status, temp.status);
+        parts << temp.summary;
+    }
+    if (idle.hasSpeed) {
+        const TestResult speed = judgeSpeed(run, thresholds);
+        r.status = worse(r.status, speed.status);
+        parts << speed.summary;
+    }
+    r.summary = parts.join(QStringLiteral(", "));
+    r.summary[0] = r.summary[0].toUpper();   // "speed ..." alone starts the line
+    return r;
+}
+
+TestResult CpuTempTest::judgeTemperature(const CpuLoadRun& run, const Thresholds& thresholds)
+{
+    TestResult r;
     if (run.samples.empty()) {
         r.status = Status::Error;
         r.summary = tr("No temperature reading during the load test (see details)");
@@ -120,18 +167,53 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
         return r;
     }
 
-    const double peak = std::max(idle.celsius, *std::max_element(run.samples.begin(), run.samples.end()));
-    const double rise = peak - idle.celsius;
+    const double idle = run.idle.celsius;
+    const double peak = std::max(idle, *std::max_element(run.samples.begin(), run.samples.end()));
     r.status = thresholds.evaluate(QStringLiteral("cpu_temp_peak_c"), peak);
-    r.summary = tr("Peak %1 C under load (idle %2 C)")
-                    .arg(peak, 0, 'f', 0).arg(idle.celsius, 0, 'f', 0);
+    r.summary = tr("Peak %1 C under load (idle %2 C)").arg(peak, 0, 'f', 0).arg(idle, 0, 'f', 0);
 
     // Too hot is reported whatever the sensor. But "cool" from a sensor that
     // ignores the load proves nothing: no green for it.
-    if (r.status == Status::Pass && rise < kMinRiseC) {
+    if (r.status == Status::Pass && peak - idle < kMinRiseC) {
         r.status = Status::Skipped;
-        r.summary = tr("Sensor did not react to load (%1 C): not the CPU, cannot judge")
-                        .arg(peak, 0, 'f', 0);
+        r.summary = tr("Sensor did not react to load (%1 C): not the CPU, cannot judge").arg(peak, 0, 'f', 0);
+    }
+    return r;
+}
+
+TestResult CpuTempTest::judgeSpeed(const CpuLoadRun& run, const Thresholds& thresholds)
+{
+    TestResult r;
+    if (run.speeds.empty()) {
+        r.status = Status::Error;
+        r.summary = tr("No speed reading during the load test (see details)");
+        return r;
+    }
+    if (!thresholds.has(QStringLiteral("cpu_speed_min_pct"))) {
+        r.status = Status::Error;
+        r.summary = tr("thresholds.json missing or incomplete: copy the whole program folder again");
+        return r;
+    }
+
+    // Overheating lasts: once too hot, the CPU stays slow (throttles below its
+    // base speed). A single reading is a snapshot and can dip for a moment
+    // (real Arch run: 220 % with dips to 162 %), so we take the median of the
+    // second half, the hottest part: one dip cannot move it.
+    std::vector<double> late(run.speeds.begin() + static_cast<std::ptrdiff_t>(run.speeds.size() / 2),
+                             run.speeds.end());
+    std::sort(late.begin(), late.end());
+    const double typical = late[late.size() / 2];
+    r.status = thresholds.evaluate(QStringLiteral("cpu_speed_min_pct"), typical);
+    if (r.status == Status::Pass) {
+        r.summary = tr("speed %1 % of base").arg(typical, 0, 'f', 0);
+    } else if (run.onBattery) {
+        // Windows and Linux slow the CPU on battery on purpose: never a Fail.
+        r.status = Status::Warn;
+        r.summary = tr("slowed to %1 % of base speed on battery: plug in the charger and press START again")
+                        .arg(typical, 0, 'f', 0);
+    } else {
+        r.summary = tr("slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)")
+                        .arg(typical, 0, 'f', 0);
     }
     return r;
 }
