@@ -150,32 +150,32 @@ Waar hoorde u hem?</translation>
 <context>
     <name>CameraDialog</name>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="21"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="23"/>
         <source>Camera test</source>
         <translation type="unfinished">Cameratest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="25"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="27"/>
         <source>Look at the camera. The test ends by itself when a picture is seen.</source>
         <translation type="unfinished">Kijk naar de camera. De test stopt vanzelf zodra er een beeld is.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="33"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="35"/>
         <source>Starting camera...</source>
         <translation type="unfinished">Camera wordt gestart...</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="42"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="44"/>
         <source>Camera is broken</source>
         <translation type="unfinished">Camera is defect</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="43"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="45"/>
         <source>Skip</source>
         <translation type="unfinished">Overslaan</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="121"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="123"/>
         <source>The picture stays black or uniform. Open the privacy shutter or uncover the lens. If it does not change, click &quot;Camera is broken&quot;.</source>
         <translation type="unfinished">Het beeld blijft zwart of egaal. Open het privacyschuifje of maak de lens vrij. Verandert er niets, klik dan op &quot;Camera is defect&quot;.</translation>
     </message>
@@ -591,29 +591,29 @@ Open ze om de andere controles aan te vullen.</translation>
 <context>
     <name>KeyboardDialog</name>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="70"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="75"/>
         <source>Keyboard test</source>
         <translation type="unfinished">Toetsenbordtest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="75"/>
-        <source>Press every key once. Pressed keys turn green. Dashed keys are optional (they may not exist on this keyboard). Hold Fn if F1-F12 change brightness or volume instead.
-Mute, volume and PrtSc may be caught by the system and stay white: if the volume pop-up or the screenshot tool appears, the key works.</source>
-        <translation type="unfinished">Druk elke toets één keer in. Ingedrukte toetsen worden groen. Gestippelde toetsen zijn optioneel (ze bestaan misschien niet op dit toetsenbord). Houd Fn ingedrukt als F1-F12 in plaats daarvan de helderheid of het volume wijzigen.
-Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven: verschijnt het volumevenster of het schermafbeeldingsprogramma, dan werkt de toets.</translation>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="80"/>
+        <source>Press every key once. Pressed keys light up. Dashed keys are optional (they may not exist on this keyboard). Hold Fn if F1-F12 change brightness or volume instead.
+Mute, volume and PrtSc may be caught by the system and stay dark: if the volume pop-up or the screenshot tool appears, the key works.</source>
+        <translation type="unfinished">Druk elke toets één keer in. Ingedrukte toetsen lichten op. Gestippelde toetsen zijn optioneel (ze bestaan misschien niet op dit toetsenbord). Houd Fn ingedrukt als F1-F12 in plaats daarvan de helderheid of het volume wijzigen.
+Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blijven: verschijnt het volumevenster of het schermafbeeldingsprogramma, dan werkt de toets.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="92"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="97"/>
         <source>A key does not work</source>
         <translation type="unfinished">Een toets werkt niet</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="93"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="98"/>
         <source>Skip (no keyboard)</source>
         <translation type="unfinished">Overslaan (geen toetsenbord)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="148"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="153"/>
         <source>%1 / %2 keys done</source>
         <translation type="unfinished">%1 / %2 toetsen gedaan</translation>
     </message>
@@ -732,47 +732,47 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="129"/>
-        <source>Oxfam PC Tester</source>
-        <translation type="unfinished">Oxfam PC Tester</translation>
+        <location filename="../src/ui/MainWindow.cpp" line="121"/>
+        <source>Lazy Djin&apos;s Tester</source>
+        <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="130"/>
+        <location filename="../src/ui/MainWindow.cpp" line="122"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="131"/>
+        <location filename="../src/ui/MainWindow.cpp" line="123"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="124"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="124"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="124"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="133"/>
+        <location filename="../src/ui/MainWindow.cpp" line="125"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="145"/>
+        <location filename="../src/ui/MainWindow.cpp" line="137"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="147"/>
+        <location filename="../src/ui/MainWindow.cpp" line="139"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
@@ -780,12 +780,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en wit blijven
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="31"/>
+        <location filename="../src/main.cpp" line="33"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="32"/>
+        <location filename="../src/main.cpp" line="34"/>
         <source>thresholds.json not loaded:
 %1
 

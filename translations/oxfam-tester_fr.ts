@@ -150,32 +150,32 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>CameraDialog</name>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="21"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="23"/>
         <source>Camera test</source>
         <translation>Test caméra</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="25"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="27"/>
         <source>Look at the camera. The test ends by itself when a picture is seen.</source>
         <translation>Regardez la caméra. Le test se termine seul dès qu&apos;une image est vue.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="33"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="35"/>
         <source>Starting camera...</source>
         <translation>Démarrage de la caméra...</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="42"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="44"/>
         <source>Camera is broken</source>
         <translation>La caméra est en panne</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="43"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="45"/>
         <source>Skip</source>
         <translation>Passer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="121"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="123"/>
         <source>The picture stays black or uniform. Open the privacy shutter or uncover the lens. If it does not change, click &quot;Camera is broken&quot;.</source>
         <translation>L&apos;image reste noire ou uniforme. Ouvrez le cache de la caméra ou dégagez l&apos;objectif. Si rien ne change, cliquez sur « La caméra est en panne ».</translation>
     </message>
@@ -591,29 +591,29 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
 <context>
     <name>KeyboardDialog</name>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="70"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="75"/>
         <source>Keyboard test</source>
         <translation>Test clavier</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="75"/>
-        <source>Press every key once. Pressed keys turn green. Dashed keys are optional (they may not exist on this keyboard). Hold Fn if F1-F12 change brightness or volume instead.
-Mute, volume and PrtSc may be caught by the system and stay white: if the volume pop-up or the screenshot tool appears, the key works.</source>
-        <translation>Appuyez une fois sur chaque touche. Les touches enfoncées deviennent vertes. Les touches en pointillés sont facultatives (elles peuvent ne pas exister sur ce clavier). Maintenez Fn si F1-F12 changent la luminosité ou le volume.
-Muet, volume et Impr écran peuvent être captés par le système et rester blancs : si la fenêtre du volume ou l&apos;outil de capture d&apos;écran apparaît, la touche fonctionne.</translation>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="80"/>
+        <source>Press every key once. Pressed keys light up. Dashed keys are optional (they may not exist on this keyboard). Hold Fn if F1-F12 change brightness or volume instead.
+Mute, volume and PrtSc may be caught by the system and stay dark: if the volume pop-up or the screenshot tool appears, the key works.</source>
+        <translation>Appuyez une fois sur chaque touche. Les touches enfoncées s&apos;allument. Les touches en pointillés sont facultatives (elles peuvent ne pas exister sur ce clavier). Maintenez Fn si F1-F12 changent la luminosité ou le volume.
+Muet, volume et Impr écran peuvent être captés par le système et rester éteints : si la fenêtre du volume ou l&apos;outil de capture d&apos;écran apparaît, la touche fonctionne.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="92"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="97"/>
         <source>A key does not work</source>
         <translation>Une touche ne fonctionne pas</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="93"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="98"/>
         <source>Skip (no keyboard)</source>
         <translation>Passer (pas de clavier)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="148"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="153"/>
         <source>%1 / %2 keys done</source>
         <translation>%1 / %2 touches faites</translation>
     </message>
@@ -732,47 +732,47 @@ Muet, volume et Impr écran peuvent être captés par le système et rester blan
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="129"/>
-        <source>Oxfam PC Tester</source>
-        <translation>Oxfam PC Tester</translation>
+        <location filename="../src/ui/MainWindow.cpp" line="121"/>
+        <source>Lazy Djin&apos;s Tester</source>
+        <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="130"/>
+        <location filename="../src/ui/MainWindow.cpp" line="122"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="131"/>
+        <location filename="../src/ui/MainWindow.cpp" line="123"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="124"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="124"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="124"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="133"/>
+        <location filename="../src/ui/MainWindow.cpp" line="125"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="145"/>
+        <location filename="../src/ui/MainWindow.cpp" line="137"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="147"/>
+        <location filename="../src/ui/MainWindow.cpp" line="139"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
@@ -780,12 +780,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester blan
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="31"/>
+        <location filename="../src/main.cpp" line="33"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="32"/>
+        <location filename="../src/main.cpp" line="34"/>
         <source>thresholds.json not loaded:
 %1
 

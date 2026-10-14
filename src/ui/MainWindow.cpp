@@ -14,6 +14,7 @@
 #include "core/TestRunner.h"
 #include "core/Verdict.h"
 #include "ui/Language.h"
+#include "ui/Theme.h"
 
 namespace {
 
@@ -24,19 +25,9 @@ enum Column { ColStatus, ColTest, ColSummary, ColCount };
 constexpr int kWaiting = -1;
 constexpr int kRunning = -2;
 
-QColor colorFor(Status s)
-{
-    switch (s) {
-    case Status::Pass:    return QColor("#c8e6c9");
-    case Status::Warn:    return QColor("#ffe0b2");
-    case Status::Fail:    return QColor("#ffcdd2");
-    case Status::Error:   return QColor("#e1bee7");
-    case Status::Skipped: return QColor("#eeeeee");
-    }
-    return QColor("#ffffff");
-}
-
-void setCell(QTableWidget* table, int row, int col, const QString& text, const QColor& bg)
+// Terminal look: coloured text on the dark table, not coloured cells.
+void setCell(QTableWidget* table, int row, int col, const QString& text, const QColor& color,
+             const QIcon& icon = {})
 {
     auto* item = table->item(row, col);
     if (!item) {
@@ -45,8 +36,8 @@ void setCell(QTableWidget* table, int row, int col, const QString& text, const Q
         table->setItem(row, col, item);   // the table takes ownership
     }
     item->setText(text);
-    item->setBackground(bg);
-    item->setForeground(QColor("#000000"));   // readable on any desktop theme
+    item->setForeground(color);
+    item->setIcon(icon);
 }
 
 } // namespace
@@ -61,6 +52,7 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
 
     auto* top = new QHBoxLayout;
     m_startButton = new QPushButton(central);
+    m_startButton->setObjectName(QStringLiteral("startButton"));   // bigger, see Theme.cpp
     m_startButton->setMinimumHeight(48);
     top->addWidget(m_startButton, 1);
 
@@ -126,7 +118,7 @@ void MainWindow::changeEvent(QEvent* event)
 // and details of tests already run are not here: they stay as they were made.
 void MainWindow::retranslateUi()
 {
-    setWindowTitle(tr("Oxfam PC Tester"));
+    setWindowTitle(tr("Lazy Djin's Tester"));
     m_startButton->setText(tr("START"));
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
@@ -142,12 +134,12 @@ void MainWindow::retranslateUi()
 void MainWindow::setStatusCell(int row, int state)
 {
     if (state == kWaiting) {
-        setCell(m_table, row, ColStatus, tr("WAITING"), QColor("#ffffff"));
+        setCell(m_table, row, ColStatus, tr("WAITING"), Theme::waitingColor());
     } else if (state == kRunning) {
-        setCell(m_table, row, ColStatus, tr("RUNNING"), QColor("#bbdefb"));
+        setCell(m_table, row, ColStatus, tr("RUNNING"), Theme::runningColor(), Theme::runningIcon());
     } else {
         const auto s = static_cast<Status>(state);
-        setCell(m_table, row, ColStatus, statusLabel(s), colorFor(s));
+        setCell(m_table, row, ColStatus, statusLabel(s), Theme::statusColor(s), Theme::statusIcon(s));
     }
     m_table->item(row, ColStatus)->setData(Qt::UserRole, state);
 }
@@ -156,8 +148,8 @@ void MainWindow::resetRows()
 {
     for (int i = 0; i < m_runner.count(); ++i) {
         setStatusCell(i, kWaiting);
-        setCell(m_table, i, ColTest, m_runner.test(i).name(), QColor("#ffffff"));
-        setCell(m_table, i, ColSummary, QString(), QColor("#ffffff"));
+        setCell(m_table, i, ColTest, m_runner.test(i).name(), Theme::text());
+        setCell(m_table, i, ColSummary, QString(), Theme::text());
         m_table->item(i, ColTest)->setData(Qt::UserRole, QString());
     }
     m_details->clear();
@@ -183,9 +175,8 @@ void MainWindow::onTestStarted(int row)
 
 void MainWindow::onTestFinished(int row, const TestResult& result)
 {
-    const QColor bg = colorFor(result.status);
     setStatusCell(row, static_cast<int>(result.status));
-    setCell(m_table, row, ColSummary, result.summary, bg);
+    setCell(m_table, row, ColSummary, result.summary, Theme::text());
     m_table->item(row, ColTest)->setData(Qt::UserRole, result.details);
     m_statuses.push_back(result.status);
     m_results[static_cast<size_t>(row)] = result;
@@ -198,8 +189,8 @@ void MainWindow::onAllFinished()
     const Verdict v = computeVerdict(m_statuses);
     m_verdict->setText(v.text);
     m_verdict->setStyleSheet(
-        QStringLiteral("background:%1; color:black; font-size:20px; font-weight:bold;")
-            .arg(colorFor(v.level).name()));
+        QStringLiteral("color:%1; border:2px solid %1; font-size:18pt; font-weight:bold; padding:6px;")
+            .arg(Theme::statusColor(v.level).name()));
     m_startButton->setEnabled(true);
     m_deliveryButton->setEnabled(true);
     m_language->setEnabled(true);

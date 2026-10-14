@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QVideoFrame>
 
+#include "ui/Theme.h"
+
 namespace {
 constexpr int kAnalyseEveryMs = 250;   // converting frames is not free
 constexpr int kGoodFramesForPass = 4;  // about 1 s of real picture
@@ -29,13 +31,13 @@ CameraDialog::CameraDialog(const QCameraDevice& device, QWidget* parent)
     m_preview = new QLabel(this);
     m_preview->setFixedSize(480, 360);
     m_preview->setAlignment(Qt::AlignCenter);
-    m_preview->setStyleSheet(QStringLiteral("background:#000000; color:#ffffff;"));
+    m_preview->setStyleSheet(QStringLiteral("background:#000000; border:1px solid %1;").arg(Theme::dimText().name()));
     m_preview->setText(tr("Starting camera..."));
     top->addWidget(m_preview);
 
     m_prompt = new QLabel(this);
     m_prompt->setWordWrap(true);
-    m_prompt->setStyleSheet(QStringLiteral("font-weight:bold; color:#b71c1c;"));
+    m_prompt->setStyleSheet(QStringLiteral("font-weight:bold; color:%1;").arg(Theme::statusColor(Status::Warn).name()));
     m_prompt->hide();
     top->addWidget(m_prompt);
 

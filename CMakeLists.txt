@@ -110,12 +110,14 @@ ox_enable_warnings(oxcore)
 # The application (UI layer)
 # ---------------------------------------------------------------------------
 # WIN32: a Windows GUI program (no console window). Ignored on Linux.
-add_executable(oxfam-tester WIN32
+add_executable(lazy-djin-tester WIN32
     src/main.cpp
     src/ui/MainWindow.h
     src/ui/MainWindow.cpp
     src/ui/Language.h
     src/ui/Language.cpp
+    src/ui/Theme.h
+    src/ui/Theme.cpp                      # dark "terminal" look: every UI colour comes from here
     src/ui/DeliveryAction.h
     src/ui/DeliveryAction.cpp             # "Fill the delivery sheet" button: dialogs + files
     # Interactive tests: ITest + dialog here (they need widgets), logic in oxcore.
@@ -132,7 +134,7 @@ add_executable(oxfam-tester WIN32
     src/ui/interactive/CameraDialog.h
     src/ui/interactive/CameraDialog.cpp
 )
-target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
+target_link_libraries(lazy-djin-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
 
 # Translations. English is the text in the code; fr and nl are in translations/.
 # lrelease compiles each .ts into a .qm, embedded in the executable as the
@@ -140,8 +142,8 @@ target_link_libraries(oxfam-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
 # After changing texts in the code: cmake --build build --target update_translations
 # (runs lupdate on the sources below), then translate the new texts in the .ts files.
 get_target_property(OXCORE_SOURCES oxcore SOURCES)
-get_target_property(APP_SOURCES oxfam-tester SOURCES)
-qt_add_translations(oxfam-tester
+get_target_property(APP_SOURCES lazy-djin-tester SOURCES)
+qt_add_translations(lazy-djin-tester
     TS_FILES
         translations/oxfam-tester_fr.ts
         translations/oxfam-tester_nl.ts
@@ -153,9 +155,9 @@ qt_add_translations(oxfam-tester
 # Windows asks for administrator rights at start (UAC prompt): SMART, WMI
 # licence and driver queries need them. Embedded in the .exe by the linker.
 if(MSVC)
-    target_link_options(oxfam-tester PRIVATE "/MANIFESTUAC:level='requireAdministrator'")
+    target_link_options(lazy-djin-tester PRIVATE "/MANIFESTUAC:level='requireAdministrator'")
 endif()
-ox_enable_warnings(oxfam-tester)
+ox_enable_warnings(lazy-djin-tester)
 
 # Config files are copied next to the executable (portable app).
 # One command per file, with the full destination path: copying several
@@ -164,11 +166,11 @@ ox_enable_warnings(oxfam-tester)
 add_custom_target(copy_config ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_SOURCE_DIR}/config/thresholds.json
-            $<TARGET_FILE_DIR:oxfam-tester>/thresholds.json
+            $<TARGET_FILE_DIR:lazy-djin-tester>/thresholds.json
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_SOURCE_DIR}/config/keyboard_layout.json
-            $<TARGET_FILE_DIR:oxfam-tester>/keyboard_layout.json)
-add_dependencies(oxfam-tester copy_config)
+            $<TARGET_FILE_DIR:lazy-djin-tester>/keyboard_layout.json)
+add_dependencies(lazy-djin-tester copy_config)
 
 # ---------------------------------------------------------------------------
 # Unit tests (ctest)

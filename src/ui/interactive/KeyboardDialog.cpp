@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include "ui/Theme.h"
+
 namespace {
 constexpr int kUnit = 52;      // pixels per key unit
 constexpr int kMargin = 16;
@@ -45,10 +47,13 @@ protected:
                 const double w = k.width * kUnit;
                 if (k.code > 0) {
                     const QRectF r(x, y, w - kSpacing, kUnit - kSpacing);
-                    p.setPen(QPen(QColor("#555555"), 1, k.required ? Qt::SolidLine : Qt::DashLine));
-                    p.setBrush(m_tracker.isPressed(k.code) ? QColor("#81c784") : QColor("#ffffff"));
+                    // Pressed: lit green with dark text, like a terminal cursor.
+                    const bool pressed = m_tracker.isPressed(k.code);
+                    p.setPen(QPen(k.required ? Theme::text() : Theme::dimText(), 1,
+                                  k.required ? Qt::SolidLine : Qt::DashLine));
+                    p.setBrush(pressed ? Theme::text() : Theme::surface());
                     p.drawRoundedRect(r, 4, 4);
-                    p.setPen(k.required ? QColor("#000000") : QColor("#777777"));
+                    p.setPen(pressed ? Theme::background() : (k.required ? Theme::text() : Theme::dimText()));
                     p.drawText(r, Qt::AlignCenter, k.label);
                 }
                 x += w;
@@ -72,10 +77,10 @@ KeyboardDialog::KeyboardDialog(const KeyLayout& layout, QWidget* parent)
     setFocusPolicy(Qt::StrongFocus);
 
     auto* top = new QVBoxLayout(this);
-    auto* help = new QLabel(tr("Press every key once. Pressed keys turn green. "
+    auto* help = new QLabel(tr("Press every key once. Pressed keys light up. "
                                "Dashed keys are optional (they may not exist on this keyboard). "
                                "Hold Fn if F1-F12 change brightness or volume instead.\n"
-                               "Mute, volume and PrtSc may be caught by the system and stay white: "
+                               "Mute, volume and PrtSc may be caught by the system and stay dark: "
                                "if the volume pop-up or the screenshot tool appears, the key works."), this);
     help->setWordWrap(true);
     top->addWidget(help);
@@ -114,7 +119,7 @@ bool KeyboardDialog::event(QEvent* e)
             m_view->update();
             updateStatus();
             if (m_tracker.allRequiredPressed())
-                // Short pause so the technician sees the last key turn green.
+                // Short pause so the technician sees the last key light up.
                 QTimer::singleShot(600, this, [this] { finish(KeyTracker::Outcome::AllPressed); });
         }
         return true;

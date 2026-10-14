@@ -13,6 +13,7 @@
 #include "tests/sysinfo/SystemInfoTest.h"
 #include "ui/Language.h"
 #include "ui/MainWindow.h"
+#include "ui/Theme.h"
 #include "ui/interactive/AudioTest.h"
 #include "ui/interactive/CameraTest.h"
 #include "ui/interactive/KeyboardTest.h"
@@ -20,7 +21,8 @@
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-    QApplication::setApplicationName(QStringLiteral("Oxfam PC Tester"));
+    QApplication::setApplicationName(QStringLiteral("Lazy Djin's Tester"));
+    Theme::apply(app);               // before any window, the start-up warning included
     setLanguage(systemLanguage());   // before any text is shown; the window has a selector
 
     // thresholds.json sits next to the executable (portable app)

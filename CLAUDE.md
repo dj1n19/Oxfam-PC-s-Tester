@@ -1,11 +1,12 @@
-# CLAUDE.md: Oxfam PC Tester
+# CLAUDE.md: Lazy Djin's Tester (Oxfam PC tester)
 
 This file gives Claude Code the context needed to work on this repository.
 Read it fully before changing anything. Update the "Current state" section when a milestone is finished.
 
 ## 1. Project description
 
-A portable Qt6/C++ (Widgets) desktop application used by a technician at Oxfam
+**Lazy Djin's Tester** (name chosen by the developer; executable `lazy-djin-tester`): a portable Qt6/C++ (Widgets)
+desktop application used by a technician at Oxfam
 to check **refurbished desktop and laptop PCs** before they are sold in Oxfam shops.
 
 - Targets: **Windows 10/11 and Linux**. Portable: no installer, no registry or system writes.
@@ -56,7 +57,7 @@ main.cpp                     composition root: the only place that knows every c
 ```
 
 CMake enforces this: the static library `oxcore` (core + tests) links only
-`Qt6::Core` and `Qt6::Concurrent`. The executable `oxfam-tester` adds `Qt6::Widgets`.
+`Qt6::Core` and `Qt6::Concurrent`. The executable `lazy-djin-tester` adds `Qt6::Widgets`.
 Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 
 ### Patterns in use
@@ -120,6 +121,11 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   hand), rebuild (lrelease, `.qm` embedded as `:/i18n/`). Unit tests run without a translator: they see English.
   The language is picked in `src/ui/Language.cpp` (system fr/nl, else en) and changed live by the selector in
   `MainWindow` (disabled during a run; `retranslateUi()` on `QEvent::LanguageChange`).
+- **Look:** dark "old terminal" theme (developer's choice): Fusion style + fixed palette + monospace font list
+  (Consolas / DejaVu Sans Mono..., nothing shipped), set by `Theme::apply()` in `main.cpp`. **Every UI colour comes from
+  `src/ui/Theme.h`**: no colour literals in other UI files. Status = coloured text + a code-drawn icon whose shape also
+  differs (check, !, cross, ?, dash) for colour-blind technicians. Don't put a style sheet on QComboBox itself (Qt then
+  draws its arrow natively: a white box).
 - Headers use `#pragma once`. Include paths are relative to `src/` (e.g. `#include "core/ITest.h"`).
 - Any header with `Q_OBJECT` and no matching `.cpp` must be listed in `add_library` / `add_executable` so AUTOMOC runs on it (see `ITest.h`).
 - Golden samples go in `unittests/samples/` as files, not as raw string literals in `test_core.cpp`:
@@ -138,7 +144,7 @@ sudo pacman -S base-devel cmake ninja gdb clang git qt6-base qt6-multimedia qt6-
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ln -sf build/compile_commands.json .          # clangd in Pulsar
-./build/oxfam-tester
+./build/lazy-djin-tester
 ctest --test-dir build --output-on-failure
 QT_QPA_PLATFORM=offscreen ctest --test-dir build   # if no display
 ```
@@ -164,11 +170,12 @@ src/
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
   delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
-  ui/          MainWindow.{h,cpp} Language.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
+  ui/          MainWindow.{h,cpp} Language.{h,cpp} Theme.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
     interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
 config/        thresholds.json keyboard_layout.json   (copied next to the executable)
-translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable)
+translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable; internal names such as
+               these, `oxcore` and the repo keep "oxfam": only what users see was renamed)
 third_party/   miniz/ (zip library, MIT, vendored unchanged; version + checksum in its README.md)
 tools/         README.md only; CI puts external executables (smartctl.exe) in dist/tools/
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
@@ -204,7 +211,7 @@ French/Dutch/English done (to verify on screen and on Windows): system language 
 language selector. **Dutch texts were written by Claude: have a Dutch speaker check them** (left "unfinished" in
 the .ts so Linguist lists them). French texts to proofread by the developer.
 Clear error messages done (actionable ERROR summaries, see the TestResult contract).
-**Delivery sheet** done (to verify by opening the result in OnlyOffice/LibreOffice; no office suite on the dev machine):
+**Delivery sheet** done, verified by the developer in LibreOffice after a real run:
 - Button "Fill the delivery sheet", enabled after a complete run. Finds the sheet on the Desktop
   (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C7 (date, text
   dd/MM/yyyy), C5 (model), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
@@ -217,8 +224,9 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   entry raw. The FR file is saved by OnlyOffice (dropdowns in x14 extLst), the NL one by LibreOffice (standard
   `dataValidations`): both are unit-test samples (`delivery_sheet_{fr,nl}.xlsx`, operator names anonymised).
 - `TestResult::note` = the key value alone (battery %, "vendor model" from SystemInfo).
+Dark terminal theme + status icons done (checked by rendering the window offscreen; not yet seen on Windows).
 Next: AppImage, tag v1.0.
-Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `oxcore`.
+Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
   Windows, xkb keycode -> set 1 on Linux (`scanCodeFromXkb`, unit tested). All required keys pressed = Pass (automatic),
@@ -235,7 +243,7 @@ Qt Multimedia is a dependency of the **app only** (`oxfam-tester`), never of `ox
   `lumaStats()`/`classifyFrame()` (oxcore) give brightness and detail. ~1 s of real picture = automatic Pass.
   Black/uniform for 3 s = prompt (shutter? lens?) and the technician may click "Camera is broken" (Fail).
   No camera = Skipped (desktops); camera error or no frame in 6 s = Error.
-- CMake project, `oxcore` library + `oxfam-tester` app + `unittests`, CI workflow.
+- CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows runs `powercfg /batteryreport /xml` into a

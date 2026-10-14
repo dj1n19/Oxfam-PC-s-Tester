@@ -39,13 +39,13 @@ jobs:
       - name: Stage portable folder
         run: |
           New-Item -ItemType Directory dist | Out-Null
-          Copy-Item build/Release/oxfam-tester.exe dist/
+          Copy-Item build/Release/lazy-djin-tester.exe dist/
           Copy-Item config/thresholds.json dist/
           Copy-Item config/keyboard_layout.json dist/
-          windeployqt --release dist/oxfam-tester.exe
+          windeployqt --release dist/lazy-djin-tester.exe
           # The UAC manifest must be embedded, otherwise SMART silently needs "Run as administrator"
-          if (-not (Select-String -Path dist/oxfam-tester.exe -Pattern requireAdministrator -SimpleMatch -Quiet)) {
-            throw "requireAdministrator manifest missing from oxfam-tester.exe"
+          if (-not (Select-String -Path dist/lazy-djin-tester.exe -Pattern requireAdministrator -SimpleMatch -Quiet)) {
+            throw "requireAdministrator manifest missing from lazy-djin-tester.exe"
           }
       # smartctl is a separate GPL program, shipped next to the app (see tools/README.md)
       - name: Bundle smartctl
@@ -57,5 +57,5 @@ jobs:
           dist/tools/smartctl.exe --version
       - uses: actions/upload-artifact@v4
         with:
-          name: oxfam-tester-windows
+          name: lazy-djin-tester-windows
           path: dist

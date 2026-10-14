@@ -1,6 +1,6 @@
 # tools/
 
-External programs shipped **next to** `oxfam-tester`, never linked into it.
+External programs shipped **next to** `lazy-djin-tester`, never linked into it.
 The app looks here first (`<app folder>/tools/`), then in `PATH`.
 
 No binaries are committed to git: the Windows CI job puts them in `dist/tools/`.
