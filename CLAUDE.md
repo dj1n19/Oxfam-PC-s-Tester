@@ -171,6 +171,8 @@ src/
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
   delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
   ui/          MainWindow.{h,cpp} Language.{h,cpp} Theme.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
+    icons/       djinn.png (32 px pixel-art master) -> make_icons.sh (ImageMagick, run by hand) -> djinn-<size>.png,
+                 lazy-djin-tester.ico; app.rc (Windows .exe icon). Generated files are committed (CI has no ImageMagick).
     interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
 config/        thresholds.json keyboard_layout.json   (copied next to the executable)
@@ -225,6 +227,8 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   `dataValidations`): both are unit-test samples (`delivery_sheet_{fr,nl}.xlsx`, operator names anonymised).
 - `TestResult::note` = the key value alone (battery %, "vendor model" from SystemInfo).
 Dark terminal theme + status icons done (checked by rendering the window offscreen; not yet seen on Windows).
+App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no Oxfam logo): window/taskbar icon via
+`QApplication::setWindowIcon` (`:/icons/`), .exe icon via `app.rc` (to verify on Windows), `djinn-256.png` ready for the AppImage.
 Next: AppImage, tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)

@@ -136,6 +136,24 @@ add_executable(lazy-djin-tester WIN32
 )
 target_link_libraries(lazy-djin-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
 
+# App icon (the djinn), generated from src/ui/icons/djinn.png by make_icons.sh.
+# Window/taskbar icon: PNGs embedded as :/icons/... (QIcon picks the best size).
+# .exe icon in Explorer: Windows reads it from a resource compiled from app.rc.
+qt_add_resources(lazy-djin-tester "icons"
+    PREFIX /icons
+    BASE src/ui/icons
+    FILES
+        src/ui/icons/djinn-16.png
+        src/ui/icons/djinn-24.png
+        src/ui/icons/djinn.png
+        src/ui/icons/djinn-48.png
+        src/ui/icons/djinn-64.png
+        src/ui/icons/djinn-128.png
+        src/ui/icons/djinn-256.png)
+if(WIN32)
+    target_sources(lazy-djin-tester PRIVATE src/ui/icons/app.rc)
+endif()
+
 # Translations. English is the text in the code; fr and nl are in translations/.
 # lrelease compiles each .ts into a .qm, embedded in the executable as the
 # resource :/i18n/oxfam-tester_<lang>.qm (portable: no extra file to ship).

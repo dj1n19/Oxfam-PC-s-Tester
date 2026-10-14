@@ -1,6 +1,7 @@
 #include <memory>
 #include <QApplication>
 #include <QFile>
+#include <QIcon>
 #include <QMessageBox>
 
 #include "core/TestRunner.h"
@@ -22,6 +23,13 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Lazy Djin's Tester"));
+    // The djinn, in every size we have: Qt picks the closest one for the title bar,
+    // the taskbar and Alt+Tab. Set on the application, so every dialog gets it too.
+    QIcon icon;
+    for (const int size : {16, 24, 48, 64, 128, 256})
+        icon.addFile(QStringLiteral(":/icons/djinn-%1.png").arg(size));
+    icon.addFile(QStringLiteral(":/icons/djinn.png"));   // the 32 px master
+    QApplication::setWindowIcon(icon);
     Theme::apply(app);               // before any window, the start-up warning included
     setLanguage(systemLanguage());   // before any text is shown; the window has a selector
 
