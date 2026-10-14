@@ -274,7 +274,7 @@ Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of
   (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
   (USB stick) is Skipped, but "no disk with SMART" is Error. smartctl is found in `<app>/tools/`, then `PATH`;
-  Windows CI bundles it via Chocolatey into `dist/tools/`.
+  Windows CI takes smartctl.exe 7.5 from the official installer (7-Zip, SHA-256 checked; Chocolatey failed with 406) into `dist/tools/`.
 - Test: `DriversTest`: Windows `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` (PowerShell JSON parsed by
   `parsePnpEntities()`); code 45 "not connected" is ignored (previous owner's USB devices). Linux reads
   `/sys/bus/pci/devices` (no lspci) and flags only buyer-relevant classes without a driver (storage, network, display,

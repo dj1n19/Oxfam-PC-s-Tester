@@ -138,12 +138,20 @@ jobs:
           if (-not (Select-String -Path dist/lazy-djin-tester.exe -Pattern requireAdministrator -SimpleMatch -Quiet)) {
             throw "requireAdministrator manifest missing from lazy-djin-tester.exe"
           }
-      # smartctl is a separate GPL program, shipped next to the app (see tools/README.md)
+      # smartctl is a separate GPL program, shipped next to the app (see tools/README.md).
+      # Taken from the official installer (same version as the AppImage), opened with
+      # 7-Zip instead of installed: no Chocolatey (its feed failed twice with 406).
+      # bin/ = 64-bit, bin32/ = 32-bit.
       - name: Bundle smartctl
         run: |
-          choco install smartmontools -y --no-progress
+          curl.exe -fsSLO https://github.com/smartmontools/smartmontools/releases/download/RELEASE_7_5/smartmontools-7.5.win32-setup.exe
+          if ((Get-FileHash smartmontools-7.5.win32-setup.exe -Algorithm SHA256).Hash -ne '896337FCC253220614CF8CDBD5CF2321C5AA326A37A04160A672A281E6104C70') {
+            throw "smartmontools installer: wrong SHA-256"
+          }
+          7z x -osmartmontools -y smartmontools-7.5.win32-setup.exe bin/smartctl.exe
+          if ($LASTEXITCODE -ne 0) { throw "7z could not extract smartctl.exe" }
           New-Item -ItemType Directory dist/tools | Out-Null
-          Copy-Item "$env:ProgramFiles/smartmontools/bin/smartctl.exe" dist/tools/
+          Copy-Item smartmontools/bin/smartctl.exe dist/tools/
           Copy-Item tools/README.md dist/tools/
           dist/tools/smartctl.exe --version
       - uses: actions/upload-artifact@v4
