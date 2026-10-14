@@ -2,10 +2,8 @@
 
 #include <QProcess>
 
-PowerShellResult runPowerShell(const QString& script, int timeoutMs)
+bool startPowerShell(QProcess& ps, const QString& script)
 {
-    PowerShellResult r;
-
     // Stop: any cmdlet error ends the script with exit code 1.
     // SilentlyContinue for progress: otherwise progress bars come out on
     // stderr as CLIXML noise when there is no console.
@@ -21,11 +19,17 @@ PowerShellResult runPowerShell(const QString& script, int timeoutMs)
     const QByteArray utf16(reinterpret_cast<const char*>(full.utf16()),
                            full.size() * qsizetype(sizeof(char16_t)));
 
-    QProcess ps;
     ps.start(QStringLiteral("powershell.exe"),
              {"-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass",
               "-EncodedCommand", QString::fromLatin1(utf16.toBase64())});
-    if (!ps.waitForStarted(5000)) {
+    return ps.waitForStarted(5000);
+}
+
+PowerShellResult runPowerShell(const QString& script, int timeoutMs)
+{
+    PowerShellResult r;
+    QProcess ps;
+    if (!startPowerShell(ps, script)) {
         r.error = QStringLiteral("Could not start PowerShell");
         return r;
     }

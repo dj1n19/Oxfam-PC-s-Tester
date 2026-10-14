@@ -4,7 +4,6 @@
 #include <atomic>
 #include <cmath>
 #include <memory>
-#include <QElapsedTimer>
 #include <QThread>
 #include <QtConcurrent>
 
@@ -18,10 +17,11 @@ constexpr int kLoadSeconds = 30;
 // does not move is not measuring the CPU (fixed ACPI zone on some PCs).
 constexpr double kMinRiseC = 1.0;
 
-// The first seconds of load do not count for the speed: the cores are still
-// waking up. Real Latitude 7420: 266 % of base from the start, then a slow fall
-// to ~240 % as Intel's turbo budget (~28 s) runs out: normal, not throttling.
-constexpr int kSettleMs = 5000;
+// The first readings of the load (one per second) do not count for the speed:
+// the cores are still waking up. Real Latitude 7420: 266 % of base from the
+// start, then a slow fall to ~240 % as Intel's turbo budget (~28 s) runs out:
+// normal, not throttling.
+constexpr std::size_t kSettleReadings = 5;
 
 // Keeps one core busy until stop is set. The result goes to an atomic so the
 // compiler cannot remove the loop as "useless".
@@ -54,28 +54,38 @@ CpuLoadRun CpuTempTest::runLoad(int seconds)
 {
     CpuLoadRun run;
     run.seconds = seconds;
-    run.idle = readCpu();
-    run.onBattery = run.idle.onBattery;
-    if (!run.idle.error.isEmpty() || (!run.idle.hasTemp && !run.idle.hasSpeed))
-        return run;   // nothing to watch: do not heat the CPU for nothing
 
     // Plain QThreads, not the QtConcurrent pool: this function already runs
-    // in that pool. Low priority so the readings (PowerShell on Windows)
-    // still get CPU time while every core is busy.
+    // in that pool. Low priority so the readings still get CPU time.
     std::atomic<bool> stop{false};
     std::atomic<double> sink{0};
     std::vector<std::unique_ptr<QThread>> workers;
-    run.threads = std::max(1, QThread::idealThreadCount());
-    for (int i = 0; i < run.threads; ++i) {
-        workers.emplace_back(QThread::create(burn, std::cref(stop), std::ref(sink)));
-        workers.back()->start(QThread::LowPriority);
-    }
+    // Called by sampleCpu() after the reading at rest: load only if there is
+    // something to watch (do not heat the CPU for nothing).
+    const auto startLoad = [&](const CpuReading& idle) {
+        if (!idle.error.isEmpty() || (!idle.hasTemp && !idle.hasSpeed))
+            return false;
+        run.threads = std::max(1, QThread::idealThreadCount());
+        for (int i = 0; i < run.threads; ++i) {
+            workers.emplace_back(QThread::create(burn, std::cref(stop), std::ref(sink)));
+            workers.back()->start(QThread::LowPriority);
+        }
+        return true;
+    };
+    const std::vector<CpuReading> readings = sampleCpu(seconds, startLoad);
 
-    QElapsedTimer timer;
-    timer.start();
-    while (timer.elapsed() < seconds * 1000LL) {
-        QThread::msleep(1000);   // worker thread: sleeping here never blocks the UI
-        const CpuReading r = readCpu();
+    stop.store(true);
+    for (auto& w : workers)
+        w->wait();   // a QThread must be finished before it is deleted
+
+    if (readings.empty()) {   // sampleCpu() always gives the reading at rest; never crash anyway
+        run.idle.error = QStringLiteral("No reading at all");
+        return run;
+    }
+    run.idle = readings.front();
+    run.onBattery = run.idle.onBattery;
+    for (std::size_t i = 1; i < readings.size(); ++i) {
+        const CpuReading& r = readings[i];
         if (!r.error.isEmpty()) {
             run.sampleErrors += r.error + QLatin1Char('\n');
             continue;
@@ -84,14 +94,10 @@ CpuLoadRun CpuTempTest::runLoad(int seconds)
             run.samples.push_back(r.celsius);
         else if (run.idle.hasTemp)
             run.sampleErrors += QStringLiteral("no temperature\n");
-        if (r.hasSpeed && timer.elapsed() >= kSettleMs)
+        if (r.hasSpeed && i > kSettleReadings)
             run.speeds.push_back(r.speedPct);
         run.onBattery = run.onBattery || r.onBattery;
     }
-
-    stop.store(true);
-    for (auto& w : workers)
-        w->wait();   // a QThread must be finished before it is deleted
     return run;
 }
 
@@ -122,8 +128,8 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
         r.details += QLatin1Char('\n');
     }
     if (idle.hasSpeed) {
-        r.details += QStringLiteral("Idle speed: %1 % of base\nSpeeds under load (% of base, first %2 s left out):")
-                         .arg(idle.speedPct, 0, 'f', 0).arg(kSettleMs / 1000);
+        r.details += QStringLiteral("Idle speed: %1 % of base\nSpeeds under load (% of base, first %2 readings left out):")
+                         .arg(idle.speedPct, 0, 'f', 0).arg(kSettleReadings);
         for (double p : run.speeds)
             r.details += QStringLiteral(" %1").arg(p, 0, 'f', 0);
         r.details += QLatin1Char('\n');

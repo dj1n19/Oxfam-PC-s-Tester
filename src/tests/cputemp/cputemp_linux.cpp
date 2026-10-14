@@ -2,7 +2,9 @@
 
 #include <optional>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
+#include <QThread>
 
 namespace {
 
@@ -170,12 +172,27 @@ void readPower(CpuReading& r)
         r.raw += QStringLiteral("Power: on battery\n");
 }
 
-} // namespace
-
 CpuReading readCpu()
 {
     CpuReading r = readTemperature();
     readSpeed(r);
     readPower(r);
     return r;
+}
+
+} // namespace
+
+// Reading sysfs takes microseconds even under load: one call per reading.
+std::vector<CpuReading> sampleCpu(int seconds, const std::function<bool(const CpuReading&)>& startLoad)
+{
+    std::vector<CpuReading> readings{readCpu()};
+    if (!startLoad(readings.front()))
+        return readings;
+    QElapsedTimer timer;
+    timer.start();
+    while (timer.elapsed() < seconds * 1000LL) {
+        QThread::msleep(1000);   // worker thread: sleeping here never blocks the UI
+        readings.push_back(readCpu());
+    }
+    return readings;
 }

@@ -1,9 +1,11 @@
 #pragma once
+#include <functional>
+#include <vector>
 #include <QByteArray>
 #include <QString>
 
-// One reading of the CPU: temperature and speed together, so Windows needs
-// one PowerShell call per reading, not two. Filled by cputemp_linux.cpp or
+// One reading of the CPU: temperature and speed together (on Windows, one
+// JSON line of the PowerShell script). Filled by cputemp_linux.cpp or
 // cputemp_win.cpp (CMake picks one).
 struct CpuReading {
     bool hasTemp = false;     // false = this PC exposes no readable temperature sensor
@@ -20,9 +22,14 @@ struct CpuReading {
     QString raw;              // every value seen, copied into the test details
 };
 
-// Blocking (PowerShell on Windows takes 1-3 s): CpuTempTest calls it from a
-// worker thread, many times during the load test.
-CpuReading readCpu();
+// Takes one reading at rest, then calls startLoad(that reading): it starts the
+// CPU load and returns true, or returns false (nothing to watch) to stop at
+// once. Then one reading about every second for `seconds`. The first item is
+// the reading at rest. Blocking (~seconds): call it from a worker thread.
+// Windows: ONE PowerShell runs the whole time and prints a line per reading,
+// started before the load: a new PowerShell per reading took more than 10 s
+// to start under full load (Latitude 7420), so every reading timed out.
+std::vector<CpuReading> sampleCpu(int seconds, const std::function<bool(const CpuReading&)>& startLoad);
 
 // Parses the JSON printed by cputemp_win.cpp's PowerShell script. Pure,
 // compiled on both OSes so the unit tests can run it on Linux.

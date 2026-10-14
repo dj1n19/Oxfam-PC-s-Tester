@@ -102,6 +102,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - Windows PowerShell: always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
   with `-EncodedCommand` (quotes are fine), makes errors fatal (`$ErrorActionPreference = 'Stop'`), hides progress and
   forces UTF-8 output (French Windows would otherwise send CP850 and break the JSON). Scripts end with `ConvertTo-Json -Compress`.
+  A long script that prints line by line (CPU test): `startPowerShell(QProcess&, script)`, same settings, no wait.
 - Keep C++ sources ASCII-only (MSVC warning C4819 on non-UTF-8 code pages).
 - `smartctl` is shipped as a **separate executable** in `tools/` (GPL), never linked. Call `smartctl --json -a <device>` and parse with `QJsonDocument`.
 - Parse defensively: missing keys must produce an Error or Skipped, never a crash or a false Pass.
@@ -273,7 +274,10 @@ Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of
   thermal zones `x86_pkg_temp`, `acpitz`. Windows: `MSAcpi_ThermalZoneTemperature` (tenths of kelvin, hottest zone,
   "Not supported" caught in PowerShell); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
   A sensor that rises < 1 C under load is not the CPU: Skipped instead of Pass (too hot still fails).
-  **Speed (throttling)**, read with the temperature in one `readCpu()` (one PowerShell call per sample): % of base speed;
+  Readings come from `sampleCpu(seconds, startLoad)`: reading at rest, then `startLoad()` starts the burn threads only
+  if something is readable, then ~1 reading/s. Windows: ONE PowerShell loops and prints a JSON line per reading
+  (`startPowerShell()`), started before the load: a new PowerShell per reading timed out (> 10 s to start) under full
+  load on the Latitude 7420. **Speed (throttling)**, read with the temperature: % of base speed;
   Windows `Win32_PerfFormattedData_Counters_ProcessorInformation._Total.PercentProcessorPerformance` (CIM, not
   `Get-Counter`: counter names are translated on fr/nl Windows), Linux average `scaling_cur_freq` / `base_frequency`
   (intel_pstate only; AMD/acpi-cpufreq: no speed). Judged on the **median of the second half** of the load (single
