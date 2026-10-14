@@ -8,6 +8,8 @@
 
 namespace {
 
+// Attribute names are QLatin1String, not u"...": QXmlStreamAttributes::value() only
+// accepts u"..." since Qt 6.6, and the Linux CI builds with Qt 6.4.
 const QString kRelNs = QStringLiteral("http://schemas.openxmlformats.org/officeDocument/2006/relationships");
 
 // miniz is a C library: this frees its state on every return path (RAII).
@@ -114,7 +116,7 @@ bool scanSheet(const QString& xml, const QStringList& shared, SheetPos* out, QSt
             } else if (inData && x.name() == u"row") {
                 bool ok = false;
                 RowPos row;
-                row.number = x.attributes().value(u"r").toInt(&ok);
+                row.number = x.attributes().value(QLatin1String("r")).toInt(&ok);
                 if (!ok) {
                     *error = QStringLiteral("Row without a number");
                     return false;
@@ -125,14 +127,14 @@ bool scanSheet(const QString& xml, const QStringList& shared, SheetPos* out, QSt
                 out->rows.push_back(row);
             } else if (inData && x.name() == u"c" && !out->rows.empty()) {
                 CellPos cell;
-                if (!parseRef(x.attributes().value(u"r").toString(), &cell.ref)
+                if (!parseRef(x.attributes().value(QLatin1String("r")).toString(), &cell.ref)
                     || cell.ref.row != out->rows.back().number) {
                     *error = QStringLiteral("Cell without a valid reference in row %1").arg(out->rows.back().number);
                     return false;
                 }
                 cell.start = before;
-                cell.style = x.attributes().value(u"s").toString();
-                type = x.attributes().value(u"t").toString();
+                cell.style = x.attributes().value(QLatin1String("s")).toString();
+                type = x.attributes().value(QLatin1String("t")).toString();
                 value.clear();
                 out->rows.back().cells.push_back(cell);
             } else if (x.name() == u"rPh") {
@@ -220,17 +222,17 @@ bool XlsxEditor::load(const QByteArray& xlsx, QString* error)
     while (!r.atEnd()) {
         if (r.readNext() == QXmlStreamReader::StartElement && r.name() == u"Relationship") {
             // Relative to xl/ ("worksheets/sheet1.xml"), or absolute ("/xl/...").
-            QString target = r.attributes().value(u"Target").toString();
+            QString target = r.attributes().value(QLatin1String("Target")).toString();
             target = target.startsWith(QLatin1Char('/')) ? target.mid(1) : QStringLiteral("xl/") + target;
-            targets[r.attributes().value(u"Id").toString()] = target;
+            targets[r.attributes().value(QLatin1String("Id")).toString()] = target;
         }
     }
     QXmlStreamReader w(workbook);
     while (!w.atEnd()) {
         if (w.readNext() == QXmlStreamReader::StartElement && w.name() == u"sheet") {
-            const auto it = targets.find(w.attributes().value(kRelNs, u"id").toString());
+            const auto it = targets.find(w.attributes().value(kRelNs, QLatin1String("id")).toString());
             if (it != targets.end())
-                m_sheets[w.attributes().value(u"name").toString()] = it->second;
+                m_sheets[w.attributes().value(QLatin1String("name")).toString()] = it->second;
         }
     }
     if (r.hasError() || w.hasError() || m_sheets.empty()) {
