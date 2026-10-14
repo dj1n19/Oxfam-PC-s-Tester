@@ -560,6 +560,32 @@ private slots:
         QCOMPARE(CpuTempTest::evaluate(speedRun({240}), Thresholds{}).status, Status::Error);
     }
 
+    // Real Windows run: under full load a reading took ~6 s, so "leave out the
+    // first 5 readings" left no speed at all. The settling time is in seconds.
+    void cpuCollectSlowReadings()
+    {
+        const auto speed = [](qint64 atMs, double pct) {
+            CpuReading r;
+            r.hasSpeed = true;
+            r.speedPct = pct;
+            r.atMs = atMs;
+            return r;
+        };
+        CpuReading noSpeed;
+        noSpeed.atMs = 18000;
+        noSpeed.raw = "{\"cpu\":null}";
+        const CpuLoadRun run = CpuTempTest::collect(
+            {speed(0, 273), speed(1000, 270), speed(6200, 266), speed(12400, 250), noSpeed, speed(24800, 241)});
+
+        QCOMPARE(run.idle.speedPct, 273.0);
+        QCOMPARE(run.speeds, (std::vector<double>{266, 250, 241}));   // the 1 s reading is left out
+        QCOMPARE(run.loadReadings, 5);
+        QCOMPARE(run.lastMs, qint64(24800));
+        QVERIFY(run.sampleErrors.contains("no speed at 18.0 s"));     // a reason in the details
+        QCOMPARE(CpuTempTest::evaluate(run, loaded()).status, Status::Pass);
+        QVERIFY(CpuTempTest::collect({}).idle.error.size() > 0);       // never a silent empty run
+    }
+
     void cpuWindowsParsing()
     {
         // Real output, at rest on battery: no ACPI zone, battery as an object.

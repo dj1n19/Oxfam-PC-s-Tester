@@ -324,7 +324,9 @@ Known limitations:
 - CPU speed: the counters were read by hand on the Latitude 7420 (`cpu_win_latitude7420_*.json`: rest on battery =
   real output; load = real values in the script's shape). Under full load: 266 % falling to 241 % (charger) / 211 %
   (battery) as the turbo budget runs out: normal. **The app's own probe is not yet run on Windows.** Limits 100/70 are
-  guesses: no throttling PC seen yet (M5).
+  guesses: no throttling PC seen yet (M5). A real Windows run (2026-10-14) gave an empty speed list: the
+  first 5 *readings* were left out and a reading under load can take ~6 s. Now the first 5 *seconds* (`atMs` on each
+  reading, pure `CpuTempTest::collect()`), the details give the reading count, and a missing speed is listed.
 - Keyboard on real Windows: first run showed Qt 6.8 sends extended keys as `0xE0xx` (Qt 6.4: `0x1xx`); `scanCodeFromWindows()` now accepts both (fix not yet re-run on Windows). Labels are Belgian AZERTY only.
 - Windows: the app is a GUI program (`WIN32`), so `qDebug()` output is not visible; put diagnostics in `details`.
 - **Linux privileges:** run the app as the normal user (sudo breaks audio and camera: PipeWire/PulseAudio belong to the

@@ -13,6 +13,8 @@ struct CpuLoadRun {
     std::vector<double> speeds;    // % of base speed, during the load (first seconds left out)
     bool onBattery = false;        // at least one reading was on battery
     QString sampleErrors;          // readings that failed during the load
+    int loadReadings = 0;          // readings taken during the load (good or not)
+    qint64 lastMs = 0;             // when the last one came, ms after the load started
     int threads = 0;
     int seconds = 0;
 };
@@ -28,6 +30,9 @@ public:
 
     // Blocking (~30 s): loads every core and samples the temperature.
     static CpuLoadRun runLoad(int seconds);
+
+    // Pure: sorts sampleCpu()'s readings (first = at rest) into a CpuLoadRun.
+    static CpuLoadRun collect(const std::vector<CpuReading>& readings);
 
     // Pure function: easy to unit test without any hardware.
     static TestResult evaluate(const CpuLoadRun& run, const Thresholds& thresholds);

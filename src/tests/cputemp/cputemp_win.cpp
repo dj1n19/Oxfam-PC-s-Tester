@@ -12,7 +12,8 @@ namespace {
 // Temperature: the real CPU sensor needs a kernel driver on Windows, so we
 // read the ACPI thermal zone instead (admin, which the manifest gives us). On
 // many PCs (Latitude 7420) the class is "Not supported": catch that and report
-// an empty list, so it becomes "no sensor" and not Error.
+// an empty list, so it becomes "no sensor" and not Error. Asked only until it
+// fails: WMI is slow to fail, and under load every second counts.
 // Speed: the performance counter class, not Get-Counter: Get-Counter wants
 // the counter names in the language of Windows (French, Dutch...), the CIM
 // class names are always English. Its own try: a missing counter must not
@@ -22,12 +23,12 @@ namespace {
 // PowerShell's output buffer happens to be full. -Depth: zones are 2 levels deep.
 // %1 = seconds of readings after the first one.
 const char* const kScript =
-    "$sw = [Diagnostics.Stopwatch]::StartNew(); $first = $true; "
+    "$sw = [Diagnostics.Stopwatch]::StartNew(); $first = $true; $e = ''; "
     "while ($first -or $sw.Elapsed.TotalSeconds -lt %1) { "
-    "$z = @(); $e = ''; "
-    "try { $z = @(Get-CimInstance -Namespace root/wmi -ClassName MSAcpi_ThermalZoneTemperature "
+    "$z = @(); "
+    "if (-not $e) { try { $z = @(Get-CimInstance -Namespace root/wmi -ClassName MSAcpi_ThermalZoneTemperature "
     "| Select-Object InstanceName, CurrentTemperature) } "
-    "catch { $e = $_.Exception.Message }; "
+    "catch { $e = $_.Exception.Message } }; "
     "$p = $null; $pe = ''; "
     "try { $p = Get-CimInstance Win32_PerfFormattedData_Counters_ProcessorInformation -Filter \"Name='_Total'\" "
     "| Select-Object PercentProcessorPerformance, PercentProcessorUtility } "
@@ -87,8 +88,10 @@ std::vector<CpuReading> sampleCpu(int seconds, const std::function<bool(const Cp
     // 2. One line per second until the script ends by itself.
     timer.restart();
     for (;;) {
-        while (ps.canReadLine())
+        while (ps.canReadLine()) {
             readings.push_back(parseWindowsCpu(ps.readLine().trimmed()));
+            readings.back().atMs = timer.elapsed();
+        }
         if (ps.state() == QProcess::NotRunning)
             break;
         if (timer.elapsed() > seconds * 1000LL + kExtraMs) {

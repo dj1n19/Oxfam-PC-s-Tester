@@ -193,6 +193,7 @@ std::vector<CpuReading> sampleCpu(int seconds, const std::function<bool(const Cp
     while (timer.elapsed() < seconds * 1000LL) {
         QThread::msleep(1000);   // worker thread: sleeping here never blocks the UI
         readings.push_back(readCpu());
+        readings.back().atMs = timer.elapsed();
     }
     return readings;
 }

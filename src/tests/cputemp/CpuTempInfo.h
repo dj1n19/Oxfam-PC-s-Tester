@@ -2,6 +2,7 @@
 #include <functional>
 #include <vector>
 #include <QByteArray>
+#include <QtGlobal>
 #include <QString>
 
 // One reading of the CPU: temperature and speed together (on Windows, one
@@ -17,6 +18,7 @@ struct CpuReading {
     bool hasSpeed = false;
     double speedPct = 0;
     bool onBattery = false;   // the OS slows the CPU on battery: not a fault
+    qint64 atMs = 0;          // when it was read, in ms after the load started (0 = at rest)
 
     QString error;            // non-empty = the probe itself failed
     QString raw;              // every value seen, copied into the test details
