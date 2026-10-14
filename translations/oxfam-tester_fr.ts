@@ -226,53 +226,53 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Température CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="105"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="111"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation>Impossible de lire la température CPU (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="111"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="117"/>
         <source>No CPU temperature sensor or speed counter readable on this PC</source>
         <translation>Aucun capteur de température ni compteur de vitesse CPU lisible sur ce PC</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="160"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="166"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation>Aucune mesure de température pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="166"/>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="194"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="172"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="200"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="173"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="179"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation>Pic %1 °C en charge (au repos %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="179"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="185"/>
         <source>Sensor did not react to load (%1 C): not the CPU, cannot judge</source>
         <translation>Le capteur n&apos;a pas réagi à la charge (%1 °C) : ce n&apos;est pas le CPU, impossible de juger</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="189"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="195"/>
         <source>No speed reading during the load test (see details)</source>
         <translation>Aucune mesure de vitesse pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="208"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="214"/>
         <source>speed %1 % of base</source>
         <translation>vitesse %1 % de la fréquence de base</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="212"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="218"/>
         <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
         <translation>ralenti à %1 % de la fréquence de base sur batterie : branchez le chargeur et appuyez à nouveau sur DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="221"/>
         <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
         <translation>ralenti à %1 % de la fréquence de base en charge : surchauffe ? (ventilateur, poussière, pâte thermique)</translation>
     </message>
@@ -753,47 +753,52 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="121"/>
+        <location filename="../src/ui/MainWindow.cpp" line="131"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="122"/>
+        <location filename="../src/ui/MainWindow.cpp" line="132"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="123"/>
+        <location filename="../src/ui/MainWindow.cpp" line="133"/>
+        <source>Run this test again</source>
+        <translation>Relancer ce test</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="134"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="124"/>
+        <location filename="../src/ui/MainWindow.cpp" line="135"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="124"/>
+        <location filename="../src/ui/MainWindow.cpp" line="135"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="124"/>
+        <location filename="../src/ui/MainWindow.cpp" line="135"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="125"/>
+        <location filename="../src/ui/MainWindow.cpp" line="136"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="137"/>
+        <location filename="../src/ui/MainWindow.cpp" line="148"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="150"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
@@ -906,7 +911,7 @@ Les tests qui ont besoin de seuils indiqueront ERREUR. Recopiez tout le dossier 
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="72"/>
+        <location filename="../src/core/TestRunner.cpp" line="81"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation>Le test n&apos;a pas répondu en %1 s : appuyez à nouveau sur DÉMARRER</translation>
     </message>

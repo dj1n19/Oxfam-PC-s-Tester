@@ -824,6 +824,44 @@ private slots:
         QVERIFY(!runner.isRunning());
     }
 
+    // "Run this test again": only that test runs, then allFinished as usual.
+    void runnerStartsOneTest()
+    {
+        TestRunner runner;
+        auto first = std::make_unique<FakeTest>(false, false);
+        auto second = std::make_unique<FakeTest>(false, false);
+        auto third = std::make_unique<FakeTest>(true, false);
+        FakeTest* a = first.get();
+        FakeTest* b = second.get();
+        FakeTest* c = third.get();
+        runner.add(std::move(first));
+        runner.add(std::move(second));
+        runner.add(std::move(third));
+        QSignalSpy finished(&runner, &TestRunner::testFinished);
+        QSignalSpy all(&runner, &TestRunner::allFinished);
+
+        runner.startOne(1);
+        QCOMPARE(a->runs, 0);
+        QCOMPARE(b->runs, 1);
+        QVERIFY(runner.isRunning());
+        runner.startOne(0);                // busy: ignored
+        QCOMPARE(a->runs, 0);
+        b->answer(Status::Warn);
+        QCOMPARE(c->runs, 0);              // the sequence stops after that test
+        QCOMPARE(all.count(), 1);
+        QCOMPARE(finished.count(), 1);
+        QCOMPARE(finished.at(0).at(0).toInt(), 1);
+        QVERIFY(!runner.isRunning());
+
+        runner.startOne(3);                // no such test: ignored
+        QVERIFY(!runner.isRunning());
+        runner.startAll();                 // a full run still runs everything
+        a->answer(Status::Pass);
+        b->answer(Status::Pass);
+        c->answer(Status::Pass);
+        QCOMPARE(all.count(), 2);
+    }
+
     void deliverySheetReads_data() { sheetFiles(); }
     void deliverySheetReads()
     {

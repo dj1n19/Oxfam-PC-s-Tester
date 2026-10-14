@@ -17,6 +17,7 @@ public:
     const ITest& test(int index) const { return *m_tests[static_cast<size_t>(index)]; }
 
     void startAll();
+    void startOne(int index);   // run that test again, alone (same signals as startAll())
     bool isRunning() const { return m_running; }
 
 signals:
@@ -32,6 +33,7 @@ private:
     std::vector<std::unique_ptr<ITest>> m_tests;
     std::vector<bool> m_waiting;   // per test: started, no answer yet
     int m_current = -1;            // the test running now
+    int m_last = -1;               // the sequence ends after this test
     int m_run = 0;                 // +1 per START: old watchdogs are ignored
     bool m_running = false;
 };

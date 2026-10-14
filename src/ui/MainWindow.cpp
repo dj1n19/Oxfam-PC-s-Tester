@@ -56,6 +56,12 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
     m_startButton->setMinimumHeight(48);
     top->addWidget(m_startButton, 1);
 
+    // Runs the selected row alone (an ERROR row, a key pressed too late...).
+    // Only after a complete run, so the verdict always covers every test.
+    m_runAgainButton = new QPushButton(central);
+    m_runAgainButton->setMinimumHeight(48);
+    top->addWidget(m_runAgainButton);
+
     // Only after a complete run: the sheet must get this PC's results.
     m_deliveryButton = new QPushButton(central);
     m_deliveryButton->setMinimumHeight(48);
@@ -88,6 +94,7 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
 
     m_verdict = new QLabel(central);
     m_verdict->setAlignment(Qt::AlignCenter);
+    m_verdict->setWordWrap(true);   // the French "INCOMPLET..." verdict is wider than the window
     m_verdict->setMinimumHeight(56);
     layout->addWidget(m_verdict);
 
@@ -96,14 +103,18 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
     retranslateUi();
 
     connect(m_startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
+    connect(m_runAgainButton, &QPushButton::clicked, this, &MainWindow::onRunAgainClicked);
     connect(m_deliveryButton, &QPushButton::clicked, this, &MainWindow::onDeliveryClicked);
     connect(m_language, &QComboBox::currentIndexChanged, this,
             [this] { setLanguage(m_language->currentData().toString()); });
     connect(&m_runner, &TestRunner::testStarted, this, &MainWindow::onTestStarted);
     connect(&m_runner, &TestRunner::testFinished, this, &MainWindow::onTestFinished);
     connect(&m_runner, &TestRunner::allFinished, this, &MainWindow::onAllFinished);
-    connect(m_table, &QTableWidget::currentCellChanged, this,
-            [this](int row, int, int, int) { showDetailsOf(row); });
+    connect(m_table, &QTableWidget::currentCellChanged, this, [this](int row, int, int, int) {
+        showDetailsOf(row);
+        updateButtons();
+    });
+    updateButtons();
 }
 
 // setLanguage() makes Qt send LanguageChange to every widget.
@@ -120,6 +131,7 @@ void MainWindow::retranslateUi()
 {
     setWindowTitle(tr("Lazy Djin's Tester"));
     m_startButton->setText(tr("START"));
+    m_runAgainButton->setText(tr("Run this test again"));
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
     m_details->setPlaceholderText(tr("Select a test to see the raw details."));
@@ -128,7 +140,7 @@ void MainWindow::retranslateUi()
         setStatusCell(i, m_table->item(i, ColStatus)->data(Qt::UserRole).toInt());
     }
     if (!m_verdict->text().isEmpty())
-        m_verdict->setText(computeVerdict(m_statuses).text);
+        m_verdict->setText(computeVerdict(statuses()).text);
 }
 
 void MainWindow::setStatusCell(int row, int state)
@@ -155,17 +167,46 @@ void MainWindow::resetRows()
     m_details->clear();
     m_verdict->clear();
     m_verdict->setStyleSheet(QString());
-    m_statuses.clear();
     m_results.assign(static_cast<size_t>(m_runner.count()), TestResult{});
+    m_fullRunDone = false;
+}
+
+// One place decides which buttons work: nothing during a run (the language
+// is chosen before it); "again" and the sheet only after a complete run.
+void MainWindow::updateButtons()
+{
+    const bool idle = !m_runner.isRunning();
+    m_startButton->setEnabled(idle);
+    m_runAgainButton->setEnabled(idle && m_fullRunDone && m_table->currentRow() >= 0);
+    m_deliveryButton->setEnabled(idle && m_fullRunDone);
+    m_language->setEnabled(idle);
+}
+
+std::vector<Status> MainWindow::statuses() const
+{
+    std::vector<Status> all;
+    for (const TestResult& r : m_results)
+        all.push_back(r.status);
+    return all;
 }
 
 void MainWindow::onStartClicked()
 {
     resetRows();
-    m_startButton->setEnabled(false);
-    m_deliveryButton->setEnabled(false);
-    m_language->setEnabled(false);   // the language is chosen before a run
     m_runner.startAll();
+    updateButtons();
+}
+
+void MainWindow::onRunAgainClicked()
+{
+    const int row = m_table->currentRow();
+    if (row < 0)
+        return;
+    // The old verdict no longer holds; it comes back when this test answers.
+    m_verdict->clear();
+    m_verdict->setStyleSheet(QString());
+    m_runner.startOne(row);
+    updateButtons();
 }
 
 void MainWindow::onTestStarted(int row)
@@ -178,7 +219,6 @@ void MainWindow::onTestFinished(int row, const TestResult& result)
     setStatusCell(row, static_cast<int>(result.status));
     setCell(m_table, row, ColSummary, result.summary, Theme::text());
     m_table->item(row, ColTest)->setData(Qt::UserRole, result.details);
-    m_statuses.push_back(result.status);
     m_results[static_cast<size_t>(row)] = result;
     if (m_table->currentRow() == row)
         showDetailsOf(row);
@@ -186,14 +226,13 @@ void MainWindow::onTestFinished(int row, const TestResult& result)
 
 void MainWindow::onAllFinished()
 {
-    const Verdict v = computeVerdict(m_statuses);
+    m_fullRunDone = true;   // a single test again only runs after a complete run
+    const Verdict v = computeVerdict(statuses());
     m_verdict->setText(v.text);
     m_verdict->setStyleSheet(
         QStringLiteral("color:%1; border:2px solid %1; font-size:18pt; font-weight:bold; padding:6px;")
             .arg(Theme::statusColor(v.level).name()));
-    m_startButton->setEnabled(true);
-    m_deliveryButton->setEnabled(true);
-    m_language->setEnabled(true);
+    updateButtons();
 }
 
 void MainWindow::onDeliveryClicked()

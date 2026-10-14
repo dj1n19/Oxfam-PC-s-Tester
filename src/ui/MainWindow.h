@@ -24,6 +24,9 @@ private:
     void retranslateUi();
     void setStatusCell(int row, int state);
     void onStartClicked();
+    void onRunAgainClicked();
+    void updateButtons();
+    std::vector<Status> statuses() const;
     void onTestStarted(int row);
     void onTestFinished(int row, const TestResult& result);
     void onAllFinished();
@@ -33,12 +36,13 @@ private:
 
     TestRunner& m_runner;
     QPushButton* m_startButton = nullptr;
+    QPushButton* m_runAgainButton = nullptr;
     QComboBox* m_language = nullptr;
     QPushButton* m_deliveryButton = nullptr;
     QTableWidget* m_table = nullptr;
     QPlainTextEdit* m_details = nullptr;
     QLabel* m_verdict = nullptr;
-    std::vector<Status> m_statuses;
-    std::vector<TestResult> m_results;   // per row, for the delivery sheet
+    std::vector<TestResult> m_results;   // per row, latest result: verdict and delivery sheet
+    bool m_fullRunDone = false;          // every row has a result
     DeliveryLinks m_delivery;
 };

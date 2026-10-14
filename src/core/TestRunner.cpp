@@ -41,13 +41,26 @@ void TestRunner::startAll()
     m_running = true;
     ++m_run;
     m_current = -1;
+    m_last = count() - 1;
+    runNext();
+}
+
+// A sequence of one: the same code path as a full run, watchdog included.
+void TestRunner::startOne(int index)
+{
+    if (m_running || index < 0 || index >= count())
+        return;
+    m_running = true;
+    ++m_run;
+    m_current = index - 1;   // runNext() moves to index
+    m_last = index;
     runNext();
 }
 
 void TestRunner::runNext()
 {
     ++m_current;
-    if (m_current >= count()) {
+    if (m_current > m_last) {
         m_running = false;
         emit allFinished();
         return;

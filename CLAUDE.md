@@ -81,6 +81,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   `runsLast()` (only `CpuTempTest`: run during the interactive tests, its full load made the keyboard and audio
   dialogs freeze on real hardware, developer's report 2026-10-14). Each automatic test has its own 60 s
   watchdog (Error if silent); late or duplicate answers are ignored.
+  `startOne(index)` runs one test alone (same path: a sequence from index to index, watchdog, `allFinished`).
 - `TestResult`: `status`, one-line `summary` (list), `details` (raw readings shown on row selection). **Always put raw tool output in `details`**: it is how problems are diagnosed on real machines.
 - **Error summaries tell the technician what to do.** If they can fix it (password cancelled, smartctl or a config
   file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end
@@ -250,7 +251,9 @@ Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of
   No camera = Skipped (desktops); camera error or no frame in 6 s = Error.
 - CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
-- UI: `MainWindow` with START button, table (status/test/summary), details pane, verdict label.
+- UI: `MainWindow` with START button, "Run this test again" (selected row, enabled after a complete run so the
+  verdict covers every row; verdict recomputed from each row's latest result), table (status/test/summary), details
+  pane, verdict label (word wrap: the French verdict is wider than the window). Buttons enabled in `updateButtons()`.
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows runs `powercfg /batteryreport /xml` into a
   `QTemporaryDir`, parsed by `parseBatteryReport()` in `BatteryReport.cpp`, unit tested on Linux).
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
