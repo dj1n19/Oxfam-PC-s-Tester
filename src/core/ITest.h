@@ -12,9 +12,9 @@ public:
 
     virtual QString name() const = 0;
     virtual bool needsUser() const { return false; }   // interactive test?
-    // Long automatic test that needs nobody (CPU load): the runner starts it
-    // and goes on with the next tests (the interactive ones) without waiting.
-    virtual bool runsInBackground() const { return false; }
+    // Automatic test placed after the interactive ones (CPU load): it would
+    // make the keyboard and audio dialogs lag if it ran during them.
+    virtual bool runsLast() const { return false; }
     virtual void run() = 0;
 
 signals:

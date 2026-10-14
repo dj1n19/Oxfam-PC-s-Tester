@@ -6,12 +6,12 @@
 namespace {
 constexpr int kAutoTestTimeoutMs = 60'000;
 
-// Placement order: automatic, then background, then interactive.
+// Placement order: automatic, then interactive, then "runs last".
 int group(const ITest& t)
 {
-    if (t.needsUser())
+    if (t.runsLast())
         return 2;
-    return t.runsInBackground() ? 1 : 0;
+    return t.needsUser() ? 1 : 0;
 }
 }
 
@@ -48,11 +48,8 @@ void TestRunner::runNext()
 {
     ++m_current;
     if (m_current >= count()) {
-        // The sequence is over, but a background test may still be running.
-        if (std::none_of(m_waiting.begin(), m_waiting.end(), [](bool w) { return w; })) {
-            m_running = false;
-            emit allFinished();
-        }
+        m_running = false;
+        emit allFinished();
         return;
     }
 
@@ -61,9 +58,8 @@ void TestRunner::runNext()
     m_waiting[static_cast<size_t>(index)] = true;
     emit testStarted(index);
     if (!t.needsUser()) {
-        // One watchdog per automatic test, because a background test runs
-        // at the same time as others. A timer from an older run, or for a
-        // test that already answered, does nothing.
+        // One watchdog per automatic test. A timer from an older run, or for
+        // a test that already answered, does nothing.
         QTimer::singleShot(kAutoTestTimeoutMs, this, [this, index, run = m_run] {
             if (run != m_run || !m_waiting[static_cast<size_t>(index)])
                 return;
@@ -75,8 +71,6 @@ void TestRunner::runNext()
         });
     }
     t.run();   // may emit finished() synchronously or later
-    if (t.runsInBackground() && index == m_current)
-        runNext();   // do not wait for it (unless it already answered)
 }
 
 void TestRunner::onTestFinished(ITest* sender, const TestResult& result)
@@ -94,8 +88,6 @@ void TestRunner::finish(int index, const TestResult& result)
 {
     m_waiting[static_cast<size_t>(index)] = false;
     emit testFinished(index, result);
-    // A background test that answers later does not move the sequence:
-    // runNext() then only checks whether everything is done.
-    if (index == m_current || m_current >= count())
+    if (index == m_current)
         runNext();
 }

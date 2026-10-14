@@ -69,10 +69,10 @@ int main(int argc, char* argv[])
     delivery.rows[add(std::make_unique<DiskTest>(thresholds))] = SheetRow::Disk;
     add(std::make_unique<DriversTest>());
     add(std::make_unique<LicenseTest>());
-    add(std::make_unique<CpuTempTest>(thresholds));   // background: ~30 s of load during the interactive tests
-    delivery.rows[add(std::make_unique<KeyboardTest>(keyLayout))] = SheetRow::Keyboard;   // interactive: last, in this order
+    delivery.rows[add(std::make_unique<KeyboardTest>(keyLayout))] = SheetRow::Keyboard;   // interactive: after the automatic ones, in this order
     delivery.rows[add(std::make_unique<AudioTest>())] = SheetRow::Audio;
     delivery.rows[add(std::make_unique<CameraTest>())] = SheetRow::Camera;
+    add(std::make_unique<CpuTempTest>(thresholds));   // last: ~30 s of full load would make the dialogs lag
 
     MainWindow window(runner, delivery);
     window.show();

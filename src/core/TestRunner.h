@@ -4,10 +4,9 @@
 #include <QObject>
 #include "core/ITest.h"
 
-// Runs the tests one after another. Automatic tests are always placed
-// before interactive ones, so the technician can walk away at the start.
-// A background test (runsInBackground()) is placed last of the automatic
-// tests and keeps running while the interactive tests go on.
+// Runs the tests one after another. Automatic tests are placed before
+// interactive ones, so the technician can walk away at the start; tests with
+// runsLast() (CPU load) come after the interactive ones.
 class TestRunner : public QObject {
     Q_OBJECT
 public:
@@ -23,7 +22,7 @@ public:
 signals:
     void testStarted(int index);
     void testFinished(int index, const TestResult& result);
-    void allFinished();   // every test answered, background ones included
+    void allFinished();   // every test answered
 
 private:
     void runNext();
@@ -32,7 +31,7 @@ private:
 
     std::vector<std::unique_ptr<ITest>> m_tests;
     std::vector<bool> m_waiting;   // per test: started, no answer yet
-    int m_current = -1;            // the test the sequence waits for
+    int m_current = -1;            // the test running now
     int m_run = 0;                 // +1 per START: old watchdogs are ignored
     bool m_running = false;
 };

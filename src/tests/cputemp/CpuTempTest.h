@@ -23,7 +23,7 @@ public:
     explicit CpuTempTest(Thresholds thresholds, QObject* parent = nullptr);
 
     QString name() const override { return tr("CPU temperature"); }
-    bool runsInBackground() const override { return true; }   // ~30 s: runs during the interactive tests
+    bool runsLast() const override { return true; }   // ~30 s of full load: after the interactive tests
     void run() override;
 
     // Blocking (~30 s): loads every core and samples the temperature.

@@ -77,9 +77,9 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   - **Never show green for an Error.** A missing threshold or unparsable output is an Error.
 - `ITest` (QObject): `name()`, `needsUser()`, `run()`, signal `finished(const TestResult&)`.
   `run()` **must emit `finished` exactly once**, now or later.
-- `TestRunner`: runs tests one at a time; `add()` places automatic tests, then background tests, then interactive
-  ones. A test with `runsInBackground()` (only `CpuTempTest`) is started and not waited for: it runs during the
-  interactive tests, and `allFinished` comes once every test answered. Each automatic test has its own 60 s
+- `TestRunner`: runs tests one at a time; `add()` places automatic tests, then interactive ones, then tests with
+  `runsLast()` (only `CpuTempTest`: run during the interactive tests, its full load made the keyboard and audio
+  dialogs freeze on real hardware, developer's report 2026-10-14). Each automatic test has its own 60 s
   watchdog (Error if silent); late or duplicate answers are ignored.
 - `TestResult`: `status`, one-line `summary` (list), `details` (raw readings shown on row selection). **Always put raw tool output in `details`**: it is how problems are diagnosed on real machines.
 - **Error summaries tell the technician what to do.** If they can fix it (password cancelled, smartctl or a config
@@ -267,7 +267,7 @@ Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of
 - Test: `LicenseTest`: `SoftwareLicensingProduct` filtered on the Windows ApplicationID with a product key;
   `LicenseStatus == 1` is Pass, anything else (or no licence) is **Warn**. Reports whether a firmware OEM key exists
   (`OA3xOriginalProductKey`), turned into a boolean inside PowerShell: the key never reaches the program. Skipped on Linux.
-- Test: `CpuTempTest` (background test, ~30 s, runs while the interactive tests are open): one idle reading, then every core busy (`QThread`s at low
+- Test: `CpuTempTest` (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
   priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
   thermal zones `x86_pkg_temp`, `acpitz`. Windows: `MSAcpi_ThermalZoneTemperature` (tenths of kelvin, hottest zone,

@@ -30,10 +30,10 @@ char *toString(Status s)
 // Fake test for the runner: answers only when the unit test calls answer().
 class FakeTest : public ITest {
 public:
-    FakeTest(bool user, bool background) : m_user(user), m_background(background) {}
+    FakeTest(bool user, bool last) : m_user(user), m_last(last) {}
     QString name() const override { return QStringLiteral("fake"); }
     bool needsUser() const override { return m_user; }
-    bool runsInBackground() const override { return m_background; }
+    bool runsLast() const override { return m_last; }
     void run() override { ++runs; }
     void answer(Status s)
     {
@@ -45,7 +45,7 @@ public:
 
 private:
     bool m_user;
-    bool m_background;
+    bool m_last;
 };
 
 class TestCore : public QObject {
@@ -782,72 +782,44 @@ private slots:
         QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
     }
 
-    // Automatic first, then background, then interactive, whatever the add() order.
+    // Automatic first, then interactive, then "runs last", whatever the add() order.
     void runnerOrdersTests()
     {
         TestRunner runner;
+        auto last = std::make_unique<FakeTest>(false, true);
         auto user = std::make_unique<FakeTest>(true, false);
-        auto background = std::make_unique<FakeTest>(false, true);
         auto automatic = std::make_unique<FakeTest>(false, false);
+        const ITest* l = last.get();
         const ITest* u = user.get();
-        const ITest* b = background.get();
         const ITest* a = automatic.get();
+        runner.add(std::move(last));
         runner.add(std::move(user));
-        runner.add(std::move(background));
         runner.add(std::move(automatic));
         QCOMPARE(&runner.test(0), a);
-        QCOMPARE(&runner.test(1), b);
-        QCOMPARE(&runner.test(2), u);
+        QCOMPARE(&runner.test(1), u);
+        QCOMPARE(&runner.test(2), l);
     }
 
-    void runnerDoesNotWaitForBackgroundTest()
+    // One test at a time: the CPU load starts only after the interactive tests.
+    void runnerRunsLastTestAfterInteractive()
     {
         TestRunner runner;
-        auto automatic = std::make_unique<FakeTest>(false, false);
-        auto background = std::make_unique<FakeTest>(false, true);
+        auto last = std::make_unique<FakeTest>(false, true);
         auto user = std::make_unique<FakeTest>(true, false);
-        FakeTest* a = automatic.get();
-        FakeTest* b = background.get();
+        FakeTest* l = last.get();
         FakeTest* u = user.get();
-        runner.add(std::move(automatic));
-        runner.add(std::move(background));
-        runner.add(std::move(user));
-        QSignalSpy finished(&runner, &TestRunner::testFinished);
-        QSignalSpy all(&runner, &TestRunner::allFinished);
-
-        runner.startAll();
-        QCOMPARE(a->runs, 1);
-        QCOMPARE(b->runs, 0);              // automatic tests still one at a time
-        a->answer(Status::Pass);
-        QCOMPARE(b->runs, 1);
-        QCOMPARE(u->runs, 1);              // started without waiting for b
-        u->answer(Status::Pass);
-        QCOMPARE(all.count(), 0);          // b is still running
-        QVERIFY(runner.isRunning());
-        b->answer(Status::Warn);
-        b->answer(Status::Fail);           // duplicate: ignored
-        QCOMPARE(all.count(), 1);
-        QCOMPARE(finished.count(), 3);
-        QCOMPARE(finished.at(1).at(0).toInt(), 2);   // user answered before b
-        QCOMPARE(finished.at(2).at(0).toInt(), 1);
-        QCOMPARE(finished.at(2).at(1).value<TestResult>().status, Status::Warn);
-    }
-
-    void runnerBackgroundTestDoneFirst()
-    {
-        TestRunner runner;
-        auto background = std::make_unique<FakeTest>(false, true);
-        auto user = std::make_unique<FakeTest>(true, false);
-        FakeTest* b = background.get();
-        FakeTest* u = user.get();
-        runner.add(std::move(background));
+        runner.add(std::move(last));
         runner.add(std::move(user));
         QSignalSpy all(&runner, &TestRunner::allFinished);
 
         runner.startAll();
-        b->answer(Status::Pass);
-        QCOMPARE(all.count(), 0);          // the interactive test is still open
+        QCOMPARE(u->runs, 1);
+        QCOMPARE(l->runs, 0);              // not during the interactive test
         u->answer(Status::Pass);
+        QCOMPARE(l->runs, 1);
+        QCOMPARE(all.count(), 0);
+        l->answer(Status::Warn);
+        l->answer(Status::Fail);           // duplicate: ignored
         QCOMPARE(all.count(), 1);
         QVERIFY(!runner.isRunning());
     }
