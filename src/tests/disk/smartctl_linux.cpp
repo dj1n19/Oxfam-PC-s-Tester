@@ -1,8 +1,10 @@
 #include "tests/disk/DiskInfo.h"
 
 #include <unistd.h>
+#include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QTemporaryDir>
 
 namespace {
 
@@ -30,6 +32,24 @@ std::vector<SmartctlRun> allFailed(const std::vector<ScannedDevice>& devices, co
         runs.push_back(std::move(r));
     }
     return runs;
+}
+
+// An AppImage runs from a FUSE mount that only the user who started it can
+// read: even root gets "permission denied" there, so pkexec could not start
+// the bundled smartctl. Copy it to a private temporary folder first (a static
+// binary: the file alone is enough). Anywhere else the path is used as it is.
+QString rootReadable(const QString& smartctl, const QTemporaryDir& tmp, QString* error)
+{
+    const QString appDir = qEnvironmentVariable("APPDIR");   // set by the AppImage runtime
+    if (appDir.isEmpty() || !smartctl.startsWith(appDir + QLatin1Char('/')))
+        return smartctl;
+    const QString copy = tmp.filePath(QStringLiteral("smartctl"));
+    if (!tmp.isValid() || !QFile::copy(smartctl, copy)
+        || !QFile::setPermissions(copy, QFile::ReadOwner | QFile::ExeOwner)) {
+        *error = QStringLiteral("Could not copy smartctl out of the AppImage into %1").arg(tmp.path());
+        return {};
+    }
+    return copy;
 }
 
 } // namespace
@@ -64,9 +84,19 @@ std::vector<SmartctlRun> readDevices(const QString& smartctl, const std::vector<
     if (safe.empty())
         return refused;
 
+    QTemporaryDir tmp;   // removed (with the copy) when this function returns
+    QString error;
+    const QString rootSmartctl = rootReadable(smartctl, tmp, &error);
+    if (rootSmartctl.isEmpty()) {
+        std::vector<SmartctlRun> runs = allFailed(safe, error);
+        for (SmartctlRun& r : refused)
+            runs.push_back(std::move(r));
+        return runs;
+    }
+
     QProcess p;
     // pkexec needs absolute paths and gives the program a clean environment.
-    p.start(pkexec, {QStringLiteral("/bin/sh"), QStringLiteral("-c"), buildBatchScript(smartctl, safe)});
+    p.start(pkexec, {QStringLiteral("/bin/sh"), QStringLiteral("-c"), buildBatchScript(rootSmartctl, safe)});
     std::vector<SmartctlRun> runs;
     if (!p.waitForStarted(5000)) {
         runs = allFailed(safe, QStringLiteral("Could not start pkexec"));

@@ -231,7 +231,18 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
 Dark terminal theme + status icons done (checked by rendering the window offscreen; not yet seen on Windows).
 App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no Oxfam logo): window/taskbar icon via
 `QApplication::setWindowIcon` (`:/icons/`), .exe icon via `app.rc` (to verify on Windows), `djinn-256.png` ready for the AppImage.
-Next: AppImage, tag v1.0.
+**AppImage** done in CI (job `appimage`, artifact `lazy-djin-tester-linux`; to verify on a real Mint PC):
+- Built on Ubuntu 22.04 with Qt 6.8 from qt.io (glibc 2.35: runs on Mint 21 and newer), linuxdeploy +
+  linuxdeploy-plugin-qt (pinned, SHA-256 checked). Inside: `usr/bin/` = program, `thresholds.json`,
+  `keyboard_layout.json`, `tools/smartctl` (static smartmontools 7.5 built in CI: Mint has no smartmontools).
+- Custom `AppRun` (in the workflow) starts `usr/bin/lazy-djin-tester` by its real path: linuxdeploy's own AppRun goes
+  through a symlink at the AppDir root and recent Qt then takes that folder as `applicationDirPath()` (no plugins,
+  no config). Seen with Arch's Qt; a local build with system Qt + `NO_STRIP=1` is a quick way to test packaging.
+- `smartctl_linux.cpp`: the AppImage mount is readable only by the user (not root), so before pkexec smartctl is
+  copied to a `QTemporaryDir` when it lies under `$APPDIR`.
+- Delivery sheet copy: next to the `.AppImage` file (`$APPIMAGE`), not `applicationDirPath()/..` (read-only mount).
+- Only the X11 (xcb) platform plugin is bundled (Mint Cinnamon = X11); under Wayland Qt falls back to XWayland.
+Next: test the AppImage on Mint (START with password prompt, audio, camera, delivery sheet), then tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
@@ -298,7 +309,7 @@ Known limitations:
   so System info shows "serial unknown" and stays Pass.
 - RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
-- DiskTest verified on Windows (admin). On Linux, smartctl is not bundled: system one only (M4).
+- DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
 - `license_win.cpp` and `runPowerShell()` (also used by SystemInfo and Drivers) verified on real Windows.
   `pnp_problems.json` and `license_*.json` are hand-made.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).

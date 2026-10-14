@@ -35,12 +35,25 @@ bool writeFile(const QString& path, const QByteArray& data, QString* error)
     return true;
 }
 
-// The copy to share goes next to the program folder (Documents in production,
-// the USB stick when testing). The previous one becomes "<name> (backup).xlsx".
-bool writeSharedCopy(const QString& fileName, const QByteArray& data, QString* path, QString* error)
+// Where the program "lives" for the technician: the folder holding the program
+// folder (Windows), or the folder holding the .AppImage file (Linux). Inside an
+// AppImage, applicationDirPath() is a read-only mount that disappears on exit;
+// the AppImage runtime gives the real file in $APPIMAGE.
+QDir folderAroundProgram()
 {
+    const QString appImage = qEnvironmentVariable("APPIMAGE");
+    if (!appImage.isEmpty())
+        return QFileInfo(appImage).absoluteDir();
     QDir dir(QCoreApplication::applicationDirPath());
     dir.cdUp();
+    return dir;
+}
+
+// The copy to share goes next to the program (Documents in production, the
+// USB stick when testing). The previous one becomes "<name> (backup).xlsx".
+bool writeSharedCopy(const QString& fileName, const QByteArray& data, QString* path, QString* error)
+{
+    const QDir dir = folderAroundProgram();
     *path = dir.absoluteFilePath(fileName);
     if (QFile::exists(*path)) {
         const QString backup = dir.absoluteFilePath(QFileInfo(fileName).completeBaseName()
