@@ -56,7 +56,7 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">Toon %1 van 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="91"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="92"/>
         <source>Could not play the sound (see details)</source>
         <translation type="unfinished">Kan het geluid niet afspelen (zie details)</translation>
     </message>
@@ -64,32 +64,32 @@ Waar hoorde u hem?</translation>
 <context>
     <name>AudioTest</name>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="55"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="69"/>
         <source>left silent</source>
         <translation type="unfinished">links stil</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="56"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="70"/>
         <source>right silent</source>
         <translation type="unfinished">rechts stil</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="58"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
         <source>left/right swapped</source>
         <translation type="unfinished">links/rechts omgewisseld</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="62"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="76"/>
         <source>no stereo separation (mono speaker?)</source>
         <translation type="unfinished">geen stereoscheiding (monoluidspreker?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="86"/>
         <source>Left and right speakers work</source>
         <translation type="unfinished">Linker- en rechterluidspreker werken</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="81"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="95"/>
         <source>Skipped by the technician (no speakers?)</source>
         <translation type="unfinished">Overgeslagen door de technicus (geen luidsprekers?)</translation>
     </message>
@@ -104,9 +104,9 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">Geen geluidsuitgang gevonden: controleer het geluidsstuurprogramma (Linux: start het programma niet met sudo)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioTest.cpp" line="36"/>
-        <source>Sound card refuses the test sound, 48 kHz 16-bit stereo (see details)</source>
-        <translation type="unfinished">Geluidskaart weigert het testgeluid, 48 kHz 16-bit stereo (zie details)</translation>
+        <location filename="../src/ui/interactive/AudioTest.cpp" line="39"/>
+        <source>Sound card refuses the test sound, 48 kHz stereo, 16-bit or float (see details)</source>
+        <translation type="unfinished">De geluidskaart weigert het testgeluid, 48 kHz stereo, 16-bit of float (zie details)</translation>
     </message>
 </context>
 <context>
@@ -816,12 +816,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="41"/>
+        <location filename="../src/main.cpp" line="44"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="42"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -835,27 +835,27 @@ Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap 
 <context>
     <name>Status</name>
     <message>
-        <location filename="../src/core/TestResult.h" line="20"/>
+        <location filename="../src/core/TestResult.h" line="29"/>
         <source>PASS</source>
         <translation type="unfinished">OK</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="21"/>
+        <location filename="../src/core/TestResult.h" line="30"/>
         <source>WARN</source>
         <translation type="unfinished">LET OP</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="22"/>
+        <location filename="../src/core/TestResult.h" line="31"/>
         <source>FAIL</source>
         <translation type="unfinished">DEFECT</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="23"/>
+        <location filename="../src/core/TestResult.h" line="32"/>
         <source>SKIPPED</source>
         <translation type="unfinished">OVERGESLAGEN</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="24"/>
+        <location filename="../src/core/TestResult.h" line="33"/>
         <source>ERROR</source>
         <translation type="unfinished">FOUT</translation>
     </message>
@@ -919,9 +919,17 @@ Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap 
     </message>
 </context>
 <context>
+    <name>TestResult</name>
+    <message>
+        <location filename="../src/core/TestResult.h" line="22"/>
+        <source>Windows answered too slowly (PC just started?): select this row and press &quot;Run this test again&quot;</source>
+        <translation type="unfinished">Windows antwoordde te traag (pc net opgestart?): selecteer deze regel en klik op &quot;Deze test opnieuw uitvoeren&quot;</translation>
+    </message>
+</context>
+<context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="81"/>
+        <location filename="../src/core/TestRunner.cpp" line="80"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation type="unfinished">Test antwoordde niet binnen %1 s: druk opnieuw op STARTEN</translation>
     </message>

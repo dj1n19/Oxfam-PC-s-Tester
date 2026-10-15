@@ -80,14 +80,17 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   `run()` **must emit `finished` exactly once**, now or later.
 - `TestRunner`: runs tests one at a time; `add()` places automatic tests, then interactive ones, then tests with
   `runsLast()` (only `CpuTempTest`: run during the interactive tests, its full load made the keyboard and audio
-  dialogs freeze on real hardware, developer's report 2026-10-14). Each automatic test has its own 60 s
-  watchdog (Error if silent); late or duplicate answers are ignored.
+  dialogs freeze on real hardware, developer's report 2026-10-14). Each automatic test has its own
+  watchdog, `ITest::timeoutMs()` (60 s; `CpuTempTest` 90 s), Error if silent; late or duplicate answers are ignored.
   `startOne(index)` runs one test alone (same path: a sequence from index to index, watchdog, `allFinished`).
 - `TestResult`: `status`, one-line `summary` (list), `details` (raw readings shown on row selection). **Always put raw tool output in `details`**: it is how problems are diagnosed on real machines.
 - **Error summaries tell the technician what to do.** If they can fix it (password cancelled, smartctl or a config
   file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end
   with "(see details)"; the verdict already says "check the ERROR rows, then press START again". When the probe knows
-  a fixable cause, give it a small enum (see `SmartctlFailure`) instead of comparing English error strings.
+  a fixable cause, give it a small enum (see `SmartctlFailure`) or flag instead of comparing English error strings.
+  Timeouts: `timedOut` flag (`PowerShellResult`, `SystemInfo`, `DriverInfo`, `CpuReading`) -> `slowWindowsSummary()`
+  ("...select this row and press 'Run this test again'"). Windows PowerShell probes get 45 s: right after start-up
+  the first WMI queries took > 20 s on 3 of 11 shop laptops (2026-10-15).
 - `Thresholds`: `config/thresholds.json`, shape `{ "key": { "warn": X, "fail": Y } }`.
   Direction is deduced: `fail < warn` means lower is worse (battery %); otherwise higher is worse (bad sectors).
   `thresholds.json` is copied next to the executable by CMake and loaded from `applicationDirPath()`.
@@ -251,6 +254,13 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
 summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
 UTF-8, QSaveFile. Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
 real run (2026-10-15): the file appears beside the program folder.
+**Field day 2026-10-15** (23 run reports, Windows, from a USB stick: 11 Lenovo 20M6, Dell Latitude 7420/7430, HP ZBook
+Fury 17 G7, Surface Pro 7): no crash, verdicts right. Found and fixed: PowerShell timeouts after start-up (above),
+CPU first reading > 12 s (now 30 s), Surface audio float, 5 s freeze before the audio test (multimedia warm-up).
+ACPI temperature never reacted on any PC (Lenovo `THM0_0` fixed 50-84 C, HP `CPUZ_0` 32 C): on Windows the CPU
+speed is the real check (Dell 266 %, Lenovo 136-149 %, one Lenovo 119-124 %: dust?, HP 135 %). Lenovo driver WARN
+"Synaptics WBDI - SGX" = fingerprint reader needing SGX in the BIOS. The reports hold real smartctl JSON of 6 NVMe
+models (Intel SSDPEKKF256G8L, Samsung PM9A1/MZVLW256, WD SN810/SN730, SK Hynix): golden-sample candidates.
 Next: test the AppImage on Mint (START with password prompt, audio, camera, delivery sheet), then tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 Qt Multimedia is started at launch (`QMediaDevices::audioOutputs()` 300 ms after `window.show()` in `main.cpp`): its
@@ -263,7 +273,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   not exist or may be taken by the OS (Win key, PrtSc...). The dialog catches keys in `event()` so Tab/Esc are tested
   instead of moving focus or closing; its buttons are `Qt::NoFocus` so Space/Enter never click them.
   On GNOME/Wayland mute, volume and PrtSc are taken by the desktop and never reach the app (explained in the dialog).
-- Test: `AudioTest` (interactive): `QAudioSink` on the default output, 48 kHz 16-bit stereo (`makeTone()` in oxcore).
+- Test: `AudioTest` (interactive): `QAudioSink` on the default output, 48 kHz stereo, 16-bit, else 32-bit float
+  (`makeTone(..., SampleType)` in oxcore; Surface Pro 7's Realtek SST refused 16-bit, 2026-10-15; fix not yet seen there).
   Tone on the LEFT only (440 Hz), then RIGHT only (660 Hz), 750 ms each; the technician answers Left / Right / Both / Nothing, without
   being told the side. Both correct = Pass; "Both" = Warn (mono speaker); wrong side = Fail (swapped); nothing = Fail.
   No output device or unsupported format = Error.

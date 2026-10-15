@@ -15,6 +15,8 @@ public:
     // Automatic test placed after the interactive ones (CPU load): it would
     // make the keyboard and audio dialogs lag if it ran during them.
     virtual bool runsLast() const { return false; }
+    // Automatic tests only: the runner gives up (Error) after this long.
+    virtual int timeoutMs() const { return 60'000; }
     virtual void run() = 0;
 
 signals:

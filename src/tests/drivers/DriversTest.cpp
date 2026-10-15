@@ -53,7 +53,7 @@ TestResult DriversTest::evaluate(const DriverInfo& info)
     TestResult r;
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not list the devices (see details)");
+        r.summary = info.timedOut ? slowWindowsSummary() : tr("Could not list the devices (see details)");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }

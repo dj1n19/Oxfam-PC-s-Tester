@@ -56,7 +56,7 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Bip %1 sur 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="91"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="92"/>
         <source>Could not play the sound (see details)</source>
         <translation>Impossible de jouer le son (voir détails)</translation>
     </message>
@@ -64,32 +64,32 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>AudioTest</name>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="55"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="69"/>
         <source>left silent</source>
         <translation>gauche muet</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="56"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="70"/>
         <source>right silent</source>
         <translation>droite muet</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="58"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
         <source>left/right swapped</source>
         <translation>gauche/droite inversés</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="62"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="76"/>
         <source>no stereo separation (mono speaker?)</source>
         <translation>pas de stéréo (haut-parleur mono ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="86"/>
         <source>Left and right speakers work</source>
         <translation>Haut-parleurs gauche et droit OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="81"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="95"/>
         <source>Skipped by the technician (no speakers?)</source>
         <translation>Passé par le technicien (pas de haut-parleurs ?)</translation>
     </message>
@@ -104,9 +104,9 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Aucune sortie son : vérifiez le pilote son (Linux : ne lancez pas le programme avec sudo)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioTest.cpp" line="36"/>
-        <source>Sound card refuses the test sound, 48 kHz 16-bit stereo (see details)</source>
-        <translation>La carte son refuse le son de test, 48 kHz 16 bits stéréo (voir détails)</translation>
+        <location filename="../src/ui/interactive/AudioTest.cpp" line="39"/>
+        <source>Sound card refuses the test sound, 48 kHz stereo, 16-bit or float (see details)</source>
+        <translation>La carte son refuse le son de test, 48 kHz stéréo, 16 bits ou flottant (voir détails)</translation>
     </message>
 </context>
 <context>
@@ -816,12 +816,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="41"/>
+        <location filename="../src/main.cpp" line="44"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="42"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -835,27 +835,27 @@ Les tests qui ont besoin de seuils indiqueront ERREUR. Recopiez tout le dossier 
 <context>
     <name>Status</name>
     <message>
-        <location filename="../src/core/TestResult.h" line="20"/>
+        <location filename="../src/core/TestResult.h" line="29"/>
         <source>PASS</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="21"/>
+        <location filename="../src/core/TestResult.h" line="30"/>
         <source>WARN</source>
         <translation>ATTENTION</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="22"/>
+        <location filename="../src/core/TestResult.h" line="31"/>
         <source>FAIL</source>
         <translation>ÉCHEC</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="23"/>
+        <location filename="../src/core/TestResult.h" line="32"/>
         <source>SKIPPED</source>
         <translation>IGNORÉ</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="24"/>
+        <location filename="../src/core/TestResult.h" line="33"/>
         <source>ERROR</source>
         <translation>ERREUR</translation>
     </message>
@@ -919,9 +919,17 @@ Les tests qui ont besoin de seuils indiqueront ERREUR. Recopiez tout le dossier 
     </message>
 </context>
 <context>
+    <name>TestResult</name>
+    <message>
+        <location filename="../src/core/TestResult.h" line="22"/>
+        <source>Windows answered too slowly (PC just started?): select this row and press &quot;Run this test again&quot;</source>
+        <translation>Windows a répondu trop lentement (PC tout juste démarré ?) : sélectionnez cette ligne et appuyez sur « Relancer ce test »</translation>
+    </message>
+</context>
+<context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="81"/>
+        <location filename="../src/core/TestRunner.cpp" line="80"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation>Le test n&apos;a pas répondu en %1 s : appuyez à nouveau sur DÉMARRER</translation>
     </message>

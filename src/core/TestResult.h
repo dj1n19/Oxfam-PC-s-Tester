@@ -14,6 +14,15 @@ struct TestResult {
     QString note;      // key value alone, for the delivery sheet: "85 %" (battery), "Dell Latitude 7420" (model)
 };
 
+// Summary of a probe that timed out. Right after start-up Windows can take
+// more than 20 s to answer its first queries (3 of 11 shop laptops,
+// 2026-10-15); a second try usually works, so say how to make one.
+inline QString slowWindowsSummary()
+{
+    return QCoreApplication::translate(
+        "TestResult", "Windows answered too slowly (PC just started?): select this row and press \"Run this test again\"");
+}
+
 inline QString statusLabel(Status s)
 {
     switch (s) {

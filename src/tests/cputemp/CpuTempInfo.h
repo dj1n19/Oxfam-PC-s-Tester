@@ -21,6 +21,7 @@ struct CpuReading {
     qint64 atMs = 0;          // when it was read, in ms after the load started (0 = at rest)
 
     QString error;            // non-empty = the probe itself failed
+    bool timedOut = false;    // ...because the OS answered too slowly (try again)
     QString raw;              // every value seen, copied into the test details
 };
 

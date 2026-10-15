@@ -23,9 +23,11 @@ SystemInfo readSystemInfo()
 {
     SystemInfo info;
 
-    const PowerShellResult ps = runPowerShell(QString::fromLatin1(kScript), 20000);
+    // 45 s: 20 s was too short on 3 of 11 shop laptops just after start-up.
+    const PowerShellResult ps = runPowerShell(QString::fromLatin1(kScript), 45000);
     if (!ps.error.isEmpty()) {
         info.error = ps.error;
+        info.timedOut = ps.timedOut;
         return info;
     }
 

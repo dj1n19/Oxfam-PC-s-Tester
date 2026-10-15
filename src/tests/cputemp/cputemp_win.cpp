@@ -40,9 +40,11 @@ const char* const kScript =
     "if ($first) { $first = $false; $sw.Restart() }; "
     "Start-Sleep -Seconds 1 }";
 
-// PowerShell needs 1-3 s to start (more on an old PC). Worst case for a 30 s
-// test: 5 s to start + 12 + 30 + 8 = 55 s, under the runner's 60 s watchdog.
-constexpr int kFirstLineMs = 12000;
+// PowerShell needs 1-3 s to start, but the first performance counter query
+// can take much longer: 12 s was too short on a Surface Pro 7 and a ThinkPad
+// (2026-10-15). Worst case for a 30 s test: 5 s to start + 30 + 30 + 8 = 73 s,
+// under CpuTempTest's 90 s watchdog (timeoutMs()).
+constexpr int kFirstLineMs = 30000;
 constexpr int kExtraMs = 8000;   // after the last expected reading
 
 CpuReading failure(const QString& error)
@@ -74,10 +76,14 @@ std::vector<CpuReading> sampleCpu(int seconds, const std::function<bool(const Cp
     if (!ps.canReadLine()) {
         const bool running = ps.state() != QProcess::NotRunning;
         stopProcess(ps);
-        return {failure(running ? QStringLiteral("PowerShell gave no reading within %1 s").arg(kFirstLineMs / 1000)
-                                : QStringLiteral("PowerShell failed (exit code %1): %2")
-                                      .arg(ps.exitCode())
-                                      .arg(QString::fromLocal8Bit(ps.readAllStandardError()).trimmed()))};
+        if (running) {
+            CpuReading slow = failure(QStringLiteral("PowerShell gave no reading within %1 s").arg(kFirstLineMs / 1000));
+            slow.timedOut = true;
+            return {slow};
+        }
+        return {failure(QStringLiteral("PowerShell failed (exit code %1): %2")
+                            .arg(ps.exitCode())
+                            .arg(QString::fromLocal8Bit(ps.readAllStandardError()).trimmed()))};
     }
     std::vector<CpuReading> readings{parseWindowsCpu(ps.readLine().trimmed())};
     if (!startLoad(readings.front())) {

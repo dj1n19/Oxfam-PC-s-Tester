@@ -81,7 +81,8 @@ void AudioDialog::play()
     m_sink->stop();
     m_buffer.close();
     const Channel ch = m_step == 0 ? Channel::Left : Channel::Right;
-    m_buffer.setData(makeTone(ch, m_format.sampleRate(), m_step == 0 ? kLeftHz : kRightHz, kToneMs));
+    const SampleType type = m_format.sampleFormat() == QAudioFormat::Float ? SampleType::Float : SampleType::Int16;
+    m_buffer.setData(makeTone(ch, m_format.sampleRate(), m_step == 0 ? kLeftHz : kRightHz, kToneMs, type));
     m_buffer.open(QIODevice::ReadOnly);
     m_sink->start(&m_buffer);
 

@@ -508,6 +508,33 @@ private slots:
         QCOMPARE(CpuTempTest::evaluate(cpuRun(99, {99, 99}), t).status, Status::Fail);
     }
 
+    // Shop laptops just after start-up (2026-10-15): PowerShell timed out. Still
+    // Error, but the summary says how to get a result: run the row again.
+    void slowWindowsSaysRunAgain()
+    {
+        SystemInfo info;
+        info.error = "PowerShell timed out after 45 s";
+        info.timedOut = true;
+        const TestResult s = SystemInfoTest::evaluate(info);
+        QCOMPARE(s.status, Status::Error);
+        QVERIFY(s.summary.contains("Run this test again"));
+        QVERIFY(s.details.contains("timed out"));   // the raw cause stays in the details
+        info.timedOut = false;                       // any other failure: the generic text
+        QVERIFY(!SystemInfoTest::evaluate(info).summary.contains("Run this test again"));
+
+        DriverInfo drivers;
+        drivers.error = "PowerShell timed out after 45 s";
+        drivers.timedOut = true;
+        QCOMPARE(DriversTest::evaluate(drivers).status, Status::Error);
+        QVERIFY(DriversTest::evaluate(drivers).summary.contains("Run this test again"));
+
+        CpuLoadRun cpu;
+        cpu.idle.error = "PowerShell gave no reading within 30 s";
+        cpu.idle.timedOut = true;
+        QCOMPARE(CpuTempTest::evaluate(cpu, loaded()).status, Status::Error);
+        QVERIFY(CpuTempTest::evaluate(cpu, loaded()).summary.contains("Run this test again"));
+    }
+
     void cpuTempMissingDataIsNotPass()
     {
         const Thresholds t = loaded();
@@ -731,6 +758,23 @@ private slots:
 
         const QByteArray r = makeTone(Channel::Right, 44100, 880, 500);
         QCOMPARE(int(reinterpret_cast<const std::int16_t*>(r.constData())[2 * 1000]), 0);   // left silent
+    }
+
+    // Surface Pro 7: the sound card only takes 32-bit float.
+    void audioToneFloat()
+    {
+        const QByteArray d = makeTone(Channel::Right, 48000, 660, 1000, SampleType::Float);
+        QCOMPARE(d.size(), qsizetype(48000 * 2 * 4));   // 1 s, 2 channels, 4 bytes
+        const auto* s = reinterpret_cast<const float*>(d.constData());
+        float maxLeft = 0, maxRight = 0;
+        for (int i = 0; i < 48000; ++i) {
+            maxLeft = std::max(maxLeft, std::abs(s[2 * i]));
+            maxRight = std::max(maxRight, std::abs(s[2 * i + 1]));
+        }
+        QVERIFY(maxRight > 0.3f);      // clearly audible (half of full scale 1.0)
+        QVERIFY(maxRight <= 0.5f);     // no clipping
+        QCOMPARE(maxLeft, 0.0f);       // the other side is silent
+        QCOMPARE(s[1], 0.0f);          // fade in: starts at 0, no click
     }
 
     void audioAnswers()

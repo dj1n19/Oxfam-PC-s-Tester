@@ -12,6 +12,7 @@ struct SystemInfo {
     double ramBytes = 0;        // usable RAM seen by the OS (a bit below installed)
     int chassisType = 2;        // SMBIOS code, 2 = Unknown (mapped in SystemInfoTest)
     QString error;              // non-empty = the probe itself failed
+    bool timedOut = false;      // ...because the OS answered too slowly (try again)
     QString raw;                // raw values, copied into the test details
 };
 

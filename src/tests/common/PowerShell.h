@@ -8,6 +8,7 @@ class QProcess;
 
 struct PowerShellResult {
     QString error;    // non-empty = did not start, timed out, or exit code != 0
+    bool timedOut = false;   // Windows was too slow: a second try usually works
     QByteArray out;   // standard output, trimmed
 };
 

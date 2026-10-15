@@ -15,10 +15,12 @@ const char* const kScript =
 
 DriverInfo readDrivers()
 {
-    const PowerShellResult ps = runPowerShell(QString::fromLatin1(kScript));
+    // 45 s: the default 30 s was too short on a shop laptop just after start-up.
+    const PowerShellResult ps = runPowerShell(QString::fromLatin1(kScript), 45000);
     if (!ps.error.isEmpty()) {
         DriverInfo info;
         info.error = ps.error;
+        info.timedOut = ps.timedOut;
         return info;
     }
     return parsePnpEntities(ps.out);

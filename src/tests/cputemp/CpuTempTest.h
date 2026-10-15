@@ -26,6 +26,7 @@ public:
 
     QString name() const override { return tr("CPU temperature"); }
     bool runsLast() const override { return true; }   // ~30 s of full load: after the interactive tests
+    int timeoutMs() const override { return 90'000; }  // up to 73 s on Windows (see cputemp_win.cpp)
     void run() override;
 
     // Blocking (~30 s): loads every core and samples the temperature.

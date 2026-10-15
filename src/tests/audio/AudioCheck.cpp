@@ -6,14 +6,19 @@
 #include <QCoreApplication>
 #include <QStringList>
 
-QByteArray makeTone(Channel channel, int sampleRate, int frequencyHz, int durationMs)
+namespace {
+
+// One sample type at a time: fullScale is the largest value it can hold
+// (32767 for 16-bit, 1.0 for float).
+template <typename Sample>
+QByteArray toneData(Channel channel, int sampleRate, int frequencyHz, int durationMs, double fullScale)
 {
     const qsizetype frames = qsizetype(sampleRate) * durationMs / 1000;
     const qsizetype fadeFrames = sampleRate / 50;   // 20 ms
-    const double amplitude = 0.5 * INT16_MAX;       // half scale: loud enough, no clipping
+    const double amplitude = 0.5 * fullScale;       // half scale: loud enough, no clipping
 
-    QByteArray data(frames * 2 * qsizetype(sizeof(std::int16_t)), '\0');   // 2 channels
-    auto* out = reinterpret_cast<std::int16_t*>(data.data());
+    QByteArray data(frames * 2 * qsizetype(sizeof(Sample)), '\0');   // 2 channels
+    auto* out = reinterpret_cast<Sample*>(data.data());
     for (qsizetype i = 0; i < frames; ++i) {
         double gain = 1.0;
         if (i < fadeFrames)
@@ -22,12 +27,21 @@ QByteArray makeTone(Channel channel, int sampleRate, int frequencyHz, int durati
             gain = double(frames - i) / double(fadeFrames);
 
         const double t = double(i) / sampleRate;
-        const auto sample = static_cast<std::int16_t>(
+        const auto sample = static_cast<Sample>(
             amplitude * gain * std::sin(2.0 * std::numbers::pi * frequencyHz * t));
-        out[2 * i]     = channel == Channel::Left  ? sample : std::int16_t(0);
-        out[2 * i + 1] = channel == Channel::Right ? sample : std::int16_t(0);
+        out[2 * i]     = channel == Channel::Left  ? sample : Sample(0);
+        out[2 * i + 1] = channel == Channel::Right ? sample : Sample(0);
     }
     return data;
+}
+
+} // namespace
+
+QByteArray makeTone(Channel channel, int sampleRate, int frequencyHz, int durationMs, SampleType type)
+{
+    if (type == SampleType::Float)
+        return toneData<float>(channel, sampleRate, frequencyHz, durationMs, 1.0);
+    return toneData<std::int16_t>(channel, sampleRate, frequencyHz, durationMs, INT16_MAX);
 }
 
 namespace {

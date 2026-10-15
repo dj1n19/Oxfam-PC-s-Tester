@@ -13,6 +13,7 @@ struct DeviceProblem {
 struct DriverInfo {
     std::vector<DeviceProblem> problems;
     QString error;   // non-empty = the probe itself failed
+    bool timedOut = false;   // ...because the OS answered too slowly (try again)
     QString raw;     // raw output, copied into the test details
 };
 

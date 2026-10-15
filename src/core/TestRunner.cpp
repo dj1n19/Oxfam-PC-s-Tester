@@ -4,8 +4,6 @@
 #include <QTimer>
 
 namespace {
-constexpr int kAutoTestTimeoutMs = 60'000;
-
 // Placement order: automatic, then interactive, then "runs last".
 int group(const ITest& t)
 {
@@ -73,13 +71,14 @@ void TestRunner::runNext()
     if (!t.needsUser()) {
         // One watchdog per automatic test. A timer from an older run, or for
         // a test that already answered, does nothing.
-        QTimer::singleShot(kAutoTestTimeoutMs, this, [this, index, run = m_run] {
+        const int timeoutMs = t.timeoutMs();
+        QTimer::singleShot(timeoutMs, this, [this, index, timeoutMs, run = m_run] {
             if (run != m_run || !m_waiting[static_cast<size_t>(index)])
                 return;
             TestResult r;
             r.status = Status::Error;
-            r.summary = tr("Test did not answer within %1 s: press START again").arg(kAutoTestTimeoutMs / 1000);
-            r.details = QStringLiteral("Timeout after %1 s").arg(kAutoTestTimeoutMs / 1000);
+            r.summary = tr("Test did not answer within %1 s: press START again").arg(timeoutMs / 1000);
+            r.details = QStringLiteral("Timeout after %1 s").arg(timeoutMs / 1000);
             finish(index, r);
         });
     }

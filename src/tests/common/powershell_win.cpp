@@ -37,6 +37,7 @@ PowerShellResult runPowerShell(const QString& script, int timeoutMs)
         ps.kill();
         ps.waitForFinished();
         r.error = QStringLiteral("PowerShell timed out after %1 s").arg(timeoutMs / 1000);
+        r.timedOut = true;
         return r;
     }
     if (ps.exitStatus() != QProcess::NormalExit || ps.exitCode() != 0) {

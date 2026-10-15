@@ -26,14 +26,17 @@ void AudioTest::run()
         return;
     }
 
-    // makeTone() writes 16-bit stereo; 48 kHz is what nearly every device takes.
+    // makeTone() writes 16-bit or float stereo; 48 kHz is what nearly every
+    // device takes. 16-bit first; some cards only take float (Surface Pro 7).
     QAudioFormat format;
     format.setSampleRate(48000);
     format.setChannelCount(2);
     format.setSampleFormat(QAudioFormat::Int16);
+    if (!device.isFormatSupported(format))
+        format.setSampleFormat(QAudioFormat::Float);
     if (!device.isFormatSupported(format)) {
         const QAudioFormat pref = device.preferredFormat();
-        error.summary = tr("Sound card refuses the test sound, 48 kHz 16-bit stereo (see details)");
+        error.summary = tr("Sound card refuses the test sound, 48 kHz stereo, 16-bit or float (see details)");
         error.details = QStringLiteral("Device: %1\nPreferred: %2 Hz, %3 channel(s), sample format %4")
                             .arg(device.description())
                             .arg(pref.sampleRate()).arg(pref.channelCount())

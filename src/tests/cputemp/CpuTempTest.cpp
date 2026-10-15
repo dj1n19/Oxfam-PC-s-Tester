@@ -125,7 +125,7 @@ TestResult CpuTempTest::evaluate(const CpuLoadRun& run, const Thresholds& thresh
 
     if (!idle.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = tr("Could not read the CPU temperature (see details)");
+        r.summary = idle.timedOut ? slowWindowsSummary() : tr("Could not read the CPU temperature (see details)");
         r.details = idle.error + QLatin1Char('\n') + idle.raw;
         return r;
     }
