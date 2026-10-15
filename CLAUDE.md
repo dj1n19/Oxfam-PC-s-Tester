@@ -323,7 +323,14 @@ Known limitations:
   Windows is a motherboard zone: expect many Skipped (Latitude 7420: "Not supported").
 - CPU speed: the counters were read by hand on the Latitude 7420 (`cpu_win_latitude7420_*.json`: rest on battery =
   real output; load = real values in the script's shape). Under full load: 266 % falling to 241 % (charger) / 211 %
-  (battery) as the turbo budget runs out: normal. **The app's own probe is not yet run on Windows.** Limits 100/70 are
+  (battery) as the turbo budget runs out: normal. The app's own probe verified on the Latitude 7420 (Win11, charger, 2026-10-14): 7 readings in 32.5 s
+  (one per ~4.6 s under load, not per second), 266 % flat, PASS. On battery: 5 readings in 29.1 s, 266 % flat.
+  266 % is the ceiling: Windows' "base" is `MaxClockSpeed` (1498 MHz on this i5-1145G7, not the 2.6 GHz of its name),
+  and 2.66 x 1.498 = 4.0 GHz = its all-core turbo. The hand-read drop to 241/211 % comes when the turbo budget runs
+  out after our 30 s with a fresh budget. Confirmed: 3rd load in a row on battery gave 266 266 210 106 82 86 ...
+  (counter live, median ~83 % -> WARN "plug in the charger"). ThinkPad L380 (Win11): ACPI zone THM0_0 fixed at
+  77.1 C under load -> temperature Skipped (first real case), speed 184 -> 150 % -> PASS. Both are unit tests
+  (`cpuRealWindowsRuns`, sample `cpu_win_l380_rest.json` = real output). Limits 100/70 are
   guesses: no throttling PC seen yet (M5). A real Windows run (2026-10-14) gave an empty speed list: the
   first 5 *readings* were left out and a reading under load can take ~6 s. Now the first 5 *seconds* (`atMs` on each
   reading, pure `CpuTempTest::collect()`), the details give the reading count, and a missing speed is listed.

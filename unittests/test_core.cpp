@@ -604,6 +604,33 @@ private slots:
         QVERIFY(!parseWindowsCpu(R"({"zones":[],"cpu":{"PercentProcessorPerformance":0}})").hasSpeed);
     }
 
+    // Real runs of the app on Windows (2026-10-14).
+    void cpuRealWindowsRuns()
+    {
+        const Thresholds t = loaded();
+
+        // ThinkPad L380: the ACPI zone stays at 77.1 C under load (not the CPU),
+        // the speed is live and settles at ~150 %.
+        CpuLoadRun lenovo;
+        lenovo.idle = parseWindowsCpu(sample("cpu_win_l380_rest.json"));
+        QVERIFY(lenovo.idle.hasTemp);
+        QCOMPARE(lenovo.idle.celsius, 3502 / 10.0 - 273.15);
+        QCOMPARE(lenovo.idle.speedPct, 67.0);
+        lenovo.samples.assign(6, lenovo.idle.celsius);
+        lenovo.speeds = {184, 160, 151, 150, 148, 150};
+        const TestResult l = CpuTempTest::evaluate(lenovo, t);
+        QCOMPARE(l.status, Status::Pass);   // a deaf sensor does not hide a good speed
+        QVERIFY(l.summary.contains("did not react"));
+        QVERIFY(l.summary.contains("150 %"));
+
+        // Latitude 7420, 3rd load in a row on battery: turbo budget spent, under base speed.
+        CpuLoadRun dell = speedRun({266, 266, 210, 106, 82, 86, 82, 91, 83, 84, 93, 82, 81}, true);
+        const TestResult d = CpuTempTest::evaluate(dell, t);
+        QCOMPARE(d.status, Status::Warn);   // on battery: never Fail
+        QVERIFY(d.summary.contains("83 %"));
+        QVERIFY(d.summary.contains("charger"));
+    }
+
     void acpiZonesParsing()
     {
         const CpuReading r = parseWindowsCpu(sample("acpi_zones.json"));
