@@ -10,6 +10,7 @@ class QPlainTextEdit;
 class QPushButton;
 class QTableWidget;
 class TestRunner;
+struct Verdict;
 
 // Pure view: it displays what the runner reports and contains no test logic.
 class MainWindow : public QMainWindow {
@@ -30,6 +31,7 @@ private:
     void onTestStarted(int row);
     void onTestFinished(int row, const TestResult& result);
     void onAllFinished();
+    void saveReport(const Verdict& verdict);
     void onDeliveryClicked();
     void showDetailsOf(int row);
     void resetRows();

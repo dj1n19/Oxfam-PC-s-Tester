@@ -280,19 +280,19 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>DeliveryAction</name>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="74"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="61"/>
         <source>Delivery sheet</source>
         <translation>Fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="88"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="75"/>
         <source>No delivery sheet on the Desktop (%1).
 Copy &quot;%2&quot; or &quot;%3&quot; there, then click again.</source>
         <translation>Pas de fiche de pré-livraison sur le Bureau (%1).
 Copiez-y « %2 » ou « %3 », puis cliquez à nouveau.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="95"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="82"/>
         <source>The delivery sheet seems to be open in an office program. Close it first: otherwise saving it there will erase these results.
 
 Write anyway?</source>
@@ -301,21 +301,21 @@ Write anyway?</source>
 Écrire quand même ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="111"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="98"/>
         <source>The delivery sheet cannot be read:
 %1</source>
         <translation>Impossible de lire la fiche de pré-livraison :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="123"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="110"/>
         <source>This PC reports &quot;%1&quot;, which is not in the model list.
 Choose its model in the list, or type the name of a new model:</source>
         <translation>Ce PC indique « %1 », qui n&apos;est pas dans la liste des modèles.
 Choisissez son modèle dans la liste, ou tapez le nom d&apos;un nouveau modèle :</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="135"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="122"/>
         <source>Add &quot;%1&quot; to the model list?
 
 A copy of the sheet with the new model, without the results of this PC, will be saved next to the program folder, to share with the other technicians.</source>
@@ -324,28 +324,28 @@ A copy of the sheet with the new model, without the results of this PC, will be 
 Une copie de la fiche avec le nouveau modèle, sans les résultats de ce PC, sera enregistrée à côté du dossier du programme, pour la partager avec les autres techniciens.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="140"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="127"/>
         <source>The model could not be added:
 %1</source>
         <translation>Impossible d&apos;ajouter le modèle :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="135"/>
         <source>The copy for the other technicians could not be saved:
 %1</source>
         <translation>Impossible d&apos;enregistrer la copie pour les autres techniciens :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="161"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation>Impossible d&apos;écrire la fiche de pré-livraison. Est-elle ouverte dans un programme bureautique ?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="165"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="152"/>
         <source>Delivery sheet filled:
 %1
 
@@ -356,7 +356,7 @@ Open it to complete the other checks.</source>
 Ouvrez-la pour compléter les autres vérifications.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="169"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="156"/>
         <source>Copy with the new model, for the other technicians:
 %1</source>
         <translation>Copie avec le nouveau modèle, pour les autres techniciens :
@@ -753,54 +753,64 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="132"/>
+        <location filename="../src/ui/MainWindow.cpp" line="135"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="133"/>
+        <location filename="../src/ui/MainWindow.cpp" line="136"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="134"/>
+        <location filename="../src/ui/MainWindow.cpp" line="137"/>
         <source>Run this test again</source>
         <translation>Relancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="135"/>
+        <location filename="../src/ui/MainWindow.cpp" line="138"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="136"/>
+        <location filename="../src/ui/MainWindow.cpp" line="139"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="136"/>
+        <location filename="../src/ui/MainWindow.cpp" line="139"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="136"/>
+        <location filename="../src/ui/MainWindow.cpp" line="139"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="137"/>
+        <location filename="../src/ui/MainWindow.cpp" line="140"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="149"/>
+        <location filename="../src/ui/MainWindow.cpp" line="152"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="151"/>
+        <location filename="../src/ui/MainWindow.cpp" line="154"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="258"/>
+        <source>Details saved to %1</source>
+        <translation>Détails enregistrés dans %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="260"/>
+        <source>Could not save the details (%1): %2</source>
+        <translation>Impossible d&apos;enregistrer les détails (%1) : %2</translation>
     </message>
 </context>
 <context>

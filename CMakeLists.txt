@@ -44,6 +44,8 @@ add_library(oxcore STATIC
     src/core/Thresholds.cpp
     src/core/TestRunner.h
     src/core/TestRunner.cpp
+    src/core/ProgramFolder.h
+    src/core/ProgramFolder.cpp            # where files for people go (next to the program / AppImage)
     src/tests/battery/BatteryInfo.h
     src/tests/battery/BatteryTest.h
     src/tests/battery/BatteryTest.cpp
@@ -77,6 +79,8 @@ add_library(oxcore STATIC
     src/delivery/XlsxEditor.cpp           # edits .xlsx cells in place (miniz)
     src/delivery/DeliverySheet.h
     src/delivery/DeliverySheet.cpp        # which cells of Oxfam's delivery sheet hold what
+    src/report/RunReport.h
+    src/report/RunReport.cpp              # every row's details in a text file after each run
 )
 
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.

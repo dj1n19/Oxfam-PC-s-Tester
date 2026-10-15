@@ -10,6 +10,7 @@
 #include "core/Verdict.h"
 #include "delivery/DeliverySheet.h"
 #include "delivery/XlsxEditor.h"
+#include "report/RunReport.h"
 #include "tests/battery/BatteryTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
@@ -602,6 +603,39 @@ private slots:
 
         // A counter that is not ready gives 0: not a speed.
         QVERIFY(!parseWindowsCpu(R"({"zones":[],"cpu":{"PercentProcessorPerformance":0}})").hasSpeed);
+    }
+
+    void runReportText()
+    {
+        RunReport report;
+        report.when = QDateTime(QDate(2026, 10, 15), QTime(14, 32, 5));
+        report.model = "Dell Latitude 7420";
+        report.verdict = "SELL WITH NOTE - see warnings";
+        TestResult cpu;
+        cpu.status = Status::Warn;
+        cpu.summary = "Slowed to 83 % of base speed on battery";
+        cpu.details = "Load: 8 threads, 30 s\nIdle speed: 123 % of base\n";
+        report.rows.push_back({"CPU temperature", cpu});
+        report.rows.push_back({"Camera", TestResult{}});   // never run: Skipped, empty
+
+        const QString text = formatRunReport(report);
+        QVERIFY(text.startsWith("Lazy Djin's Tester - 2026-10-15 14:32:05\nPC: Dell Latitude 7420\n"
+                                "Verdict: SELL WITH NOTE - see warnings\n"));
+        QVERIFY(text.contains("\n==== [WARN] CPU temperature ====\nSlowed to 83 % of base speed on battery\n\n"
+                              "Load: 8 threads, 30 s\nIdle speed: 123 % of base\n"));   // details as in the pane
+        QVERIFY(text.contains("==== [SKIPPED] Camera ===="));
+        report.model.clear();
+        QVERIFY(formatRunReport(report).contains("PC: unknown\n"));
+    }
+
+    void runReportFileName_()
+    {
+        const QDateTime when(QDate(2026, 10, 15), QTime(14, 32, 5));
+        QCOMPARE(runReportFileName(when, "Dell Latitude 7420"), QString("2026-10-15 14-32-05 Dell Latitude 7420.txt"));
+        // Characters Windows refuses, and trailing dots/spaces, never reach the file name.
+        QCOMPARE(runReportFileName(when, "LENOVO 20HD/0001:x?. "), QString("2026-10-15 14-32-05 LENOVO 20HD_0001_x_.txt"));
+        QCOMPARE(runReportFileName(when, ""), QString("2026-10-15 14-32-05 unknown PC.txt"));
+        QCOMPARE(runReportFileName(when, " ... "), QString("2026-10-15 14-32-05 unknown PC.txt"));
     }
 
     // Real runs of the app on Windows (2026-10-14).

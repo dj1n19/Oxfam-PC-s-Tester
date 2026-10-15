@@ -2,17 +2,20 @@
 
 #include <QColor>
 #include <QComboBox>
+#include <QDir>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QStatusBar>
 #include <QTableWidget>
 #include <QVBoxLayout>
 
 #include "core/TestRunner.h"
 #include "core/Verdict.h"
+#include "report/RunReport.h"
 #include "ui/Language.h"
 #include "ui/Theme.h"
 
@@ -233,6 +236,29 @@ void MainWindow::onAllFinished()
         QStringLiteral("color:%1; border:2px solid %1; font-size:18pt; font-weight:bold; padding:6px;")
             .arg(Theme::statusColor(v.level).name()));
     updateButtons();
+    saveReport(v);
+}
+
+// Every row's details in a text file, after each run and each "run again"
+// (one file per run, never overwritten). Automatic: no dialog, the status bar
+// says where it went or why it could not.
+void MainWindow::saveReport(const Verdict& verdict)
+{
+    RunReport report;
+    report.when = QDateTime::currentDateTime();
+    report.verdict = verdict.text;
+    for (int i = 0; i < m_runner.count(); ++i) {
+        const TestResult& result = m_results[static_cast<size_t>(i)];
+        if (&m_runner.test(i) == m_delivery.systemInfo)
+            report.model = result.note;
+        report.rows.push_back({m_runner.test(i).name(), result});
+    }
+    QString path, error;
+    if (writeRunReport(report, &path, &error))
+        statusBar()->showMessage(tr("Details saved to %1").arg(QDir::toNativeSeparators(path)));
+    else
+        statusBar()->showMessage(tr("Could not save the details (%1): %2")
+                                     .arg(QDir::toNativeSeparators(path), error));
 }
 
 void MainWindow::onDeliveryClicked()

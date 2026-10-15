@@ -12,7 +12,8 @@ to check **refurbished desktop and laptop PCs** before they are sold in Oxfam sh
 - Targets: **Windows 10/11 and Linux**. Portable: no installer, no registry or system writes.
 - Output: an **on-screen summary**, plus (button, never automatic) Oxfam's **delivery sheet** filled in place:
   `Fiche Pré Livraison.xlsx` / `Pre- LeveringsFiche.xlsx` on the Desktop (decided by the developer, Oct 2026).
-  No PDF, no print, no other report export, no database.
+  Plus, automatically after each run, a plain-text **run report** (every row's details) next to the program
+  (developer's request 2026-10-15: for testing now, base of the phase 2 report). No PDF, no print, no database.
 - Goal: **as little human intervention as possible**. Automatic tests run first, interactive tests come last.
 - Verdict shown to the technician (see `src/core/Verdict.h`):
   - any Fail -> "DO NOT SELL - needs repair"
@@ -159,7 +160,7 @@ CI: `.github/workflows/build.yml`.
 
 ```
 src/
-  core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp}
+  core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp} ProgramFolder.{h,cpp}
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
@@ -172,6 +173,7 @@ src/
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
   delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
+  report/      RunReport.{h,cpp} (run report text + file name: pure, unit tested; written by MainWindow)
   ui/          MainWindow.{h,cpp} Language.{h,cpp} Theme.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
     icons/       djinn.png (32 px pixel-art master) -> make_icons.sh (ImageMagick, run by hand) -> djinn-<size>.png,
                  lazy-djin-tester.ico; app.rc (Windows .exe icon). Generated files are committed (CI has no ImageMagick).
@@ -240,8 +242,14 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
   no config). Seen with Arch's Qt; a local build with system Qt + `NO_STRIP=1` is a quick way to test packaging.
 - `smartctl_linux.cpp`: the AppImage mount is readable only by the user (not root), so before pkexec smartctl is
   copied to a `QTemporaryDir` when it lies under `$APPDIR`.
-- Delivery sheet copy: next to the `.AppImage` file (`$APPIMAGE`), not `applicationDirPath()/..` (read-only mount).
+- Delivery sheet copy: next to the `.AppImage` file (`$APPIMAGE`), not `applicationDirPath()/..` (read-only mount):
+  `folderAroundProgram()` (`core/ProgramFolder`), shared with the run report.
 - Only the X11 (xcb) platform plugin is bundled (Mint Cinnamon = X11); under Wayland Qt falls back to XWayland.
+**Run report** done (developer's choices: automatic, every test, one file per run, next to the program):
+`MainWindow::onAllFinished()` (full run and each "Run this test again") writes
+`folderAroundProgram()/yyyy-MM-dd HH-mm-ss <model>.txt`: date, model, verdict, then per row `==== [STATUS] name ====`,
+summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
+UTF-8, QSaveFile. Path or error shown in the status bar (no dialog: automatic). Not yet seen after a real run.
 Next: test the AppImage on Mint (START with password prompt, audio, camera, delivery sheet), then tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
@@ -371,7 +379,7 @@ Part-time solo work. Every milestone must end with something usable.
 
 - No `#ifdef` for platform selection.
 - No `Qt6::Widgets`/`Gui` in `oxcore`; no UI code in `src/core` or `src/tests`.
-- No PDF/print/report export, SQLite, history, CLI mode, plugin system, workflow engine or QML unless the developer explicitly asks.
+- No PDF/print or report formats beyond the plain-text run report, SQLite, history, CLI mode, plugin system, workflow engine or QML unless the developer explicitly asks.
 - No blocking calls on the UI thread; no sleeping to wait for a result.
 - No silent success: unknown, missing or unparsable data is `Error` or `Skipped`, never `Pass`.
 - No large refactors while implementing a feature.

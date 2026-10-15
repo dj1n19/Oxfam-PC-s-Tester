@@ -9,6 +9,7 @@
 #include <QSaveFile>
 #include <QStandardPaths>
 
+#include "core/ProgramFolder.h"
 #include "delivery/XlsxEditor.h"
 
 namespace {
@@ -33,20 +34,6 @@ bool writeFile(const QString& path, const QByteArray& data, QString* error)
         return false;
     }
     return true;
-}
-
-// Where the program "lives" for the technician: the folder holding the program
-// folder (Windows), or the folder holding the .AppImage file (Linux). Inside an
-// AppImage, applicationDirPath() is a read-only mount that disappears on exit;
-// the AppImage runtime gives the real file in $APPIMAGE.
-QDir folderAroundProgram()
-{
-    const QString appImage = qEnvironmentVariable("APPIMAGE");
-    if (!appImage.isEmpty())
-        return QFileInfo(appImage).absoluteDir();
-    QDir dir(QCoreApplication::applicationDirPath());
-    dir.cdUp();
-    return dir;
 }
 
 // The copy to share goes next to the program (Documents in production, the
