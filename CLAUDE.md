@@ -249,9 +249,13 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
 `MainWindow::onAllFinished()` (full run and each "Run this test again") writes
 `folderAroundProgram()/yyyy-MM-dd HH-mm-ss <model>.txt`: date, model, verdict, then per row `==== [STATUS] name ====`,
 summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
-UTF-8, QSaveFile. Path or error shown in the status bar (no dialog: automatic). Not yet seen after a real run.
+UTF-8, QSaveFile. Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
+real run (2026-10-15): the file appears beside the program folder.
 Next: test the AppImage on Mint (START with password prompt, audio, camera, delivery sheet), then tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
+Qt Multimedia is started at launch (`QMediaDevices::audioOutputs()` 300 ms after `window.show()` in `main.cpp`): its
+first use loads the FFmpeg backend, ~5 s from a USB stick on the shop's Windows laptops, which froze the UI between
+the keyboard and audio tests on the first run only (developer's report 2026-10-15; never on Arch). Fix not yet seen on Windows.
 - Test: `KeyboardTest` (interactive, runs last): `config/keyboard_layout.json` (Belgian AZERTY labels, ISO 105, no numpad)
   lists keys by PC scan code set 1 (+0x100 for E0 keys). `canonicalScanCode()` converts `nativeScanCode()`: identity on
   Windows, xkb keycode -> set 1 on Linux (`scanCodeFromXkb`, unit tested). All required keys pressed = Pass (automatic),

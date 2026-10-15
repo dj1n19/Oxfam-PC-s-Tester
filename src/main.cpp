@@ -1,8 +1,11 @@
 #include <memory>
 #include <QApplication>
+#include <QAudioDevice>
 #include <QFile>
 #include <QIcon>
+#include <QMediaDevices>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
@@ -76,5 +79,12 @@ int main(int argc, char* argv[])
 
     MainWindow window(runner, delivery);
     window.show();
+
+    // Start Qt Multimedia now, while the technician gets ready. Its first use
+    // loads the FFmpeg backend: ~5 s from a USB stick on the shop's laptops
+    // (Windows, 2026-10-15), and the UI froze between the keyboard and audio
+    // tests. It must start on the UI thread; the short delay lets the window
+    // paint first, so the program does not look dead at launch.
+    QTimer::singleShot(300, [] { QMediaDevices::audioOutputs(); });
     return app.exec();
 }
