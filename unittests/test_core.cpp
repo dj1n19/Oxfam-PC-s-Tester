@@ -572,16 +572,6 @@ private slots:
     // Error, but the summary says how to get a result: run the row again.
     void slowWindowsSaysRunAgain()
     {
-        SystemInfo info;
-        info.error = "PowerShell timed out after 45 s";
-        info.timedOut = true;
-        const TestResult s = SystemInfoTest::evaluate(info);
-        QCOMPARE(s.status, Status::Error);
-        QVERIFY(s.summary.contains("Run this test again"));
-        QVERIFY(s.details.contains("timed out"));   // the raw cause stays in the details
-        info.timedOut = false;                       // any other failure: the generic text
-        QVERIFY(!SystemInfoTest::evaluate(info).summary.contains("Run this test again"));
-
         DriverInfo drivers;
         drivers.error = "PowerShell timed out after 45 s";
         drivers.timedOut = true;
@@ -940,6 +930,68 @@ private slots:
         QCOMPARE(SystemInfoTest::formFactorFromChassis(31), FF::Laptop);
         QCOMPARE(SystemInfoTest::formFactorFromChassis(2), FF::Unknown);
         QCOMPARE(SystemInfoTest::formFactorFromChassis(0), FF::Unknown);
+    }
+
+    // One SMBIOS structure: header (type, length, handle), the fields after
+    // the header, then the strings, each ending with '\0', plus a final '\0'.
+    static QByteArray smbiosStructure(quint8 type, const QByteArray& fields, const QList<QByteArray>& strings)
+    {
+        QByteArray s;
+        s.append(char(type));
+        s.append(char(4 + fields.size()));
+        s.append(2, '\0');                     // handle, not used
+        s.append(fields);
+        for (const QByteArray& str : strings)
+            s.append(str).append('\0');
+        if (strings.isEmpty())
+            s.append('\0');
+        s.append('\0');
+        return s;
+    }
+
+    // Hand-made table in the shape Windows gives (GetSystemFirmwareTable):
+    // BIOS (type 0), System (type 1), Enclosure (type 3), End (type 127).
+    static QByteArray smbiosTable()
+    {
+        return smbiosStructure(0, QByteArray("\x01\x02\x00\x00\x03", 5), {"LENOVO", "N1QET98W", "12/01/2023"})
+             // manufacturer 1, product 2, version 3, serial 4, then UUID etc.
+             + smbiosStructure(1, QByteArray("\x01\x02\x03\x04", 4) + QByteArray(17, '\0'),
+                               {"LENOVO", "20HD000MUS ", "ThinkPad T470", "PF0ABCDE"})
+             // manufacturer 1, type 0x8A = 10 (Notebook) + bit 7 (has a lock)
+             + smbiosStructure(3, QByteArray("\x01\x8A\x00\x00", 4), {"LENOVO"})
+             + smbiosStructure(127, {}, {});
+    }
+
+    void smbiosParsing()
+    {
+        const SmbiosIds ids = parseSmbios(smbiosTable());
+        QVERIFY(ids.hasSystem);
+        QCOMPARE(ids.vendor, QString("LENOVO"));
+        QCOMPARE(ids.model, QString("20HD000MUS"));      // trimmed, from type 1 and not type 0
+        QCOMPARE(ids.serial, QString("PF0ABCDE"));
+        QCOMPARE(ids.chassisType, 10);
+    }
+
+    void smbiosBrokenTableIsNotACrash()
+    {
+        // Cut in the middle of the enclosure: the system part is still read.
+        const QByteArray table = smbiosTable();
+        const SmbiosIds cut = parseSmbios(table.left(table.indexOf(QByteArray("LENOVO\0\0", 8))));
+        QVERIFY(cut.hasSystem);
+        QCOMPARE(cut.model, QString("20HD000MUS"));
+        QCOMPARE(cut.chassisType, 2);                    // unknown, not a guess
+
+        QVERIFY(!parseSmbios({}).hasSystem);
+        QVERIFY(!parseSmbios(QByteArray(3, '\x01')).hasSystem);
+
+        // String number 0 = "no string"; a number past the strings = empty too.
+        const SmbiosIds noSerial = parseSmbios(
+            smbiosStructure(1, QByteArray("\x01\x02\x00\x09", 4), {"HP", "ZBook Fury 17 G7"}));
+        QCOMPARE(noSerial.model, QString("ZBook Fury 17 G7"));
+        QVERIFY(noSerial.serial.isEmpty());
+
+        // A length below the 4-byte header would loop forever: stop instead.
+        QVERIFY(!parseSmbios(QByteArray("\x01\x02\x00\x00\x00\x00", 6)).hasSystem);
     }
 
     void systemInfoComplete()

@@ -88,7 +88,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end
   with "(see details)"; the verdict already says "check the ERROR rows, then press START again". When the probe knows
   a fixable cause, give it a small enum (see `SmartctlFailure`) or flag instead of comparing English error strings.
-  Timeouts: `timedOut` flag (`PowerShellResult`, `SystemInfo`, `DriverInfo`, `CpuReading`) -> `slowWindowsSummary()`
+  Timeouts: `timedOut` flag (`PowerShellResult`, `DriverInfo`, `CpuReading`) -> `slowWindowsSummary()`
   ("...select this row and press 'Run this test again'"). Windows PowerShell probes get 45 s: right after start-up
   the first WMI queries took > 20 s on 3 of 11 shop laptops (2026-10-15).
 - `Thresholds`: `config/thresholds.json`, shape `{ "key": { "warn": X, "fail": Y } }`.
@@ -104,7 +104,12 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 
 ### External tools (smartctl, PowerShell, lspci, ...)
 - Use `QProcess`, always with a **timeout**, check `exitStatus()` and `exitCode()`, never trust the output format blindly.
-- Windows PowerShell: always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
+- **Windows: native API first, PowerShell/WMI being phased out** (developer's decision 2026-10-26): both are very slow
+  right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32).
+  To do, one probe per commit: Drivers (SetupAPI + `CM_Get_DevNode_Status`), USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
+  licence (`SLIsGenuineLocal` + ACPI `MSDM` table presence), CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
+  for now, `GetSystemPowerStatus`). Code signing for Smart App Control: dropped by the developer.
+- Windows PowerShell (until replaced): always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
   with `-EncodedCommand` (quotes are fine), makes errors fatal (`$ErrorActionPreference = 'Stop'`), hides progress and
   forces UTF-8 output (French Windows would otherwise send CP850 and break the JSON). Scripts end with `ConvertTo-Json -Compress`.
   A long script that prints line by line (CPU test): `startPowerShell(QProcess&, script)`, same settings, no wait.
@@ -166,7 +171,7 @@ src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp} ProgramFolder.{h,cpp}
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
-    sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} sysinfo_linux.cpp sysinfo_win.cpp
+    sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) sysinfo_linux.cpp sysinfo_win.cpp
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
@@ -291,8 +296,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows runs `powercfg /batteryreport /xml` into a
   `QTemporaryDir`, parsed by `parseBatteryReport()` in `BatteryReport.cpp`, unit tested on Linux).
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
-- Test: `SystemInfoTest`: vendor, model, serial, CPU, usable RAM, form factor from the SMBIOS chassis type
-  (Linux `/sys/class/dmi/id` + `/proc`, Windows CIM via PowerShell). Runs first.
+- Test: `SystemInfoTest`: vendor, model, serial, CPU, RAM, form factor from the SMBIOS chassis type. Runs first.
+  Linux: `/sys/class/dmi/id` + `/proc` (usable RAM). Windows (2026-10-26, no PowerShell; not yet run on Windows):
+  raw SMBIOS table from `GetSystemFirmwareTable('RSMB')` parsed by `parseSmbios()` (unit tested on a hand-made
+  table), CPU name from the registry (`QSettings` NativeFormat, read only), installed RAM from
+  `GetPhysicallyInstalledSystemMemory` (fallback: usable RAM).
 - Test: `DiskTest`: `smartctl --scan --json` then `smartctl --json -a -d <type> <dev>` per disk. One shared probe
   (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
@@ -325,7 +333,7 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   On battery (Windows `BatteryStatus == 1`; Linux charger input listed but offline) a slow CPU is Warn "plug in the
   charger", never Fail. Temperature and speed are judged apart, the worse wins (`worse()` in `TestResult.h`).
   Neither sensor nor speed = Skipped; then the CPU is not loaded at all.
-- `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
+- The old PowerShell `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
   battery at 36 % correctly reported FAIL).
 
 Known limitations:
@@ -333,10 +341,10 @@ Known limitations:
 - Battery cycle count `0` is treated as unknown.
 - The serial number is **optional** (developer's decision): on Linux, as a normal user, `product_serial` is root-only,
   so System info shows "serial unknown" and stays Pass.
-- RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
+- Linux RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
-- `license_win.cpp` and `runPowerShell()` (also used by SystemInfo and Drivers) verified on real Windows.
+- `license_win.cpp` and `runPowerShell()` (also used by Drivers) verified on real Windows.
   `pnp_problems.json` and `license_*.json` are hand-made.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
 - DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 7 NVMe models + the tester's USB stick (Windows,

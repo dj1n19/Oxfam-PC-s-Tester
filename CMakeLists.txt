@@ -53,6 +53,7 @@ add_library(oxcore STATIC
     src/tests/sysinfo/SystemInfo.h
     src/tests/sysinfo/SystemInfoTest.h
     src/tests/sysinfo/SystemInfoTest.cpp
+    src/tests/sysinfo/Smbios.cpp          # parses the raw SMBIOS table (Windows); plain Qt, unit tested
     src/tests/disk/DiskInfo.h
     src/tests/disk/Smartctl.cpp           # shared: scan, direct calls, pkexec batch helpers
     src/tests/disk/DiskTest.h
