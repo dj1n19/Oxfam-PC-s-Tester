@@ -63,7 +63,6 @@ add_library(oxcore STATIC
     src/tests/drivers/DriversTest.h
     src/tests/drivers/DriversTest.cpp
     src/tests/license/LicenseInfo.h
-    src/tests/license/LicenseParsing.cpp   # pure, unit tested on Linux
     src/tests/license/LicenseTest.h
     src/tests/license/LicenseTest.cpp
     src/tests/cputemp/CpuTempInfo.h
@@ -97,8 +96,9 @@ if(WIN32)
         src/tests/keyboard/keyboard_win.cpp
         src/tests/disk/smartctl_win.cpp)
     # Windows system libraries (part of Windows, nothing to ship):
-    # setupapi + cfgmgr32 = the device list and problem codes (drivers_win.cpp).
-    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32)
+    # setupapi + cfgmgr32 = the device list and problem codes (drivers_win.cpp),
+    # slc = the licensing service (license_win.cpp).
+    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc)
 else()
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_linux.cpp

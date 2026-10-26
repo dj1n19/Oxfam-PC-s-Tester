@@ -464,12 +464,20 @@ private slots:
         QVERIFY(!pciClassMatters(0x060100));   // ISA bridge
     }
 
-    // license_*.json are hand-made from the script's output shape.
+    // As license_win.cpp fills it (SL_LICENSING_STATUS of the best licence).
+    static LicenseInfo windowsLicense(int status, bool oemKey)
+    {
+        LicenseInfo info;
+        info.name = "Windows(R), Professional edition";
+        info.description = "Windows(R) Operating System, OEM_DM channel";
+        info.status = status;
+        info.oemKeyPresent = oemKey;
+        return info;
+    }
+
     void licenseActivated()
     {
-        const LicenseInfo info = parseLicenseJson(sample("license_activated.json"));
-        QVERIFY2(info.error.isEmpty(), qPrintable(info.error));
-        const TestResult r = LicenseTest::evaluate(info);
+        const TestResult r = LicenseTest::evaluate(windowsLicense(1, true));
         QCOMPARE(r.status, Status::Pass);
         QVERIFY(r.summary.contains("Professional"));
         QVERIFY(r.summary.contains("OEM key in firmware: yes"));
@@ -477,28 +485,28 @@ private slots:
 
     void licenseNotActivatedIsWarn()
     {
-        const TestResult r = LicenseTest::evaluate(parseLicenseJson(sample("license_notification.json")));
+        const TestResult r = LicenseTest::evaluate(windowsLicense(3, true));
         QCOMPARE(r.status, Status::Warn);
-        QVERIFY(r.summary.contains("NOT activated"));
+        QVERIFY(r.summary.contains("NOT activated (notification mode"));
         QVERIFY(r.details.startsWith("Hint"));   // firmware key exists
+        QVERIFY(LicenseTest::evaluate(windowsLicense(2, false)).summary.contains("grace period"));
     }
 
     void licenseNoneIsWarn()
     {
-        const LicenseInfo info = parseLicenseJson(sample("license_none.json"));
-        QVERIFY2(info.error.isEmpty(), qPrintable(info.error));
-        const TestResult r = LicenseTest::evaluate(info);
+        const TestResult r = LicenseTest::evaluate(windowsLicense(-1, false));
         QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.contains("No Windows licence installed"));
         QVERIFY(r.summary.contains("OEM key in firmware: no"));
     }
 
-    void licenseBadOutputIsError()
+    void licenseProbeFailureIsError()
     {
-        QCOMPARE(LicenseTest::evaluate(parseLicenseJson("")).status, Status::Error);
-        QCOMPARE(LicenseTest::evaluate(parseLicenseJson("{}")).status, Status::Error);
-        QByteArray noStatus = sample("license_activated.json");
-        noStatus.replace("\"status\":1", "\"status\":null");
-        QCOMPARE(LicenseTest::evaluate(parseLicenseJson(noStatus)).status, Status::Error);
+        LicenseInfo info;
+        info.error = "SLGetLicensingStatusInformation failed (0xc004f012)";
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Error);
+        QVERIFY(r.details.contains("0xc004f012"));
     }
 
     void licenseOnLinuxIsSkipped()

@@ -675,77 +675,62 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
         <translation type="unfinished">Windows-licentie</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="12"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="13"/>
         <source>unlicensed</source>
         <translation type="unfinished">zonder licentie</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="13"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="14"/>
         <source>activated</source>
         <translation type="unfinished">geactiveerd</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="14"/>
-        <source>initial grace period</source>
-        <translation type="unfinished">initiële respijtperiode</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="15"/>
-        <source>grace period (hardware changed)</source>
-        <translation type="unfinished">respijtperiode (hardware gewijzigd)</translation>
-    </message>
-    <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="16"/>
-        <source>non-genuine grace period</source>
-        <translation type="unfinished">respijtperiode (niet origineel)</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="17"/>
         <source>notification mode (not activated)</source>
         <translation type="unfinished">meldingsmodus (niet geactiveerd)</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="18"/>
-        <source>extended grace period</source>
-        <translation type="unfinished">verlengde respijtperiode</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="19"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="17"/>
         <source>unknown status %1</source>
         <translation type="unfinished">onbekende status %1</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="42"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="40"/>
         <source>Not Windows</source>
         <translation type="unfinished">Geen Windows</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="47"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="45"/>
         <source>Could not read the Windows licence (see details)</source>
         <translation type="unfinished">Kan de Windows-licentie niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="53"/>
-        <source>OEM key in firmware: yes %1</source>
-        <translation type="unfinished">OEM-sleutel in firmware: ja %1</translation>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="15"/>
+        <source>grace period</source>
+        <translation type="unfinished">respijtperiode</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="54"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="51"/>
+        <source>OEM key in firmware: yes</source>
+        <translation type="unfinished">OEM-sleutel in firmware: ja</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="52"/>
         <source>OEM key in firmware: no</source>
         <translation type="unfinished">OEM-sleutel in firmware: nee</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="63"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="61"/>
         <source>No Windows licence installed | %1</source>
         <translation type="unfinished">Geen Windows-licentie geïnstalleerd | %1</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="68"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="66"/>
         <source>Activated: %1 | %2</source>
         <translation type="unfinished">Geactiveerd: %1 | %2</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="72"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="70"/>
         <source>NOT activated (%1): %2 | %3</source>
         <translation type="unfinished">NIET geactiveerd (%1): %2 | %3</translation>
     </message>

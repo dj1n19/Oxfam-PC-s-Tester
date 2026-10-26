@@ -5,17 +5,15 @@
 
 namespace {
 
-// SoftwareLicensingProduct.LicenseStatus (Microsoft docs)
+// SL_LICENSING_STATUS (slpublic.h). The grace period has no detail here
+// (first install, hardware changed...): dwGraceTime is in the details.
 QString statusText(int s)
 {
     switch (s) {
     case 0: return QCoreApplication::translate("LicenseTest", "unlicensed");
     case 1: return QCoreApplication::translate("LicenseTest", "activated");
-    case 2: return QCoreApplication::translate("LicenseTest", "initial grace period");
-    case 3: return QCoreApplication::translate("LicenseTest", "grace period (hardware changed)");
-    case 4: return QCoreApplication::translate("LicenseTest", "non-genuine grace period");
-    case 5: return QCoreApplication::translate("LicenseTest", "notification mode (not activated)");
-    case 6: return QCoreApplication::translate("LicenseTest", "extended grace period");
+    case 2: return QCoreApplication::translate("LicenseTest", "grace period");
+    case 3: return QCoreApplication::translate("LicenseTest", "notification mode (not activated)");
     default: return QCoreApplication::translate("LicenseTest", "unknown status %1").arg(s);
     }
 }
@@ -50,15 +48,15 @@ TestResult LicenseTest::evaluate(const LicenseInfo& info)
     }
 
     const QString oem = info.oemKeyPresent
-        ? tr("OEM key in firmware: yes %1").arg(info.oemKeyDescription).trimmed()
+        ? tr("OEM key in firmware: yes")
         : tr("OEM key in firmware: no");
     r.details = QStringLiteral("Product: %1\nChannel: %2\nStatus: %3 (%4)\n%5\n\nRaw:\n%6")
                     .arg(info.name, info.description)
                     .arg(info.status)
-                    .arg(info.found ? statusText(info.status) : QStringLiteral("no licence installed"),
+                    .arg(info.status >= 0 ? statusText(info.status) : QStringLiteral("no licence installed"),
                          oem, info.raw);
 
-    if (!info.found) {
+    if (info.status < 0) {
         r.status = Status::Warn;
         r.summary = tr("No Windows licence installed | %1").arg(oem);
         return r;

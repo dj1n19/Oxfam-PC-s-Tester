@@ -107,7 +107,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - **Windows: native API first, PowerShell/WMI being phased out** (developer's decision 2026-10-26): both are very slow
   right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32),
   Drivers (SetupAPI + `CM_Get_DevNode_Status`, links `setupapi` `cfgmgr32`), USB disks
-  (`IOCTL_STORAGE_QUERY_PROPERTY`). To do, one probe per commit: licence (`SLIsGenuineLocal` + ACPI `MSDM` table presence), CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
+  (`IOCTL_STORAGE_QUERY_PROPERTY`), licence (slc.dll + ACPI `MSDM` table size). To do: CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
   for now, `GetSystemPowerStatus`). Code signing for Smart App Control: dropped by the developer.
 - Windows PowerShell (until replaced): always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
   with `-EncodedCommand` (quotes are fine), makes errors fatal (`$ErrorActionPreference = 'Stop'`), hides progress and
@@ -174,7 +174,7 @@ src/
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) sysinfo_linux.cpp sysinfo_win.cpp
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
-    license/   LicenseInfo.h LicenseParsing.cpp LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
+    license/   LicenseInfo.h LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
     cputemp/   CpuTempInfo.h CpuTempParsing.cpp CpuTempTest.{h,cpp} cputemp_linux.cpp cputemp_win.cpp
     common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
@@ -314,9 +314,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   gives the problem code (= WMI `ConfigManagerErrorCode`); name = friendly name, else description, else device ID. Linux reads
   `/sys/bus/pci/devices` (no lspci) and flags only buyer-relevant classes without a driver (storage, network, display,
   multimedia, wireless, USB): many chipset functions normally have no Linux driver. A driver problem is **Warn**, not Fail.
-- Test: `LicenseTest`: `SoftwareLicensingProduct` filtered on the Windows ApplicationID with a product key;
-  `LicenseStatus == 1` is Pass, anything else (or no licence) is **Warn**. Reports whether a firmware OEM key exists
-  (`OA3xOriginalProductKey`), turned into a boolean inside PowerShell: the key never reaches the program. Skipped on Linux.
+- Test: `LicenseTest` (Windows, 2026-10-26, no PowerShell; not yet run on Windows): `SLGetLicensingStatusInformation`
+  (slc.dll, links `slc`) for the Windows ApplicationID; every edition has an entry, those without a key say
+  "unlicensed": the best status wins (licensed > grace > notification), its name/channel from
+  `SLGetProductSkuInformation`. Licensed is Pass, anything else (or no licence) is **Warn**. Firmware OEM key = the
+  ACPI `MSDM` table exists (only its SIZE is asked: the key never reaches the program). Skipped on Linux.
 - Test: `CpuTempTest` (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
   priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
@@ -345,8 +347,7 @@ Known limitations:
 - Linux RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
-- `license_win.cpp` and `runPowerShell()` verified on real Windows.
-  `license_*.json` are hand-made.
+- The old PowerShell `license_win.cpp` and `runPowerShell()` verified on real Windows.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
 - DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 7 NVMe models + the tester's USB stick (Windows,
   2026-10-15, `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
