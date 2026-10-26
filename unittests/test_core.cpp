@@ -215,37 +215,6 @@ private slots:
         QCOMPARE(BatteryTest::evaluate(battery(40000), Thresholds{}).status, Status::Error);
     }
 
-    // Real report from a Dell Latitude 7420, Windows 11 (UTF-8 BOM, CRLF).
-    // <RuntimeEstimates> holds a second <DesignCapacity>: it must be ignored.
-    void powercfgLatitude7420()
-    {
-        const BatteryInfo b = parseBatteryReport(sample("powercfg_latitude7420.xml"));
-        QVERIFY2(b.error.isEmpty(), qPrintable(b.error));
-        QVERIFY(b.present);
-        QCOMPARE(b.name, QString("DELL 4M1JN18"));
-        QCOMPARE(b.designCapacity, 61834.0);
-        QCOMPARE(b.fullCapacity, 22359.0);
-        QCOMPARE(b.cycles, -1);   // 0 = not reported
-        QCOMPARE(BatteryTest::evaluate(b, loaded()).status, Status::Fail);   // 36 %
-    }
-
-    void powercfgDesktopIsSkipped()
-    {
-        const BatteryInfo b = parseBatteryReport(sample("powercfg_desktop.xml"));
-        QVERIFY(b.error.isEmpty());
-        QVERIFY(!b.present);
-        QCOMPARE(BatteryTest::evaluate(b, loaded()).status, Status::Skipped);
-    }
-
-    void powercfgBadDataIsError()
-    {
-        QByteArray xml = sample("powercfg_latitude7420.xml");
-        xml.replace("<DesignCapacity>61834</DesignCapacity>", "");
-        QCOMPARE(BatteryTest::evaluate(parseBatteryReport(xml), loaded()).status, Status::Error);
-        QCOMPARE(BatteryTest::evaluate(parseBatteryReport(""), loaded()).status, Status::Error);
-        QCOMPARE(BatteryTest::evaluate(parseBatteryReport("not xml"), loaded()).status, Status::Error);
-    }
-
     // smartctl samples are hand-made from the smartctl 7.x JSON format
     // (serials removed). Replace them with real outputs when available.
     static SmartctlRun smart(const QString& file, int exitCode)

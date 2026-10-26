@@ -105,7 +105,8 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 ### External tools (smartctl, PowerShell, lspci, ...)
 - Use `QProcess`, always with a **timeout**, check `exitStatus()` and `exitCode()`, never trust the output format blindly.
 - **Windows: native API first, PowerShell/WMI being phased out** (developer's decision 2026-10-26): both are very slow
-  right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32),
+  right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32), Battery (no more
+  powercfg: battery driver IOCTLs),
   Drivers (SetupAPI + `CM_Get_DevNode_Status`, links `setupapi` `cfgmgr32`), USB disks
   (`IOCTL_STORAGE_QUERY_PROPERTY`), licence (slc.dll + ACPI `MSDM` table size). To do: CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
   for now, `GetSystemPowerStatus`). Code signing for Smart App Control: dropped by the developer.
@@ -170,7 +171,7 @@ CI: `.github/workflows/build.yml`.
 src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp} ProgramFolder.{h,cpp}
   tests/
-    battery/   BatteryInfo.h BatteryTest.{h,cpp} BatteryReport.cpp battery_linux.cpp battery_win.cpp
+    battery/   BatteryInfo.h BatteryTest.{h,cpp} battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) sysinfo_linux.cpp sysinfo_win.cpp
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
@@ -293,8 +294,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - UI: `MainWindow` with START button, "Run this test again" (selected row, enabled after a complete run so the
   verdict covers every row; verdict recomputed from each row's latest result), table (status/test/summary), details
   pane, verdict label (word wrap: the French verdict is wider than the window). Buttons enabled in `updateButtons()`.
-- Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows runs `powercfg /batteryreport /xml` into a
-  `QTemporaryDir`, parsed by `parseBatteryReport()` in `BatteryReport.cpp`, unit tested on Linux).
+- Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows asks the battery driver: SetupAPI lists the
+  `GUID_DEVICE_BATTERY` interfaces, `IOCTL_BATTERY_QUERY_TAG` + `IOCTL_BATTERY_QUERY_INFORMATION` give design/full
+  capacity and cycles; first system battery, UPS (short-term) left out; `BATTERY_UNKNOWN_CAPACITY` = 0 = Error.
+  Since 2026-10-26, not yet run on Windows. `powercfg /batteryreport` was dropped: it also gathers weeks of usage
+  history and timed out (30 s) on every shop laptop just after start-up).
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
 - Test: `SystemInfoTest`: vendor, model, serial, CPU, RAM, form factor from the SMBIOS chassis type. Runs first.
   Linux: `/sys/class/dmi/id` + `/proc` (usable RAM). Windows (2026-10-26, no PowerShell; not yet run on Windows):
@@ -354,7 +358,6 @@ Known limitations:
   disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
-- `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
 - CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base). `acpi_zones.json` is
   hand-made; `acpi_unsupported.json` matches the real Latitude 7420 (Win11) output byte for byte. Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Hand-made: a real desktop report is welcome. -->
-<BatteryReport xmlns="http://schemas.microsoft.com/battery/2012">
-  <Batteries />
-</BatteryReport>
