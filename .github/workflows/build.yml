@@ -2,15 +2,22 @@ name: build
 
 on: [push, pull_request]
 
+# apt must never wait for an answer: nobody is there to type it. On
+# 2026-10-26 the linux job hung in "Install dependencies" until cancelled,
+# twice, with no log at all. DEBIAN_FRONTEND is set after sudo, on the
+# command itself: sudo drops the environment by default.
+
 jobs:
   linux:
     runs-on: ubuntu-24.04
+    timeout-minutes: 30          # a normal run takes 2-5 min; GitHub's default is 6 h
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
+        timeout-minutes: 10        # stopped by the runner = log kept (a cancelled run had none)
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build qt6-base-dev qt6-multimedia-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libgl1-mesa-dev
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ninja-build qt6-base-dev qt6-multimedia-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libgl1-mesa-dev
       - name: Configure
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
       - name: Build
@@ -26,6 +33,7 @@ jobs:
   # Qt 6.8 binaries from qt.io (apt on 22.04 only has Qt 6.2).
   appimage:
     runs-on: ubuntu-22.04
+    timeout-minutes: 30          # a normal run takes 2-5 min; GitHub's default is 6 h
     steps:
       - uses: actions/checkout@v4
       - uses: jurplel/install-qt-action@v4
@@ -37,10 +45,11 @@ jobs:
           modules: 'qtmultimedia'
           cache: true
       - name: Install dependencies
+        timeout-minutes: 10        # stopped by the runner = log kept (a cancelled run had none)
         # libxcb-*: Qt's X11 plugin; libpulse0: audio. They end up inside the AppImage.
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build libgl1-mesa-dev libxkbcommon-x11-0 libxcb-cursor0 \
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ninja-build libgl1-mesa-dev libxkbcommon-x11-0 libxcb-cursor0 \
             libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
             libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libpulse0
       - name: Configure
@@ -113,6 +122,7 @@ jobs:
 
   windows:
     runs-on: windows-latest
+    timeout-minutes: 30          # a normal run takes 2-5 min; GitHub's default is 6 h
     steps:
       - uses: actions/checkout@v4
       - uses: jurplel/install-qt-action@v4
