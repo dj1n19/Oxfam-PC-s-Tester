@@ -411,10 +411,12 @@ QByteArray XlsxEditor::save(QString* error) const
             return {};
         }
         const auto it = m_changed.find(QString::fromUtf8(stat.m_filename));
+        // MZ_DEFAULT_LEVEL, not MZ_DEFAULT_COMPRESSION (-1): miniz turns -1 into
+        // this same level anyway, and -1 into an unsigned is a warning on MSVC.
         const bool ok = it == m_changed.end()
             ? mz_zip_writer_add_from_zip_reader(&out.z, &in.z, i)
             : mz_zip_writer_add_mem(&out.z, stat.m_filename, it->second.constData(),
-                                    size_t(it->second.size()), MZ_DEFAULT_COMPRESSION);
+                                    size_t(it->second.size()), MZ_DEFAULT_LEVEL);
         if (!ok) {
             *error = QStringLiteral("Cannot write %1: %2").arg(QString::fromUtf8(stat.m_filename), zipError(&out.z));
             return {};
