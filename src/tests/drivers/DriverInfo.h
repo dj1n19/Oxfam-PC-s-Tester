@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <QByteArray>
 #include <QString>
 
 struct DeviceProblem {
@@ -13,19 +12,15 @@ struct DeviceProblem {
 struct DriverInfo {
     std::vector<DeviceProblem> problems;
     QString error;   // non-empty = the probe itself failed
-    bool timedOut = false;   // ...because the OS answered too slowly (try again)
-    QString raw;     // raw output, copied into the test details
+    QString raw;     // raw readings, copied into the test details
 };
 
-// Blocking (PowerShell on Windows takes 1-3 s): DriversTest calls it
+// Blocking (reads /sys on Linux, SetupAPI on Windows): DriversTest calls it
 // from a worker thread, never from the UI thread.
 DriverInfo readDrivers();
 
 // Pure helpers (DriverParsing.cpp), compiled on both OSes so the unit
 // tests can run them on Linux.
-
-// Parses the JSON array printed by drivers_win.cpp's PowerShell script.
-DriverInfo parsePnpEntities(const QByteArray& json);
 
 // Does a PCI device of this class matter to a buyer if it has no driver?
 // classCode is the 24-bit value of /sys/bus/pci/devices/*/class (0x020000).

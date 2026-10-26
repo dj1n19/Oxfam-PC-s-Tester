@@ -420,35 +420,37 @@ private slots:
         QVERIFY2(!r.summary.contains("/dev/sda"), qPrintable(r.summary));   // said once, not per disk
     }
 
-    // pnp_problems.json is hand-made from the PowerShell script's output
-    // shape. Replace it with a real one from a PC with a driver problem.
+    // Devices as drivers_win.cpp reports them (SetupAPI: name, device ID,
+    // problem code), from a ThinkPad with chipset drivers missing.
     void driversWindowsProblems()
     {
-        const DriverInfo info = parsePnpEntities(sample("pnp_problems.json"));
-        QVERIFY2(info.error.isEmpty(), qPrintable(info.error));
-        QCOMPARE(info.problems.size(), size_t(4));
-        QCOMPARE(info.problems[1].name, QString("ACPI\\INT33A1\\1"));   // no name: DeviceID used
-
+        DriverInfo info;
+        info.problems = {
+            {"PCI Data Acquisition and Signal Processing Controller",
+             "PCI\\VEN_8086&DEV_9D31&SUBSYS_506D17AA&REV_21\\3&11583659&0&A0", 28},
+            {"Intel(R) Wireless Bluetooth(R)", "USB\\VID_8087&PID_0A2B\\5&2F2D5B5&0&7", 22},
+        };
+        info.raw = "code 28: ...";
         const TestResult r = DriversTest::evaluate(info);
         QCOMPARE(r.status, Status::Warn);
-        QVERIFY2(r.summary.startsWith("3 device(s)"), qPrintable(r.summary));   // code 45 ignored
+        QVERIFY2(r.summary.startsWith("2 device(s)"), qPrintable(r.summary));
         QVERIFY(r.summary.contains("no driver installed"));
         QVERIFY(r.summary.contains("disabled"));
-        QVERIFY(!r.summary.contains("SanDisk"));
-        QVERIFY(r.details.contains("SanDisk"));   // still visible in details
+        QVERIFY(r.details.contains("code 28: ..."));   // raw readings kept
     }
 
     void driversWindowsNoProblem()
     {
-        const DriverInfo info = parsePnpEntities("[]");
-        QVERIFY(info.error.isEmpty());
-        QCOMPARE(DriversTest::evaluate(info).status, Status::Pass);
+        QCOMPARE(DriversTest::evaluate(DriverInfo{}).status, Status::Pass);
     }
 
-    void driversBadOutputIsError()
+    void driversProbeFailureIsError()
     {
-        QCOMPARE(DriversTest::evaluate(parsePnpEntities("")).status, Status::Error);
-        QCOMPARE(DriversTest::evaluate(parsePnpEntities("{\"Name\":1}")).status, Status::Error);
+        DriverInfo info;
+        info.error = "SetupDiGetClassDevs failed (error 5)";
+        const TestResult r = DriversTest::evaluate(info);
+        QCOMPARE(r.status, Status::Error);
+        QVERIFY(r.details.contains("error 5"));
     }
 
     void driversPciClasses()
@@ -572,12 +574,6 @@ private slots:
     // Error, but the summary says how to get a result: run the row again.
     void slowWindowsSaysRunAgain()
     {
-        DriverInfo drivers;
-        drivers.error = "PowerShell timed out after 45 s";
-        drivers.timedOut = true;
-        QCOMPARE(DriversTest::evaluate(drivers).status, Status::Error);
-        QVERIFY(DriversTest::evaluate(drivers).summary.contains("Run this test again"));
-
         CpuLoadRun cpu;
         cpu.idle.error = "PowerShell gave no reading within 30 s";
         cpu.idle.timedOut = true;

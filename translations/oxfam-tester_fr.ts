@@ -459,37 +459,37 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
 <context>
     <name>DriversTest</name>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="60"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="29"/>
         <source>Storage controller</source>
         <translation>Contrôleur de stockage</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="61"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="30"/>
         <source>Network controller</source>
         <translation>Contrôleur réseau</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="62"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="31"/>
         <source>Display controller</source>
         <translation>Contrôleur graphique</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="63"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="32"/>
         <source>Multimedia controller</source>
         <translation>Contrôleur multimédia</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="64"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="33"/>
         <source>USB controller</source>
         <translation>Contrôleur USB</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="65"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="34"/>
         <source>Wireless controller</source>
         <translation>Contrôleur sans fil</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="66"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="35"/>
         <source>PCI device</source>
         <translation>Périphérique PCI</translation>
     </message>
@@ -599,12 +599,12 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
         <translation>Impossible de lister les périphériques (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriversTest.cpp" line="81"/>
+        <location filename="../src/tests/drivers/DriversTest.cpp" line="72"/>
         <source>No driver problem</source>
         <translation>Aucun problème de pilote</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriversTest.cpp" line="85"/>
+        <location filename="../src/tests/drivers/DriversTest.cpp" line="76"/>
         <source>%1 device(s): %2</source>
         <translation>%1 périphérique(s) : %2</translation>
     </message>

@@ -1,37 +1,6 @@
 #include "tests/drivers/DriverInfo.h"
 
 #include <QCoreApplication>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-
-DriverInfo parsePnpEntities(const QByteArray& json)
-{
-    DriverInfo info;
-    info.raw = QString::fromUtf8(json);
-
-    QJsonParseError parseError;
-    const QJsonDocument doc = QJsonDocument::fromJson(json, &parseError);
-    if (parseError.error != QJsonParseError::NoError || !doc.isArray()) {
-        info.error = QStringLiteral("Unexpected PowerShell output: %1").arg(parseError.errorString());
-        return info;
-    }
-
-    for (const QJsonValue& v : doc.array()) {
-        const QJsonObject o = v.toObject();
-        if (!o["ConfigManagerErrorCode"].isDouble())
-            continue;
-        DeviceProblem p;
-        p.id = o["DeviceID"].toString();
-        p.name = o["Name"].toString();
-        if (p.name.isEmpty())
-            p.name = p.id;   // devices without a driver often have no name
-        p.code = o["ConfigManagerErrorCode"].toInt();
-        if (p.code != 0)
-            info.problems.push_back(p);
-    }
-    return info;
-}
 
 // PCI base classes (PCI Code and ID Assignment Specification).
 // Only devices a buyer would miss: many chipset functions (system

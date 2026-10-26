@@ -88,7 +88,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end
   with "(see details)"; the verdict already says "check the ERROR rows, then press START again". When the probe knows
   a fixable cause, give it a small enum (see `SmartctlFailure`) or flag instead of comparing English error strings.
-  Timeouts: `timedOut` flag (`PowerShellResult`, `DriverInfo`, `CpuReading`) -> `slowWindowsSummary()`
+  Timeouts: `timedOut` flag (`PowerShellResult`, `CpuReading`) -> `slowWindowsSummary()`
   ("...select this row and press 'Run this test again'"). Windows PowerShell probes get 45 s: right after start-up
   the first WMI queries took > 20 s on 3 of 11 shop laptops (2026-10-15).
 - `Thresholds`: `config/thresholds.json`, shape `{ "key": { "warn": X, "fail": Y } }`.
@@ -105,8 +105,8 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 ### External tools (smartctl, PowerShell, lspci, ...)
 - Use `QProcess`, always with a **timeout**, check `exitStatus()` and `exitCode()`, never trust the output format blindly.
 - **Windows: native API first, PowerShell/WMI being phased out** (developer's decision 2026-10-26): both are very slow
-  right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32).
-  To do, one probe per commit: Drivers (SetupAPI + `CM_Get_DevNode_Status`), USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
+  right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32),
+  Drivers (SetupAPI + `CM_Get_DevNode_Status`, links `setupapi` `cfgmgr32`). To do, one probe per commit: USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
   licence (`SLIsGenuineLocal` + ACPI `MSDM` table presence), CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
   for now, `GetSystemPowerStatus`). Code signing for Smart App Control: dropped by the developer.
 - Windows PowerShell (until replaced): always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
@@ -309,8 +309,9 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   `/sys/block/<dev>` under `/usb`; Windows: `Get-Disk` BusType, disk N = `/dev/sd`+letter N, `parseUsbDisks()`
   unit tested); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
   Windows CI takes smartctl.exe 7.5 from the official installer (7-Zip, SHA-256 checked; Chocolatey failed with 406) into `dist/tools/`.
-- Test: `DriversTest`: Windows `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` (PowerShell JSON parsed by
-  `parsePnpEntities()`); code 45 "not connected" is ignored (previous owner's USB devices). Linux reads
+- Test: `DriversTest`: Windows (2026-10-26, no PowerShell; not yet run on Windows): SetupAPI lists the present devices
+  (`DIGCF_PRESENT`: the previous owner's unplugged USB devices, WMI code 45, never come), `CM_Get_DevNode_Status`
+  gives the problem code (= WMI `ConfigManagerErrorCode`); name = friendly name, else description, else device ID. Linux reads
   `/sys/bus/pci/devices` (no lspci) and flags only buyer-relevant classes without a driver (storage, network, display,
   multimedia, wireless, USB): many chipset functions normally have no Linux driver. A driver problem is **Warn**, not Fail.
 - Test: `LicenseTest`: `SoftwareLicensingProduct` filtered on the Windows ApplicationID with a product key;
@@ -344,8 +345,8 @@ Known limitations:
 - Linux RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
-- `license_win.cpp` and `runPowerShell()` (also used by Drivers) verified on real Windows.
-  `pnp_problems.json` and `license_*.json` are hand-made.
+- `license_win.cpp` and `runPowerShell()` verified on real Windows.
+  `license_*.json` are hand-made.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
 - DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 7 NVMe models + the tester's USB stick (Windows,
   2026-10-15, `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing

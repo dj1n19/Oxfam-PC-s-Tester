@@ -459,37 +459,37 @@ Open ze om de andere controles aan te vullen.</translation>
 <context>
     <name>DriversTest</name>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="60"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="29"/>
         <source>Storage controller</source>
         <translation type="unfinished">Opslagcontroller</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="61"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="30"/>
         <source>Network controller</source>
         <translation type="unfinished">Netwerkcontroller</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="62"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="31"/>
         <source>Display controller</source>
         <translation type="unfinished">Beeldschermcontroller</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="63"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="32"/>
         <source>Multimedia controller</source>
         <translation type="unfinished">Multimediacontroller</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="64"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="33"/>
         <source>USB controller</source>
         <translation type="unfinished">USB-controller</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="65"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="34"/>
         <source>Wireless controller</source>
         <translation type="unfinished">Draadloze controller</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriverParsing.cpp" line="66"/>
+        <location filename="../src/tests/drivers/DriverParsing.cpp" line="35"/>
         <source>PCI device</source>
         <translation type="unfinished">PCI-apparaat</translation>
     </message>
@@ -599,12 +599,12 @@ Open ze om de andere controles aan te vullen.</translation>
         <translation type="unfinished">Kan de apparaten niet oplijsten (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriversTest.cpp" line="81"/>
+        <location filename="../src/tests/drivers/DriversTest.cpp" line="72"/>
         <source>No driver problem</source>
         <translation type="unfinished">Geen probleem met stuurprogramma&apos;s</translation>
     </message>
     <message>
-        <location filename="../src/tests/drivers/DriversTest.cpp" line="85"/>
+        <location filename="../src/tests/drivers/DriversTest.cpp" line="76"/>
         <source>%1 device(s): %2</source>
         <translation type="unfinished">%1 apparaat/apparaten: %2</translation>
     </message>

@@ -7,7 +7,7 @@
 namespace {
 
 // Windows Device Manager error codes (learn.microsoft.com, "Device Manager error messages").
-constexpr int kNotConnected = 45;
+// Code 45 "not connected" never comes: drivers_win.cpp lists present devices only.
 
 QString meaning(int code)
 {
@@ -53,27 +53,18 @@ TestResult DriversTest::evaluate(const DriverInfo& info)
     TestResult r;
     if (!info.error.isEmpty()) {
         r.status = Status::Error;
-        r.summary = info.timedOut ? slowWindowsSummary() : tr("Could not list the devices (see details)");
+        r.summary = tr("Could not list the devices (see details)");
         r.details = info.error + QLatin1Char('\n') + info.raw;
         return r;
     }
 
-    QStringList problems, ignored;
-    for (const DeviceProblem& p : info.problems) {
-        const QString line = QStringLiteral("%1 (%2)").arg(p.name, meaning(p.code));
-        // Code 45 = device remembered by Windows but unplugged (the previous
-        // owner's USB stick...): not a problem of this PC.
-        if (p.code == kNotConnected)
-            ignored << line + QStringLiteral(" - ") + p.id;
-        else
-            problems << line;
-    }
+    QStringList problems;
+    for (const DeviceProblem& p : info.problems)
+        problems << QStringLiteral("%1 (%2)").arg(p.name, meaning(p.code));
 
     QString details;
     if (!problems.isEmpty())
         details += QStringLiteral("Problems:\n  %1\n\n").arg(problems.join("\n  "));
-    if (!ignored.isEmpty())
-        details += QStringLiteral("Ignored, not connected:\n  %1\n\n").arg(ignored.join("\n  "));
     r.details = details + QStringLiteral("Raw:\n") + info.raw;
 
     if (problems.isEmpty()) {

@@ -96,6 +96,9 @@ if(WIN32)
         src/tests/common/powershell_win.cpp    # shared runPowerShell()
         src/tests/keyboard/keyboard_win.cpp
         src/tests/disk/smartctl_win.cpp)
+    # Windows system libraries (part of Windows, nothing to ship):
+    # setupapi + cfgmgr32 = the device list and problem codes (drivers_win.cpp).
+    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32)
 else()
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_linux.cpp
