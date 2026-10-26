@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <QFile>
+#include <QFileInfo>
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTemporaryDir>
@@ -53,6 +54,22 @@ QString rootReadable(const QString& smartctl, const QTemporaryDir& tmp, QString*
 }
 
 } // namespace
+
+// /sys/block/sdb is a link into the device tree: through ".../usb1/..." for
+// a USB disk. NVMe names (/dev/nvme0) have no /sys/block entry: never USB.
+QStringList usbDevices(const std::vector<ScannedDevice>& devices, QString* raw)
+{
+    QStringList usb, seen;
+    for (const ScannedDevice& dev : devices) {
+        const QString sysPath = QFileInfo(QStringLiteral("/sys/block/") + QFileInfo(dev.name).fileName())
+                                    .canonicalFilePath();
+        seen << QStringLiteral("%1 -> %2").arg(dev.name, sysPath.isEmpty() ? QStringLiteral("-") : sysPath);
+        if (sysPath.contains(QLatin1String("/usb")))
+            usb << dev.name;
+    }
+    *raw = QStringLiteral("sysfs:\n") + seen.join(QLatin1Char('\n'));
+    return usb;
+}
 
 // Reading SMART needs root. Running the whole app as root breaks audio and
 // camera (they live in the user session), so only smartctl is elevated, with
@@ -108,9 +125,13 @@ std::vector<SmartctlRun> readDevices(const QString& smartctl, const std::vector<
     } else if (p.exitStatus() != QProcess::NormalExit) {
         runs = allFailed(safe, QStringLiteral("pkexec crashed"));
     } else if (p.exitCode() == 126 || p.exitCode() == 127) {
-        // pkexec: 126 = dialog dismissed / not authorised, 127 = authentication failed
-        runs = allFailed(safe, QStringLiteral("Administrator password refused or cancelled (pkexec exit code %1)")
-                                   .arg(p.exitCode()),
+        // pkexec: 126 = dialog dismissed, 127 = not authorised (wrong password, a
+        // user who is not an administrator, no polkit agent...). Its own message
+        // tells which: keep it for the details (real case: ASUS on Mint, 127).
+        const QString said = QString::fromLocal8Bit(p.readAllStandardError()).trimmed();
+        runs = allFailed(safe, QStringLiteral("Administrator password refused or cancelled (pkexec exit code %1)%2")
+                                   .arg(p.exitCode())
+                                   .arg(said.isEmpty() ? QString() : QStringLiteral("\npkexec said: ") + said),
                          SmartctlFailure::PasswordRefused);
     } else {
         runs = parseBatchOutput(p.readAllStandardOutput(), safe);

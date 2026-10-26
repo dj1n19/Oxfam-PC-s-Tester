@@ -426,32 +426,32 @@ Open ze om de andere controles aan te vullen.</translation>
         <translation type="unfinished">geen drempel %1 in thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="166"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="177"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation type="unfinished">smartctl niet gevonden: laat de map tools naast het programma staan (Linux: installeer smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="168"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="179"/>
         <source>Could not list the disks (see details)</source>
         <translation type="unfinished">Kan de schijven niet oplijsten (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="174"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="185"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation type="unfinished">Geen schijf gevonden: controleer het BIOS (Intel RST-, VMD- of RAID-modus kan schijven verbergen)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="197"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord geannuleerd of fout: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="198"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord niet op tijd getypt: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="203"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="214"/>
         <source>No disk with SMART data</source>
         <translation type="unfinished">Geen schijf met SMART-gegevens</translation>
     </message>

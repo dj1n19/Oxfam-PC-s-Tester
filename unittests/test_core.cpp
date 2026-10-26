@@ -258,6 +258,66 @@ private slots:
         return r;
     }
 
+    // Real smartctl 7.5 outputs (Windows, shop laptops, 2026-10-15; serials and
+    // EUI-64 anonymised). Each must give what the app showed on that PC.
+    void smartctlRealSamples_data()
+    {
+        QTest::addColumn<QString>("file");
+        QTest::addColumn<QString>("summary");
+        QTest::newRow("Dell 7420 Samsung PM9A1") << "smartctl_real_samsung_pm9a1.json"
+            << "/dev/test PM9A1 NVMe Samsung 256GB 256 GB: SMART OK, 6% worn, 31 C, 1480 h";
+        QTest::newRow("Dell 7430 WD SN810") << "smartctl_real_wd_sn810.json"
+            << "/dev/test PC SN810 NVMe WDC 512GB 512 GB: SMART OK, 21% worn, 26 C, 2868 h";
+        QTest::newRow("Lenovo 20M6 Intel") << "smartctl_real_intel_ssdpekkf256g8l.json"
+            << "/dev/test INTEL SSDPEKKF256G8L 256 GB: SMART OK, 6% worn, 42 C, 14621 h";
+        QTest::newRow("Lenovo 20M6 Samsung MZVLW") << "smartctl_real_samsung_mzvlw256.json"
+            << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 5% worn, 37 C, 3860 h";
+        QTest::newRow("Surface Pro 7 SK Hynix") << "smartctl_real_skhynix_hfb1m8.json"
+            << "/dev/test HFB1M8MO331C0MR 256 GB: SMART OK, 25% worn, 46 C, 2585 h";
+        QTest::newRow("HP ZBook WD SN730") << "smartctl_real_wd_sn730.json"
+            << "/dev/test WDC PC SN730 SDBPNTY-1T00-1006 1024 GB: SMART OK, 1% worn, 29 C, 3307 h";
+        QTest::newRow("HP ZBook Micron") << "smartctl_real_micron_mtfdkba1t0tfh.json"
+            << "/dev/test MTFDKBA1T0TFH-1BC1AABHA 1024 GB: SMART OK, 3% worn, 22 C, 2454 h";
+    }
+
+    void smartctlRealSamples()
+    {
+        QFETCH(QString, file);
+        QFETCH(QString, summary);
+        const TestResult r = DiskTest::evaluateDisk(smart(file, 0), loaded());
+        QCOMPARE(r.status, Status::Pass);
+        QCOMPARE(r.summary, summary);
+        QVERIFY(r.details.contains("\"serial_number\": \"ANONYMISED\""));   // raw JSON kept in the details
+    }
+
+    // The tester's own USB stick claims "SMART OK" with a fake 0 C: USB disks
+    // are left out by their bus (Get-Disk / sysfs), not by what smartctl says.
+    void smartctlUsbLeftOut()
+    {
+        QCOMPARE(DiskTest::evaluateDisk(smart("smartctl_real_usb_sandisk_cruzer.json", 4), loaded()).summary,
+                 QString("/dev/test SanDisk Cruzer 16 GB: SMART OK, 0 C"));
+
+        QString err;
+        const QStringList usb = parseUsbDisks(
+            R"([{"Number":0,"BusType":"NVMe"},{"Number":1,"BusType":"USB"},{"Number":2,"BusType":"USB"}])", &err);
+        QVERIFY(err.isEmpty());
+        QCOMPARE(usb, (QStringList{"/dev/sdb", "/dev/sdc"}));   // disk number N = /dev/sd + letter N
+        QVERIFY(parseUsbDisks(R"([{"Number":0,"BusType":"SATA"}])", &err).isEmpty());
+        QVERIFY(parseUsbDisks("not json", &err).isEmpty());   // unknown: every disk is checked
+        QVERIFY(!err.isEmpty());
+
+        DiskScan scan;
+        scan.disks = {smart("smartctl_real_intel_ssdpekkf256g8l.json", 0)};
+        scan.usbLeftOut = {"/dev/sdb"};
+        const TestResult r = DiskTest::evaluate(scan, loaded());
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(!r.summary.contains("SanDisk"));
+        QVERIFY(r.details.contains("Left out (USB, not part of this PC): /dev/sdb"));
+
+        scan.disks.clear();   // only a USB stick: nothing of the PC was checked
+        QCOMPARE(DiskTest::evaluate(scan, loaded()).status, Status::Error);
+    }
+
     void smartctlScan()
     {
         QString err;
@@ -653,6 +713,10 @@ private slots:
         QVERIFY(text.contains("==== [SKIPPED] Camera ===="));
         report.model.clear();
         QVERIFY(formatRunReport(report).contains("PC: unknown\n"));
+        // smartctl.exe output has \r\n: one line break in the file, not two.
+        report.rows[0].result.details = "{\r\n  \"a\": 1\r\n}\r\n";
+        QVERIFY(formatRunReport(report).contains("{\n  \"a\": 1\n}"));
+        QVERIFY(!formatRunReport(report).contains('\r'));
     }
 
     void runReportFileName_()

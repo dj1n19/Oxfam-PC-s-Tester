@@ -15,6 +15,11 @@ QString formatRunReport(const RunReport& report)
                     .arg(statusLabel(row.result.status), row.test, row.result.summary,
                          row.result.details.trimmed());
     }
+    // Raw tool output from Windows (smartctl.exe) ends its lines with \r\n.
+    // The file is written in text mode, which turns every \n into \r\n:
+    // without this, raw lines ended in \r\r\n (an empty line after each in
+    // some editors, run reports of 2026-10-15).
+    text.replace(QLatin1String("\r\n"), QLatin1String("\n"));
     return text;
 }
 

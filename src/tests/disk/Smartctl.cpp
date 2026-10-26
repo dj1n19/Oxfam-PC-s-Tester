@@ -59,6 +59,25 @@ std::vector<ScannedDevice> parseScan(const QByteArray& json, QString* error)
     return devices;
 }
 
+QStringList parseUsbDisks(const QByteArray& json, QString* error)
+{
+    QStringList usb;
+    QJsonParseError parseError;
+    const QJsonDocument doc = QJsonDocument::fromJson(json, &parseError);
+    if (parseError.error != QJsonParseError::NoError || !doc.isArray()) {
+        if (error) *error = QStringLiteral("Unreadable Get-Disk output: %1").arg(parseError.errorString());
+        return usb;
+    }
+    for (const QJsonValue& v : doc.array()) {
+        const QJsonObject d = v.toObject();
+        const int number = d["Number"].toInt(-1);
+        // Beyond 26 disks smartctl uses two letters: never on a shop PC.
+        if (d["BusType"].toString() == QLatin1String("USB") && number >= 0 && number < 26)
+            usb << QStringLiteral("/dev/sd") + QChar(u'a' + number);
+    }
+    return usb;
+}
+
 DiskScan readDisks(const QString& smartctlPath)
 {
     DiskScan scan;
@@ -86,7 +105,15 @@ DiskScan readDisks(const QString& smartctlPath)
         return scan;
     }
 
-    scan.disks = readDevices(smartctlPath, devices);   // OS-specific: may elevate
+    const QStringList usb = usbDevices(devices, &scan.busInfo);   // OS-specific
+    std::vector<ScannedDevice> internal;
+    for (const ScannedDevice& dev : devices) {
+        if (usb.contains(dev.name))
+            scan.usbLeftOut << dev.name;
+        else
+            internal.push_back(dev);
+    }
+    scan.disks = readDevices(smartctlPath, internal);   // OS-specific: may elevate
     return scan;
 }
 

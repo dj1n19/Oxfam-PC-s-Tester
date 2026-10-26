@@ -252,7 +252,7 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
 `MainWindow::onAllFinished()` (full run and each "Run this test again") writes
 `folderAroundProgram()/yyyy-MM-dd HH-mm-ss <model>.txt`: date, model, verdict, then per row `==== [STATUS] name ====`,
 summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
-UTF-8, QSaveFile. Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
+UTF-8, QSaveFile, `\r\n` in raw output made `\n` first (else `\r\r\n`). Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
 real run (2026-10-15): the file appears beside the program folder.
 **Field day 2026-10-15** (23 run reports, Windows, from a USB stick: 11 Lenovo 20M6, Dell Latitude 7420/7430, HP ZBook
 Fury 17 G7, Surface Pro 7): no crash, verdicts right. Found and fixed: PowerShell timeouts after start-up (above),
@@ -296,7 +296,10 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - Test: `DiskTest`: `smartctl --scan --json` then `smartctl --json -a -d <type> <dev>` per disk. One shared probe
   (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
-  (USB stick) is Skipped, but "no disk with SMART" is Error. smartctl is found in `<app>/tools/`, then `PATH`;
+  (USB stick) is Skipped, but "no disk with SMART" is Error. **USB disks are left out** (developer's decision
+  2026-10-15: the tester's own stick claimed "SMART OK, 0 C"): `usbDevices()` asks the OS for the bus (Linux:
+  `/sys/block/<dev>` under `/usb`; Windows: `Get-Disk` BusType, disk N = `/dev/sd`+letter N, `parseUsbDisks()`
+  unit tested); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
   Windows CI takes smartctl.exe 7.5 from the official installer (7-Zip, SHA-256 checked; Chocolatey failed with 406) into `dist/tools/`.
 - Test: `DriversTest`: Windows `Win32_PnPEntity` with `ConfigManagerErrorCode != 0` (PowerShell JSON parsed by
   `parsePnpEntities()`); code 45 "not connected" is ignored (previous owner's USB devices). Linux reads
@@ -336,7 +339,9 @@ Known limitations:
 - `license_win.cpp` and `runPowerShell()` (also used by SystemInfo and Drivers) verified on real Windows.
   `pnp_problems.json` and `license_*.json` are hand-made.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
-- DiskTest `smartctl_*.json` samples are hand-made from the smartctl 7.x format: replace them with real outputs.
+- DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 7 NVMe models + the tester's USB stick (Windows,
+  2026-10-15, `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
+  disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - `unittests/samples/powercfg_latitude7420.xml` is a real report trimmed to `<Batteries>` + `<RuntimeEstimates>`; `powercfg_desktop.xml` is still hand-made.

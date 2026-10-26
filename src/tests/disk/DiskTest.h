@@ -19,6 +19,8 @@ public:
     static TestResult evaluate(const DiskScan& scan, const Thresholds& thresholds);
 
 private:
+    static TestResult evaluateDisks(const DiskScan& scan, const Thresholds& thresholds);   // evaluate() minus the USB note
+
     Thresholds m_thresholds;
     QFutureWatcher<DiskScan> m_watcher;
 };

@@ -426,32 +426,32 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
         <translation>pas de seuil %1 dans thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="166"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="177"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation>smartctl introuvable : gardez le dossier tools à côté du programme (Linux : installez smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="168"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="179"/>
         <source>Could not list the disks (see details)</source>
         <translation>Impossible de lister les disques (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="174"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="185"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation>Aucun disque trouvé : vérifiez le BIOS (les modes Intel RST, VMD ou RAID peuvent cacher les disques)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="197"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation>Mot de passe administrateur annulé ou incorrect : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="198"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation>Mot de passe administrateur pas tapé à temps : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="203"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="214"/>
         <source>No disk with SMART data</source>
         <translation>Aucun disque avec des données SMART</translation>
     </message>

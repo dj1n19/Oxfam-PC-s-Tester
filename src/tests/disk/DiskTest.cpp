@@ -159,6 +159,17 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
 
 TestResult DiskTest::evaluate(const DiskScan& scan, const Thresholds& thresholds)
 {
+    TestResult r = evaluateDisks(scan, thresholds);
+    // Said in every case, so a disk is never left out without a trace.
+    if (!scan.usbLeftOut.isEmpty())
+        r.details += QStringLiteral("\n\nLeft out (USB, not part of this PC): %1").arg(scan.usbLeftOut.join(", "));
+    if (!scan.busInfo.isEmpty())
+        r.details += QStringLiteral("\n%1").arg(scan.busInfo);
+    return r;
+}
+
+TestResult DiskTest::evaluateDisks(const DiskScan& scan, const Thresholds& thresholds)
+{
     TestResult r;
     if (!scan.error.isEmpty()) {
         r.status = Status::Error;
