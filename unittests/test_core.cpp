@@ -1139,14 +1139,20 @@ private slots:
         results[SheetRow::Audio] = {Status::Warn, "no stereo separation", "", ""};
         results[SheetRow::Camera] = {Status::Skipped, "No camera found", "", ""};
         results[SheetRow::Disk] = {Status::Error, "Could not list the disks (see details)", "", ""};
-        QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", results, &error),
+        const QStringList shops = DeliverySheet::shops(sheet);
+        QVERIFY(shops.contains("Ixelles"));
+        QVERIFY(DeliverySheet::currentShop(sheet).isEmpty());
+        QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", "Ixelles", results, &error),
                  qPrintable(error));
 
         XlsxEditor reread;
         QVERIFY2(reread.load(sheet.save(&error), &error), qPrintable(error));
         const auto at = [&](const char* ref) { return reread.cell(checkTab(), ref); };
+        QCOMPARE(at("C4"), QStringLiteral("Ixelles"));
+        QCOMPARE(DeliverySheet::currentShop(reread), QStringLiteral("Ixelles"));
         QCOMPARE(at("C5"), QStringLiteral("Dell Latitude 7420"));
-        QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));
+        QCOMPARE(at("C25"), QStringLiteral("10/10/2026"));   // the operator's date
+        QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));    // the header date was empty
         QCOMPARE(at("C12"), QStringLiteral("\u2611"));
         QCOMPARE(at("D12"), QStringLiteral("85 %"));
         QCOMPARE(at("C13"), QStringLiteral("\u2611"));   // ERROR: not written either
@@ -1157,6 +1163,12 @@ private slots:
         QCOMPARE(at("D15"), QStringLiteral("no stereo separation"));
         QCOMPARE(at("C16"), QStringLiteral("\u2610"));
         QCOMPARE(at("D16"), QStringLiteral("No camera found"));
+
+        // Filled again another day: the header date stays, the operator's date follows.
+        QVERIFY2(DeliverySheet::fill(reread, QDate(2026, 10, 12), "", "", {}, &error), qPrintable(error));
+        QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));
+        QCOMPARE(at("C25"), QStringLiteral("12/10/2026"));
+        QCOMPARE(at("C4"), QStringLiteral("Ixelles"));   // no shop given: left as it was
     }
 
     void deliverySheetModels_data() { sheetFiles(); }

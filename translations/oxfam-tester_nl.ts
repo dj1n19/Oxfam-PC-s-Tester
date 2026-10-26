@@ -338,14 +338,19 @@ Een kopie van de fiche met het nieuwe model, zonder de resultaten van deze pc, w
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="149"/>
+        <source>Which shop is this PC for?</source>
+        <translation type="unfinished">Voor welke winkel is deze pc?</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="166"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation type="unfinished">Kan de pre-leveringsfiche niet schrijven. Staat ze open in een kantoorprogramma?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="152"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="170"/>
         <source>Delivery sheet filled:
 %1
 
@@ -356,7 +361,7 @@ Open it to complete the other checks.</source>
 Open ze om de andere controles aan te vullen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="156"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="174"/>
         <source>Copy with the new model, for the other technicians:
 %1</source>
         <translation type="unfinished">Kopie met het nieuwe model, voor de andere technici:
@@ -612,29 +617,29 @@ Open ze om de andere controles aan te vullen.</translation>
 <context>
     <name>KeyboardDialog</name>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="75"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="76"/>
         <source>Keyboard test</source>
         <translation type="unfinished">Toetsenbordtest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="80"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="81"/>
         <source>Press every key once. Pressed keys light up. Dashed keys are optional (they may not exist on this keyboard). Hold Fn if F1-F12 change brightness or volume instead.
 Mute, volume and PrtSc may be caught by the system and stay dark: if the volume pop-up or the screenshot tool appears, the key works.</source>
         <translation type="unfinished">Druk elke toets één keer in. Ingedrukte toetsen lichten op. Gestippelde toetsen zijn optioneel (ze bestaan misschien niet op dit toetsenbord). Houd Fn ingedrukt als F1-F12 in plaats daarvan de helderheid of het volume wijzigen.
 Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blijven: verschijnt het volumevenster of het schermafbeeldingsprogramma, dan werkt de toets.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="97"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="98"/>
         <source>A key does not work</source>
         <translation type="unfinished">Een toets werkt niet</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="98"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="99"/>
         <source>Skip (no keyboard)</source>
         <translation type="unfinished">Overslaan (geen toetsenbord)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="153"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="165"/>
         <source>%1 / %2 keys done</source>
         <translation type="unfinished">%1 / %2 toetsen gedaan</translation>
     </message>

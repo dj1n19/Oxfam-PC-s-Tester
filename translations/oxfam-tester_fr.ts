@@ -338,14 +338,19 @@ Une copie de la fiche avec le nouveau modèle, sans les résultats de ce PC, ser
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="149"/>
+        <source>Which shop is this PC for?</source>
+        <translation>Pour quel magasin est ce PC ?</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="166"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation>Impossible d&apos;écrire la fiche de pré-livraison. Est-elle ouverte dans un programme bureautique ?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="152"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="170"/>
         <source>Delivery sheet filled:
 %1
 
@@ -356,7 +361,7 @@ Open it to complete the other checks.</source>
 Ouvrez-la pour compléter les autres vérifications.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="156"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="174"/>
         <source>Copy with the new model, for the other technicians:
 %1</source>
         <translation>Copie avec le nouveau modèle, pour les autres techniciens :
@@ -612,29 +617,29 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
 <context>
     <name>KeyboardDialog</name>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="75"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="76"/>
         <source>Keyboard test</source>
         <translation>Test clavier</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="80"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="81"/>
         <source>Press every key once. Pressed keys light up. Dashed keys are optional (they may not exist on this keyboard). Hold Fn if F1-F12 change brightness or volume instead.
 Mute, volume and PrtSc may be caught by the system and stay dark: if the volume pop-up or the screenshot tool appears, the key works.</source>
         <translation>Appuyez une fois sur chaque touche. Les touches enfoncées s&apos;allument. Les touches en pointillés sont facultatives (elles peuvent ne pas exister sur ce clavier). Maintenez Fn si F1-F12 changent la luminosité ou le volume.
 Muet, volume et Impr écran peuvent être captés par le système et rester éteints : si la fenêtre du volume ou l&apos;outil de capture d&apos;écran apparaît, la touche fonctionne.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="97"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="98"/>
         <source>A key does not work</source>
         <translation>Une touche ne fonctionne pas</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="98"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="99"/>
         <source>Skip (no keyboard)</source>
         <translation>Passer (pas de clavier)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="153"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="165"/>
         <source>%1 / %2 keys done</source>
         <translation>%1 / %2 touches faites</translation>
     </message>

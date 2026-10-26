@@ -221,8 +221,10 @@ the .ts so Linguist lists them). French texts to proofread by the developer.
 Clear error messages done (actionable ERROR summaries, see the TestResult contract).
 **Delivery sheet** done, verified by the developer in LibreOffice after a real run:
 - Button "Fill the delivery sheet", enabled after a complete run. Finds the sheet on the Desktop
-  (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C7 (date, text
-  dd/MM/yyyy), C5 (model), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
+  (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C25 (operator's
+  date, text dd/MM/yyyy), C7 (header date) only if empty (developer's request 2026-10-26: it may be the order date),
+  C5 (model), C4 (shop, picked by the technician in the "Shops" tab's list, non-editable, the sheet's current shop
+  preselected; no "Shops" list = not asked), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
   (battery "85 %"), WARN = ticked + summary, SKIPPED = unticked + summary, FAIL/ERROR = not written (developer's choice). Manual rows/header are never touched.
 - Model not in the "Models" tab (Lenovo reports "20HD..."): editable list dialog; a new model is appended to Models and
   a copy WITHOUT results is saved next to the program folder (`applicationDirPath()/..`: Documents in production) under

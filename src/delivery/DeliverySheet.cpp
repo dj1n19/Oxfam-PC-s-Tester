@@ -5,9 +5,12 @@ namespace {
 // Tab names, the same in both files. é keeps this source ASCII (MSVC C4819).
 const QString kCheckSheet = QStringLiteral("Double Vérification PC");
 const QString kModelSheet = QStringLiteral("Models");
+const QString kShopSheet = QStringLiteral("Shops");
 
+const QString kShopCell = QStringLiteral("C4");
 const QString kModelCell = QStringLiteral("C5");
-const QString kDateCell = QStringLiteral("C7");
+const QString kDateCell = QStringLiteral("C7");           // "Date / Datum" of the header
+const QString kOperatorDateCell = QStringLiteral("C25");  // date of the first operator line
 
 const QString kTicked = QStringLiteral("☑");     // the sheet's own checkbox characters
 const QString kUnticked = QStringLiteral("☐");
@@ -57,6 +60,19 @@ QStringList models(const XlsxEditor& sheet)
     return list;
 }
 
+QStringList shops(const XlsxEditor& sheet)
+{
+    QStringList list;
+    for (const auto& [row, text] : sheet.column(kShopSheet, QStringLiteral("A")))
+        list << text;
+    return list;
+}
+
+QString currentShop(const XlsxEditor& sheet)
+{
+    return sheet.cell(kCheckSheet, kShopCell).simplified();
+}
+
 QString findModel(const QStringList& models, const QString& name)
 {
     const QString wanted = normalized(name);
@@ -76,13 +92,20 @@ bool addModel(XlsxEditor& sheet, const QString& model, QString* error)
     return sheet.setCell(kModelSheet, QStringLiteral("A%1").arg(next), model.simplified(), error);
 }
 
-bool fill(XlsxEditor& sheet, const QDate& date, const QString& model,
+bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QString& shop,
           const std::map<SheetRow, TestResult>& results, QString* error)
 {
     // Text, not an Excel date number: shown the same in every office program.
-    if (!sheet.setCell(kCheckSheet, kDateCell, date.toString(QStringLiteral("dd/MM/yyyy")), error))
+    const QString day = date.toString(QStringLiteral("dd/MM/yyyy"));
+    if (!sheet.setCell(kCheckSheet, kOperatorDateCell, day, error))
+        return false;
+    // The header date may already be there (the order's): never replace it.
+    if (sheet.cell(kCheckSheet, kDateCell).trimmed().isEmpty()
+        && !sheet.setCell(kCheckSheet, kDateCell, day, error))
         return false;
     if (!model.isEmpty() && !sheet.setCell(kCheckSheet, kModelCell, model, error))
+        return false;
+    if (!shop.isEmpty() && !sheet.setCell(kCheckSheet, kShopCell, shop, error))
         return false;
 
     for (const auto& [row, result] : results) {

@@ -139,9 +139,27 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
         // A new model not added: the model cell is left for the technician.
     }
 
-    // 4. Fill and write.
+    // 4. The shop: the PC cannot know it, the technician picks it in the
+    // dropdown's list. The shop already on the sheet is offered first.
+    QString shop;
+    const QStringList shops = DeliverySheet::shops(sheet);
+    if (!shops.isEmpty()) {
+        QInputDialog dialog(parent);
+        dialog.setWindowTitle(title);
+        dialog.setLabelText(tr("Which shop is this PC for?"));
+        dialog.setComboBoxItems(shops);
+        dialog.setComboBoxEditable(false);   // only the sheet's own list
+        const QString current = DeliverySheet::currentShop(sheet);
+        if (shops.contains(current))
+            dialog.setTextValue(current);
+        if (dialog.exec() != QDialog::Accepted)
+            return;
+        shop = dialog.textValue();
+    }
+
+    // 5. Fill and write.
     QByteArray filled;
-    if (DeliverySheet::fill(sheet, QDate::currentDate(), model, input.results, &error))
+    if (DeliverySheet::fill(sheet, QDate::currentDate(), model, shop, input.results, &error))
         filled = sheet.save(&error);
     if (filled.isEmpty() || !writeFile(path, filled, &error)) {
         QMessageBox::warning(parent, title,
