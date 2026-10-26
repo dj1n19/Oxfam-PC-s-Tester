@@ -12,7 +12,7 @@ to check **refurbished desktop and laptop PCs** before they are sold in Oxfam sh
 - Targets: **Windows 10/11 and Linux**. Portable: no installer, no registry or system writes.
 - Output: an **on-screen summary**, plus (button, never automatic) Oxfam's **delivery sheet** filled in place:
   `Fiche Pré Livraison.xlsx` / `Pre- LeveringsFiche.xlsx` on the Desktop (decided by the developer, Oct 2026).
-  Plus, automatically after each run, a plain-text **run report** (every row's details) next to the program
+  Plus, automatically after each run, a plain-text **run report** (every row's details) in `logs/` of the root folder
   (developer's request 2026-10-15: for testing now, base of the phase 2 report). No PDF, no print, no database.
 - Goal: **as little human intervention as possible**. Automatic tests run first, interactive tests come last.
 - Verdict shown to the technician (see `src/core/Verdict.h`):
@@ -90,7 +90,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   a fixable cause, give it a small enum (see `SmartctlFailure`) or flag instead of comparing English error strings.
 - `Thresholds`: `config/thresholds.json`, shape `{ "key": { "warn": X, "fail": Y } }`.
   Direction is deduced: `fail < warn` means lower is worse (battery %); otherwise higher is worse (bad sectors).
-  `thresholds.json` is copied next to the executable by CMake and loaded from `applicationDirPath()`.
+  `thresholds.json` is read from `<root>/config/` (`configFile()`, see "Root folder" in section 8); never copied.
 
 ## 4. Conventions
 
@@ -164,6 +164,7 @@ CI: `.github/workflows/build.yml`.
 ```
 src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp} ProgramFolder.{h,cpp}
+               hidefile_linux.cpp hidefile_win.cpp   (hideFile(): Windows hidden attribute)
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) sysinfo_linux.cpp sysinfo_win.cpp
@@ -181,7 +182,7 @@ src/
                  lazy-djin-tester.ico; app.rc (Windows .exe icon). Generated files are committed (CI has no ImageMagick).
     interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
-config/        thresholds.json keyboard_layout.json   (copied next to the executable)
+config/        thresholds.json keyboard_layout.json   (read from <root>/config/: from build/, root = the repo)
 translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable; internal names such as
                these, `oxcore` and the repo keep "oxfam": only what users see was renamed)
 third_party/   miniz/ (zip library, MIT, vendored unchanged; version + checksum in its README.md)
@@ -223,12 +224,17 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
 - Button "Fill the delivery sheet", enabled after a complete run. Finds the sheet on the Desktop
   (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C25 (operator's
   date, text dd/MM/yyyy), C7 (header date) only if empty (developer's request 2026-10-26: it may be the order date),
-  C5 (model), C4 (shop, picked by the technician in the "Shops" tab's list, non-editable, the sheet's current shop
+  C5 (model), C4 (shop, picked by the technician in the "Shops" tab's list, the sheet's current shop
   preselected; no "Shops" list = not asked), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
   (battery "85 %"), WARN = ticked + summary, SKIPPED = unticked + summary, FAIL/ERROR = not written (developer's choice). Manual rows/header are never touched.
-- Model not in the "Models" tab (Lenovo reports "20HD..."): editable list dialog; a new model is appended to Models and
-  a copy WITHOUT results is saved next to the program folder (`applicationDirPath()/..`: Documents in production) under
-  the same name, the previous one kept as `<name> (backup).xlsx`. AppImage (M4): use `$APPIMAGE`'s folder instead.
+- Desktop: both file names looked for, the system language's first (`fileNamesFor()`). None: copied from
+  `<root>/delivery-sheets/` in the system language (en: the technician picks Francais/Nederlands if both exist; one
+  missing: the other). None anywhere: warning naming both folders.
+- Model or shop not in its list (Lenovo reports "20HD..."): editable list dialog, then "add it?". Lists are always
+  sorted (`DeliverySheet::sorted()`: accents and case ignored, NFD, fixed order on every system); `addName()` rewrites
+  the whole column A sorted. New names go, in one pass before the results are written, into EVERY sheet of
+  `delivery-sheets/` (FR and NL, without results), each previous version kept as the hidden `.<name> (backup).xlsx`
+  (`hideFile()`: dot + Windows hidden attribute). The Desktop sheet's language missing there: a clean copy is saved.
 - **Why in place:** QXlsx was tried on a copy and lost all 6 dropdowns and the page setup. `XlsxEditor` rewrites only
   the changed cells (found with QXmlStreamReader offsets, inline strings, `s=` style kept) and copies every other zip
   entry raw. The FR file is saved by OnlyOffice (dropdowns in x14 extLst), the NL one by LibreOffice (standard
@@ -246,15 +252,20 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
   no config). Seen with Arch's Qt; a local build with system Qt + `NO_STRIP=1` is a quick way to test packaging.
 - `smartctl_linux.cpp`: the AppImage mount is readable only by the user (not root), so before pkexec smartctl is
   copied to a `QTemporaryDir` when it lies under `$APPDIR`.
-- Delivery sheet copy: next to the `.AppImage` file (`$APPIMAGE`), not `applicationDirPath()/..` (read-only mount):
-  `folderAroundProgram()` (`core/ProgramFolder`), shared with the run report.
+- Root folder from the `.AppImage` file (`$APPIMAGE`), not `applicationDirPath()` (read-only mount):
+  `folderAroundProgram()` (`core/ProgramFolder`).
 - Only the X11 (xcb) platform plugin is bundled (Mint Cinnamon = X11); under Wayland Qt falls back to XWayland.
 **Run report** done (developer's choices: automatic, every test, one file per run, next to the program):
 `MainWindow::onAllFinished()` (full run and each "Run this test again") writes
-`folderAroundProgram()/yyyy-MM-dd HH-mm-ss <model>.txt`: date, model, verdict, then per row `==== [STATUS] name ====`,
+`<root>/logs/yyyy-MM-dd HH-mm-ss <model>.txt` (folder created if missing): version, date, model, verdict, then per row `==== [STATUS] name ====`,
 summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
 UTF-8, QSaveFile, `\r\n` in raw output made `\n` first (else `\r\r\n`). Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
 real run (2026-10-15): the file appears beside the program folder.
+**Root folder** (beta packaging, 2026-10-26): `folderAroundProgram()` = the folder above the program's folder
+(Windows: the .exe's; Linux: the `.AppImage` file's). It holds `app/` (exe + DLLs + tools/ + the AppImage +
+`start-linux.sh`), `config/`, `logs/`, `delivery-sheets/`, two launchers and `LISEZMOI.txt`. Config is read only from
+`<root>/config/` (no copy next to the exe, no hidden fallback). Version: CMake `APP_VERSION` (default "dev", CI: tag
+or `dev-<sha>`) -> `OX_APP_VERSION` -> `applicationVersion()`, in the window title and the run report's first line.
 **Field day 2026-10-15** (23 run reports, Windows, from a USB stick: 11 Lenovo 20M6, Dell Latitude 7420/7430, HP ZBook
 Fury 17 G7, Surface Pro 7): no crash, verdicts right. Found and fixed: PowerShell timeouts after start-up (then
 PowerShell dropped altogether, 2026-10-26), CPU first reading > 12 s, Surface audio float, 5 s freeze before the audio test (multimedia warm-up).

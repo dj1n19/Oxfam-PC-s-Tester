@@ -6,8 +6,9 @@
 
 QString formatRunReport(const RunReport& report)
 {
-    QString text = QStringLiteral("Lazy Djin's Tester - %1\nPC: %2\nVerdict: %3\n")
-                       .arg(report.when.toString(QStringLiteral("yyyy-MM-dd HH:mm:ss")),
+    QString text = QStringLiteral("Lazy Djin's Tester %1 - %2\nPC: %3\nVerdict: %4\n")
+                       .arg(report.version.isEmpty() ? QStringLiteral("(unknown version)") : report.version,
+                            report.when.toString(QStringLiteral("yyyy-MM-dd HH:mm:ss")),
                             report.model.isEmpty() ? QStringLiteral("unknown") : report.model,
                             report.verdict);
     for (const RunReportRow& row : report.rows) {
@@ -42,7 +43,10 @@ QString runReportFileName(const QDateTime& when, const QString& model)
 
 bool writeRunReport(const RunReport& report, QString* path, QString* error)
 {
-    *path = folderAroundProgram().absoluteFilePath(runReportFileName(report.when, report.model));
+    const QString logs = rootSubfolder(QStringLiteral("logs"), error);
+    if (logs.isEmpty())
+        return false;
+    *path = QDir(logs).absoluteFilePath(runReportFileName(report.when, report.model));
     // Text: \r\n on Windows (Notepad). QSaveFile: never a half-written file.
     QSaveFile f(*path);
     const QByteArray data = formatRunReport(report).toUtf8();

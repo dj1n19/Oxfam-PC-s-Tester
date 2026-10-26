@@ -5,6 +5,7 @@
 #include <vector>
 #include <QtTest>
 
+#include "core/ProgramFolder.h"
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "core/Verdict.h"
@@ -643,6 +644,7 @@ private slots:
     {
         RunReport report;
         report.when = QDateTime(QDate(2026, 10, 15), QTime(14, 32, 5));
+        report.version = "v1.0.0-beta.1";
         report.model = "Dell Latitude 7420";
         report.verdict = "SELL WITH NOTE - see warnings";
         TestResult cpu;
@@ -653,17 +655,40 @@ private slots:
         report.rows.push_back({"Camera", TestResult{}});   // never run: Skipped, empty
 
         const QString text = formatRunReport(report);
-        QVERIFY(text.startsWith("Lazy Djin's Tester - 2026-10-15 14:32:05\nPC: Dell Latitude 7420\n"
+        QVERIFY(text.startsWith("Lazy Djin's Tester v1.0.0-beta.1 - 2026-10-15 14:32:05\nPC: Dell Latitude 7420\n"
                                 "Verdict: SELL WITH NOTE - see warnings\n"));
         QVERIFY(text.contains("\n==== [WARN] CPU temperature ====\nSlowed to 83 % of base speed on battery\n\n"
                               "Load: 8 threads, 30 s\nIdle speed: 123 % of base\n"));   // details as in the pane
         QVERIFY(text.contains("==== [SKIPPED] Camera ===="));
         report.model.clear();
         QVERIFY(formatRunReport(report).contains("PC: unknown\n"));
+        report.version.clear();
+        QVERIFY(formatRunReport(report).startsWith("Lazy Djin's Tester (unknown version) - "));
         // smartctl.exe output has \r\n: one line break in the file, not two.
         report.rows[0].result.details = "{\r\n  \"a\": 1\r\n}\r\n";
         QVERIFY(formatRunReport(report).contains("{\n  \"a\": 1\n}"));
         QVERIFY(!formatRunReport(report).contains('\r'));
+    }
+
+    // Root = the folder above the program's folder: app/ in the package,
+    // build/ when developing. Linux: above the .AppImage FILE's folder.
+    void rootFolder()
+    {
+        QDir expected(QCoreApplication::applicationDirPath());
+        expected.cdUp();
+        QCOMPARE(folderAroundProgram().absolutePath(), expected.absolutePath());
+        QCOMPARE(configFile("thresholds.json"), expected.absoluteFilePath("config/thresholds.json"));
+
+        qputenv("APPIMAGE", "/media/stick/Lazy Djin's Tester/app/lazy-djin-tester-x86_64.AppImage");
+        QCOMPARE(folderAroundProgram().absolutePath(), QString("/media/stick/Lazy Djin's Tester"));
+        qunsetenv("APPIMAGE");
+
+        // build/logs when the tests run: created on first use.
+        QString error;
+        const QString logs = rootSubfolder("logs", &error);
+        QVERIFY2(!logs.isEmpty(), qPrintable(error));
+        QCOMPARE(logs, expected.absoluteFilePath("logs"));
+        QVERIFY(QDir(logs).exists());
     }
 
     void runReportFileName_()
@@ -1070,7 +1095,7 @@ private slots:
         QString error;
         QVERIFY2(sheet.load(sample(file), &error), qPrintable(error));
         QVERIFY2(DeliverySheet::check(sheet, &error), qPrintable(error));
-        const QStringList models = DeliverySheet::models(sheet);
+        const QStringList models = DeliverySheet::names(sheet, SheetList::Models);
         QCOMPARE(models.size(), 53);
         QCOMPARE(models.first(), QStringLiteral("Dell Latitude 7400"));
         QCOMPARE(models.last(), QStringLiteral("Samsung Galaxy Tab Active 2"));
@@ -1139,8 +1164,6 @@ private slots:
         results[SheetRow::Audio] = {Status::Warn, "no stereo separation", "", ""};
         results[SheetRow::Camera] = {Status::Skipped, "No camera found", "", ""};
         results[SheetRow::Disk] = {Status::Error, "Could not list the disks (see details)", "", ""};
-        const QStringList shops = DeliverySheet::shops(sheet);
-        QVERIFY(shops.contains("Ixelles"));
         QVERIFY(DeliverySheet::currentShop(sheet).isEmpty());
         QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", "Ixelles", results, &error),
                  qPrintable(error));
@@ -1178,17 +1201,60 @@ private slots:
         XlsxEditor sheet;
         QString error;
         QVERIFY2(sheet.load(sample(file), &error), qPrintable(error));
-        const QStringList models = DeliverySheet::models(sheet);
-        QCOMPARE(DeliverySheet::findModel(models, "  dell   LATITUDE 7420 "), QStringLiteral("Dell Latitude 7420"));
-        QVERIFY(DeliverySheet::findModel(models, "Lenovo T480").isEmpty());
-        QVERIFY(DeliverySheet::findModel(models, "").isEmpty());
+        const QStringList models = DeliverySheet::names(sheet, SheetList::Models);
+        QCOMPARE(DeliverySheet::findName(models, "  dell   LATITUDE 7420 "), QStringLiteral("Dell Latitude 7420"));
+        QVERIFY(DeliverySheet::findName(models, "Lenovo T480").isEmpty());
+        QVERIFY(DeliverySheet::findName(models, "").isEmpty());
 
-        QVERIFY2(DeliverySheet::addModel(sheet, "Lenovo  T480", &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::addName(sheet, SheetList::Models, "Lenovo  T480", &error), qPrintable(error));
         XlsxEditor reread;
         QVERIFY2(reread.load(sheet.save(&error), &error), qPrintable(error));
-        const QStringList after = DeliverySheet::models(reread);
-        QCOMPARE(after.size(), 54);
-        QCOMPARE(after.last(), QStringLiteral("Lenovo T480"));
+        const QStringList after = DeliverySheet::names(reread, SheetList::Models);
+        QCOMPARE(after.size(), models.size() + 1);
+        QVERIFY(after.contains("Lenovo T480"));
+        QCOMPARE(after, DeliverySheet::sorted(after));   // the whole column is sorted
+        QCOMPARE(reread.cell("Models", "A1"), after.first());
+    }
+
+    void deliverySheetShops_data() { sheetFiles(); }
+    void deliverySheetShops()
+    {
+        QFETCH(QString, file);
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY2(sheet.load(sample(file), &error), qPrintable(error));
+        const QStringList shops = DeliverySheet::names(sheet, SheetList::Shops);
+        QVERIFY(shops.contains("Ixelles"));
+
+        // A new shop with an accent, and one at the end of the alphabet.
+        QVERIFY2(DeliverySheet::addName(sheet, SheetList::Shops, "Zottegem", &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::addName(sheet, SheetList::Shops, "\u00c9caussinnes", &error), qPrintable(error));
+        XlsxEditor reread;
+        QVERIFY2(reread.load(sheet.save(&error), &error), qPrintable(error));
+        const QStringList after = DeliverySheet::names(reread, SheetList::Shops);
+        QCOMPARE(after.size(), shops.size() + 2);
+        QCOMPARE(after, DeliverySheet::sorted(after));
+        QCOMPARE(after.last(), QStringLiteral("Zottegem"));
+        // Models untouched.
+        QCOMPARE(DeliverySheet::names(reread, SheetList::Models), DeliverySheet::names(sheet, SheetList::Models));
+    }
+
+    void deliverySheetSorting()
+    {
+        // Case and accents ignored: E and \u00c9 together, "brugge" between B and C.
+        QCOMPARE(DeliverySheet::sorted({"Fl\u00e9ron", "brugge", "Ciney", "\u00c9caussinnes", "Eupen", "Ath"}),
+                 (QStringList{"Ath", "brugge", "Ciney", "\u00c9caussinnes", "Eupen", "Fl\u00e9ron"}));
+    }
+
+    void deliverySheetLanguage()
+    {
+        const QString fr = DeliverySheet::fileNames().at(0);
+        const QString nl = DeliverySheet::fileNames().at(1);
+        QCOMPARE(DeliverySheet::fileNamesFor("fr"), (QStringList{fr, nl}));
+        QCOMPARE(DeliverySheet::fileNamesFor("nl"), (QStringList{nl, fr}));   // both always looked for
+        QCOMPARE(DeliverySheet::fileNamesFor("en"), (QStringList{fr, nl}));
+        QCOMPARE(DeliverySheet::fileName("nl"), nl);
+        QVERIFY(DeliverySheet::fileName("en").isEmpty());
     }
 
     void xlsxRejectsOtherFiles()

@@ -20,9 +20,11 @@ struct DeliveryInput {
     std::map<SheetRow, TestResult> results;
 };
 
-// The "Fill the delivery sheet" button: finds the sheet on the Desktop,
-// asks for the model when it is not in the list, writes, and says what
-// happened. Every question and message is a dialog over parent.
+// The "Fill the delivery sheet" button: finds the sheet on the Desktop (or
+// copies it there from <root>/delivery-sheets/), asks for the model when it
+// is not in the list and for the shop, adds new names to the shared sheets,
+// writes, and says what happened. Every question and message is a dialog
+// over parent.
 class DeliveryAction {
     Q_DECLARE_TR_FUNCTIONS(DeliveryAction)   // tr() without being a QObject
 public:

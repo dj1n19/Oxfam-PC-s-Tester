@@ -1,5 +1,8 @@
 #include "ui/DeliveryAction.h"
 
+#include <utility>
+#include <vector>
+
 #include <QDate>
 #include <QDir>
 #include <QFile>
@@ -11,8 +14,14 @@
 
 #include "core/ProgramFolder.h"
 #include "delivery/XlsxEditor.h"
+#include "ui/Language.h"
 
 namespace {
+
+const QString kSheetsFolder = QStringLiteral("delivery-sheets");
+
+// A name added to a list of the sheet (new model, new shop).
+using Added = std::vector<std::pair<SheetList, QString>>;
 
 // LibreOffice and OpenOffice leave ".~lock.<name>#" next to an open file,
 // some programs "~$<name>". They do not stop us from writing, but whoever
@@ -36,22 +45,48 @@ bool writeFile(const QString& path, const QByteArray& data, QString* error)
     return true;
 }
 
-// The copy to share goes next to the program (Documents in production, the
-// USB stick when testing). The previous one becomes "<name> (backup).xlsx".
-bool writeSharedCopy(const QString& fileName, const QByteArray& data, QString* path, QString* error)
+// Writes dir/fileName; the previous version becomes the hidden
+// ".<name> (backup).xlsx" (one backup, replaced each time).
+bool writeWithBackup(const QDir& dir, const QString& fileName, const QByteArray& data, QString* error)
 {
-    const QDir dir = folderAroundProgram();
-    *path = dir.absoluteFilePath(fileName);
-    if (QFile::exists(*path)) {
-        const QString backup = dir.absoluteFilePath(QFileInfo(fileName).completeBaseName()
-                                                    + QStringLiteral(" (backup).xlsx"));
+    const QString path = dir.absoluteFilePath(fileName);
+    if (QFile::exists(path)) {
+        const QString backup = dir.absoluteFilePath(QStringLiteral(".%1 (backup).xlsx")
+                                                        .arg(QFileInfo(fileName).completeBaseName()));
         QFile::remove(backup);
-        if (!QFile::copy(*path, backup)) {
+        if (!QFile::copy(path, backup)) {
             *error = QStringLiteral("Cannot make the backup %1").arg(backup);
             return false;
         }
+        hideFile(backup);   // cosmetic: a visible backup is not a failure
     }
-    return writeFile(*path, data, error);
+    return writeFile(path, data, error);
+}
+
+bool readSheet(const QString& path, XlsxEditor* sheet, QString* error)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
+        *error = file.errorString();
+        return false;
+    }
+    return sheet->load(file.readAll(), error) && DeliverySheet::check(*sheet, error);
+}
+
+// Adds the new names to a sheet of delivery-sheets/, which has no results:
+// only its lists change.
+bool addToSharedSheet(const QDir& dir, const QString& fileName, const Added& added, QString* error)
+{
+    XlsxEditor sheet;
+    if (!readSheet(dir.absoluteFilePath(fileName), &sheet, error))
+        return false;
+    for (const auto& [list, name] : added) {
+        if (DeliverySheet::findName(DeliverySheet::names(sheet, list), name).isEmpty()
+            && !DeliverySheet::addName(sheet, list, name, error))
+            return false;
+    }
+    const QByteArray data = sheet.save(error);
+    return !data.isEmpty() && writeWithBackup(dir, fileName, data, error);
 }
 
 } // namespace
@@ -59,21 +94,62 @@ bool writeSharedCopy(const QString& fileName, const QByteArray& data, QString* p
 void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
 {
     const QString title = tr("Delivery sheet");
+    const QString language = systemLanguage();
+    QString error;
 
-    // 1. The sheet is always put on the Desktop before the tests.
+    // 1. The sheet on the Desktop, in either language (a technician may put
+    // the Dutch one on a French PC). Both there: the system's language wins.
     const QDir desktop(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-    const QStringList names = DeliverySheet::fileNames();
     QString path;
-    for (const QString& name : names) {
+    for (const QString& name : DeliverySheet::fileNamesFor(language)) {
         if (desktop.exists(name)) {
             path = desktop.absoluteFilePath(name);
             break;
         }
     }
+
+    // None: copy the one of the system's language from delivery-sheets/.
+    QString copiedFrom;
+    const QString sheetsPath = rootSubfolder(kSheetsFolder, &error);
+    const QDir sheets(sheetsPath);
+    if (path.isEmpty() && !sheetsPath.isEmpty()) {
+        QStringList available;
+        for (const QString& name : DeliverySheet::fileNames()) {
+            if (sheets.exists(name))
+                available << name;
+        }
+        QString chosen = available.size() == 1 ? available.first() : QString();
+        if (available.size() == 2) {
+            chosen = DeliverySheet::fileName(language);
+            if (chosen.isEmpty()) {   // system neither French nor Dutch: ask
+                bool ok = false;
+                const QStringList languages{QStringLiteral("Français"), QStringLiteral("Nederlands")};
+                const QString picked = QInputDialog::getItem(
+                    parent, title, tr("Which delivery sheet should be copied to the Desktop?"), languages, 0,
+                    false, &ok);
+                if (!ok)
+                    return;
+                chosen = DeliverySheet::fileNames().at(languages.indexOf(picked) == 1 ? 1 : 0);
+            }
+        }
+        if (!chosen.isEmpty()) {
+            const QString target = desktop.absoluteFilePath(chosen);
+            if (!QFile::copy(sheets.absoluteFilePath(chosen), target)) {
+                QMessageBox::warning(parent, title, tr("The delivery sheet could not be copied to the Desktop:\n%1")
+                                                        .arg(QDir::toNativeSeparators(target)));
+                return;
+            }
+            path = target;
+            copiedFrom = sheets.absoluteFilePath(chosen);
+        }
+    }
     if (path.isEmpty()) {
         QMessageBox::warning(parent, title,
-                             tr("No delivery sheet on the Desktop (%1).\nCopy \"%2\" or \"%3\" there, then click again.")
-                                 .arg(QDir::toNativeSeparators(desktop.path()), names.value(0), names.value(1)));
+                             tr("No delivery sheet on the Desktop (%1) nor in the \"%2\" folder (%3).\n"
+                                "Put \"%4\" or \"%5\" in one of them, then click again.")
+                                 .arg(QDir::toNativeSeparators(desktop.path()), kSheetsFolder,
+                                      QDir::toNativeSeparators(sheetsPath.isEmpty() ? error : sheetsPath),
+                                      DeliverySheet::fileNames().value(0), DeliverySheet::fileNames().value(1)));
         return;
     }
     const QFileInfo info(path);
@@ -85,79 +161,109 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
         return;
 
     // 2. Read it.
-    QFile file(path);
     XlsxEditor sheet;
-    QString error;
-    if (!file.open(QIODevice::ReadOnly)) {
-        error = file.errorString();
-    } else if (sheet.load(file.readAll(), &error)) {
-        DeliverySheet::check(sheet, &error);
-    }
-    file.close();
-    if (!error.isEmpty()) {
+    if (!readSheet(path, &sheet, &error)) {
         QMessageBox::warning(parent, title, tr("The delivery sheet cannot be read:\n%1").arg(error));
         return;
     }
 
     // 3. The model must be one of the dropdown's list. When the PC's own
     // name is not in it (Lenovo reports "20HD..."), the technician picks it.
-    const QStringList models = DeliverySheet::models(sheet);
-    QString model = DeliverySheet::findModel(models, input.systemModel);
-    QString copyPath;
+    Added added;
+    const QStringList models = DeliverySheet::names(sheet, SheetList::Models);
+    QString model = DeliverySheet::findName(models, input.systemModel);
     if (model.isEmpty()) {
         QInputDialog dialog(parent);
         dialog.setWindowTitle(title);
         dialog.setLabelText(tr("This PC reports \"%1\", which is not in the model list.\n"
                                "Choose its model in the list, or type the name of a new model:")
                                 .arg(input.systemModel));
-        dialog.setComboBoxItems(models);
+        dialog.setComboBoxItems(DeliverySheet::sorted(models));
         dialog.setComboBoxEditable(true);
         dialog.setTextValue(input.systemModel);
         if (dialog.exec() != QDialog::Accepted)
             return;
         const QString chosen = dialog.textValue().simplified();
-        model = DeliverySheet::findModel(models, chosen);
+        model = DeliverySheet::findName(models, chosen);
         if (model.isEmpty() && !chosen.isEmpty()
             && QMessageBox::question(parent, title,
-                                     tr("Add \"%1\" to the model list?\n\nA copy of the sheet with the new model, "
-                                        "without the results of this PC, will be saved next to the program "
-                                        "folder, to share with the other technicians.").arg(chosen))
+                                     tr("Add \"%1\" to the model list?\n\nThe sheets of the \"%2\" folder get it "
+                                        "too, without the results of this PC, to share with the other technicians.")
+                                         .arg(chosen, kSheetsFolder))
                    == QMessageBox::Yes) {
-            if (!DeliverySheet::addModel(sheet, chosen, &error)) {
+            if (!DeliverySheet::addName(sheet, SheetList::Models, chosen, &error)) {
                 QMessageBox::warning(parent, title, tr("The model could not be added:\n%1").arg(error));
                 return;
             }
             model = chosen;
-            // Saved now, before the results are written into the sheet.
-            const QByteArray clean = sheet.save(&error);
-            if (clean.isEmpty() || !writeSharedCopy(info.fileName(), clean, &copyPath, &error)) {
-                QMessageBox::warning(parent, title,
-                                     tr("The copy for the other technicians could not be saved:\n%1").arg(error));
-                copyPath.clear();
-            }
+            added.push_back({SheetList::Models, chosen});
         }
         // A new model not added: the model cell is left for the technician.
     }
 
-    // 4. The shop: the PC cannot know it, the technician picks it in the
-    // dropdown's list. The shop already on the sheet is offered first.
+    // 4. The shop: the PC cannot know it. The shop already on the sheet is
+    // offered; otherwise the field starts empty (no shop chosen by mistake).
     QString shop;
-    const QStringList shops = DeliverySheet::shops(sheet);
+    const QStringList shops = DeliverySheet::names(sheet, SheetList::Shops);
     if (!shops.isEmpty()) {
         QInputDialog dialog(parent);
         dialog.setWindowTitle(title);
-        dialog.setLabelText(tr("Which shop is this PC for?"));
-        dialog.setComboBoxItems(shops);
-        dialog.setComboBoxEditable(false);   // only the sheet's own list
-        const QString current = DeliverySheet::currentShop(sheet);
-        if (shops.contains(current))
-            dialog.setTextValue(current);
+        dialog.setLabelText(tr("Which shop is this PC for?\nChoose it in the list, or type the name of a new shop:"));
+        dialog.setComboBoxItems(DeliverySheet::sorted(shops));
+        dialog.setComboBoxEditable(true);
+        dialog.setTextValue(DeliverySheet::findName(shops, DeliverySheet::currentShop(sheet)));
         if (dialog.exec() != QDialog::Accepted)
             return;
-        shop = dialog.textValue();
+        const QString chosen = dialog.textValue().simplified();
+        shop = DeliverySheet::findName(shops, chosen);
+        if (shop.isEmpty() && !chosen.isEmpty()
+            && QMessageBox::question(parent, title,
+                                     tr("Add \"%1\" to the shop list?\n\nThe sheets of the \"%2\" folder get it "
+                                        "too, to share with the other technicians.")
+                                         .arg(chosen, kSheetsFolder))
+                   == QMessageBox::Yes) {
+            if (!DeliverySheet::addName(sheet, SheetList::Shops, chosen, &error)) {
+                QMessageBox::warning(parent, title, tr("The shop could not be added:\n%1").arg(error));
+                return;
+            }
+            shop = chosen;
+            added.push_back({SheetList::Shops, chosen});
+        }
+        // A new shop not added: the shop cell is left for the technician.
     }
 
-    // 5. Fill and write.
+    // 5. New names go into every sheet of delivery-sheets/ (French AND
+    // Dutch: their lists stay the same). Missing there: the Desktop one is
+    // saved, now, before the results are written into it.
+    QStringList updated;
+    if (!added.empty()) {
+        QStringList problems;
+        if (sheetsPath.isEmpty()) {
+            problems << error;
+        } else {
+            for (const QString& name : DeliverySheet::fileNames()) {
+                QString why;
+                if (sheets.exists(name)) {
+                    if (addToSharedSheet(sheets, name, added, &why))
+                        updated << sheets.absoluteFilePath(name);
+                    else
+                        problems << QStringLiteral("%1: %2").arg(name, why);
+                } else if (name == info.fileName()) {
+                    const QByteArray clean = sheet.save(&why);
+                    if (!clean.isEmpty() && writeWithBackup(sheets, name, clean, &why))
+                        updated << sheets.absoluteFilePath(name);
+                    else
+                        problems << QStringLiteral("%1: %2").arg(name, why);
+                }
+            }
+        }
+        if (!problems.isEmpty())
+            QMessageBox::warning(parent, title,
+                                 tr("The sheets for the other technicians could not all be updated:\n%1")
+                                     .arg(problems.join(QLatin1Char('\n'))));
+    }
+
+    // 6. Fill and write.
     QByteArray filled;
     if (DeliverySheet::fill(sheet, QDate::currentDate(), model, shop, input.results, &error))
         filled = sheet.save(&error);
@@ -169,8 +275,15 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
     }
     QString done = tr("Delivery sheet filled:\n%1\n\nOpen it to complete the other checks.")
                        .arg(QDir::toNativeSeparators(path));
-    if (!copyPath.isEmpty())
+    if (!copiedFrom.isEmpty())
         done += QStringLiteral("\n\n")
-              + tr("Copy with the new model, for the other technicians:\n%1").arg(QDir::toNativeSeparators(copyPath));
+              + tr("It was copied to the Desktop from:\n%1").arg(QDir::toNativeSeparators(copiedFrom));
+    if (!updated.isEmpty()) {
+        QStringList shown;
+        for (const QString& p : updated)
+            shown << QDir::toNativeSeparators(p);
+        done += QStringLiteral("\n\n")
+              + tr("Sheets with the new names, for the other technicians:\n%1").arg(shown.join(QLatin1Char('\n')));
+    }
     QMessageBox::information(parent, title, done);
 }

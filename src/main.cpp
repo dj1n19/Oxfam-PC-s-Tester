@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QTimer>
 
+#include "core/ProgramFolder.h"
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "tests/battery/BatteryTest.h"
@@ -26,6 +27,7 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Lazy Djin's Tester"));
+    QApplication::setApplicationVersion(QStringLiteral(OX_APP_VERSION));   // set by CMake (APP_VERSION)
     // The djinn, in every size we have: Qt picks the closest one for the title bar,
     // the taskbar and Alt+Tab. Set on the application, so every dialog gets it too.
     QIcon icon;
@@ -36,21 +38,20 @@ int main(int argc, char* argv[])
     Theme::apply(app);               // before any window, the start-up warning included
     setLanguage(systemLanguage());   // before any text is shown; the window has a selector
 
-    // thresholds.json sits next to the executable (portable app)
+    // Config files live in <root>/config/, shared by Windows and Linux (see ProgramFolder.h).
     Thresholds thresholds;
     QString error;
-    const QString path = QApplication::applicationDirPath() + QStringLiteral("/thresholds.json");
-    if (!thresholds.loadFromFile(path, &error)) {
+    if (!thresholds.loadFromFile(configFile(QStringLiteral("thresholds.json")), &error)) {
         QMessageBox::warning(nullptr, QObject::tr("Configuration"),
                              QObject::tr("thresholds.json not loaded:\n%1\n\n"
                                          "Tests needing thresholds will report ERROR. "
-                                         "Copy the whole program folder again: thresholds.json "
-                                         "must be next to the program.").arg(error));
+                                         "Copy the whole \"Lazy Djin's Tester\" folder again: "
+                                         "thresholds.json must be in its config folder.").arg(error));
     }
 
-    // keyboard_layout.json also sits next to the executable. If it is missing,
-    // the keyboard test reports ERROR when it runs (no pop-up at start).
-    QFile layoutFile(QApplication::applicationDirPath() + QStringLiteral("/keyboard_layout.json"));
+    // If keyboard_layout.json is missing, the keyboard test reports ERROR when
+    // it runs (no pop-up at start).
+    QFile layoutFile(configFile(QStringLiteral("keyboard_layout.json")));
     KeyLayout keyLayout;
     if (layoutFile.open(QIODevice::ReadOnly))
         keyLayout = parseKeyLayout(layoutFile.readAll());

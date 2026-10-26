@@ -2,6 +2,7 @@
 
 #include <QColor>
 #include <QComboBox>
+#include <QCoreApplication>
 #include <QDir>
 #include <QEvent>
 #include <QHBoxLayout>
@@ -132,7 +133,7 @@ void MainWindow::changeEvent(QEvent* event)
 // and details of tests already run are not here: they stay as they were made.
 void MainWindow::retranslateUi()
 {
-    setWindowTitle(tr("Lazy Djin's Tester"));
+    setWindowTitle(tr("Lazy Djin's Tester") + QLatin1Char(' ') + QCoreApplication::applicationVersion());
     m_startButton->setText(tr("START"));
     m_runAgainButton->setText(tr("Run this test again"));
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
@@ -246,6 +247,7 @@ void MainWindow::saveReport(const Verdict& verdict)
 {
     RunReport report;
     report.when = QDateTime::currentDateTime();
+    report.version = QCoreApplication::applicationVersion();
     report.verdict = verdict.text;
     for (int i = 0; i < m_runner.count(); ++i) {
         const TestResult& result = m_results[static_cast<size_t>(i)];

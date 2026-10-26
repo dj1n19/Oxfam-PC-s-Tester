@@ -280,19 +280,31 @@ Waar hoorde u hem?</translation>
 <context>
     <name>DeliveryAction</name>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="61"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="96"/>
         <source>Delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="75"/>
-        <source>No delivery sheet on the Desktop (%1).
-Copy &quot;%2&quot; or &quot;%3&quot; there, then click again.</source>
-        <translation type="unfinished">Geen pre-leveringsfiche op het bureaublad (%1).
-Kopieer er &quot;%2&quot; of &quot;%3&quot; naartoe en klik opnieuw.</translation>
+        <location filename="../src/ui/DeliveryAction.cpp" line="128"/>
+        <source>Which delivery sheet should be copied to the Desktop?</source>
+        <translation type="unfinished">Welke leveringsfiche moet naar het bureaublad gekopieerd worden?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="82"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="138"/>
+        <source>The delivery sheet could not be copied to the Desktop:
+%1</source>
+        <translation type="unfinished">De leveringsfiche kon niet naar het bureaublad gekopieerd worden:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
+        <source>No delivery sheet on the Desktop (%1) nor in the &quot;%2&quot; folder (%3).
+Put &quot;%4&quot; or &quot;%5&quot; in one of them, then click again.</source>
+        <translation type="unfinished">Geen leveringsfiche op het bureaublad (%1) noch in de map &quot;%2&quot; (%3).
+Zet &quot;%4&quot; of &quot;%5&quot; in een van beide en klik opnieuw.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="158"/>
         <source>The delivery sheet seems to be open in an office program. Close it first: otherwise saving it there will erase these results.
 
 Write anyway?</source>
@@ -301,56 +313,88 @@ Write anyway?</source>
 Toch schrijven?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="98"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="166"/>
         <source>The delivery sheet cannot be read:
 %1</source>
         <translation type="unfinished">Kan de pre-leveringsfiche niet lezen:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="110"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="178"/>
         <source>This PC reports &quot;%1&quot;, which is not in the model list.
 Choose its model in the list, or type the name of a new model:</source>
         <translation type="unfinished">Deze pc meldt &quot;%1&quot;, dat niet in de modellenlijst staat.
 Kies het model in de lijst, of typ de naam van een nieuw model:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="122"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="190"/>
         <source>Add &quot;%1&quot; to the model list?
 
-A copy of the sheet with the new model, without the results of this PC, will be saved next to the program folder, to share with the other technicians.</source>
-        <translation type="unfinished">&quot;%1&quot; toevoegen aan de modellenlijst?
+The sheets of the &quot;%2&quot; folder get it too, without the results of this PC, to share with the other technicians.</source>
+        <translation type="unfinished">&quot;%1&quot; aan de modellenlijst toevoegen?
 
-Een kopie van de fiche met het nieuwe model, zonder de resultaten van deze pc, wordt naast de programmamap opgeslagen, om te delen met de andere technici.</translation>
+De fiches in de map &quot;%2&quot; krijgen het ook, zonder de resultaten van deze pc, om te delen met de andere technici.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="127"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="211"/>
+        <source>Which shop is this PC for?
+Choose it in the list, or type the name of a new shop:</source>
+        <translation type="unfinished">Voor welke winkel is deze pc?
+Kies hem in de lijst, of typ de naam van een nieuwe winkel:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="221"/>
+        <source>Add &quot;%1&quot; to the shop list?
+
+The sheets of the &quot;%2&quot; folder get it too, to share with the other technicians.</source>
+        <translation type="unfinished">&quot;%1&quot; aan de winkellijst toevoegen?
+
+De fiches in de map &quot;%2&quot; krijgen het ook, om te delen met de andere technici.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="226"/>
+        <source>The shop could not be added:
+%1</source>
+        <translation type="unfinished">De winkel kon niet toegevoegd worden:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="262"/>
+        <source>The sheets for the other technicians could not all be updated:
+%1</source>
+        <translation type="unfinished">De fiches voor de andere technici konden niet allemaal bijgewerkt worden:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="280"/>
+        <source>It was copied to the Desktop from:
+%1</source>
+        <translation type="unfinished">Ze werd naar het bureaublad gekopieerd vanuit:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="286"/>
+        <source>Sheets with the new names, for the other technicians:
+%1</source>
+        <translation type="unfinished">Fiches met de nieuwe namen, voor de andere technici:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="195"/>
         <source>The model could not be added:
 %1</source>
         <translation type="unfinished">Kan het model niet toevoegen:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="135"/>
-        <source>The copy for the other technicians could not be saved:
-%1</source>
-        <translation type="unfinished">Kan de kopie voor de andere technici niet opslaan:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="149"/>
-        <source>Which shop is this PC for?</source>
-        <translation type="unfinished">Voor welke winkel is deze pc?</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="166"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="272"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation type="unfinished">Kan de pre-leveringsfiche niet schrijven. Staat ze open in een kantoorprogramma?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="170"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="276"/>
         <source>Delivery sheet filled:
 %1
 
@@ -359,13 +403,6 @@ Open it to complete the other checks.</source>
 %1
 
 Open ze om de andere controles aan te vullen.</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="174"/>
-        <source>Copy with the new model, for the other technicians:
-%1</source>
-        <translation type="unfinished">Kopie met het nieuwe model, voor de andere technici:
-%1</translation>
     </message>
 </context>
 <context>
@@ -743,62 +780,62 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="135"/>
+        <location filename="../src/ui/MainWindow.cpp" line="136"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="136"/>
+        <location filename="../src/ui/MainWindow.cpp" line="137"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="137"/>
+        <location filename="../src/ui/MainWindow.cpp" line="138"/>
         <source>Run this test again</source>
         <translation type="unfinished">Deze test opnieuw uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="138"/>
+        <location filename="../src/ui/MainWindow.cpp" line="139"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="140"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="140"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="140"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="141"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="152"/>
+        <location filename="../src/ui/MainWindow.cpp" line="153"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="154"/>
+        <location filename="../src/ui/MainWindow.cpp" line="155"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="258"/>
+        <location filename="../src/ui/MainWindow.cpp" line="260"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="260"/>
+        <location filename="../src/ui/MainWindow.cpp" line="262"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>
@@ -806,20 +843,20 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="44"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="46"/>
         <source>thresholds.json not loaded:
 %1
 
-Tests needing thresholds will report ERROR. Copy the whole program folder again: thresholds.json must be next to the program.</source>
+Tests needing thresholds will report ERROR. Copy the whole &quot;Lazy Djin&apos;s Tester&quot; folder again: thresholds.json must be in its config folder.</source>
         <translation type="unfinished">thresholds.json niet geladen:
 %1
 
-Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap opnieuw: thresholds.json moet naast het programma staan.</translation>
+Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Djin&apos;s Tester&quot; opnieuw: thresholds.json moet in de map config staan.</translation>
     </message>
 </context>
 <context>

@@ -1,5 +1,7 @@
 #include "delivery/DeliverySheet.h"
 
+#include <algorithm>
+
 namespace {
 
 // Tab names, the same in both files. é keeps this source ASCII (MSVC C4819).
@@ -33,6 +35,22 @@ QString normalized(const QString& s)
     return s.simplified().toCaseFolded();
 }
 
+// Sorting key: accents removed (decomposed, then the marks dropped), case folded.
+QString sortKey(const QString& s)
+{
+    QString key;
+    for (const QChar c : normalized(s).normalized(QString::NormalizationForm_D)) {
+        if (c.category() != QChar::Mark_NonSpacing)
+            key += c;
+    }
+    return key;
+}
+
+QString listTab(SheetList list)
+{
+    return list == SheetList::Models ? kModelSheet : kShopSheet;
+}
+
 } // namespace
 
 namespace DeliverySheet {
@@ -42,54 +60,90 @@ QStringList fileNames()
     return {QStringLiteral("Fiche Pré Livraison.xlsx"), QStringLiteral("Pre- LeveringsFiche.xlsx")};
 }
 
+QStringList fileNamesFor(const QString& systemLanguage)
+{
+    QStringList names = fileNames();
+    if (systemLanguage == QLatin1String("nl"))
+        names.swapItemsAt(0, 1);
+    return names;
+}
+
+QString fileName(const QString& language)
+{
+    if (language == QLatin1String("fr"))
+        return fileNames().at(0);
+    if (language == QLatin1String("nl"))
+        return fileNames().at(1);
+    return QString();
+}
+
 bool check(const XlsxEditor& sheet, QString* error)
 {
     // The title cell exists in both languages: a cheap proof it is our sheet.
-    if (sheet.cell(kCheckSheet, QStringLiteral("A1")).isEmpty() || models(sheet).isEmpty()) {
+    if (sheet.cell(kCheckSheet, QStringLiteral("A1")).isEmpty() || names(sheet, SheetList::Models).isEmpty()) {
         *error = QStringLiteral("Not the delivery sheet: tab '%1' or model list missing").arg(kCheckSheet);
         return false;
     }
     return true;
 }
 
-QStringList models(const XlsxEditor& sheet)
+QStringList names(const XlsxEditor& sheet, SheetList list)
 {
-    QStringList list;
-    for (const auto& [row, text] : sheet.column(kModelSheet, QStringLiteral("A")))
-        list << text;
-    return list;
+    QStringList result;
+    for (const auto& [row, text] : sheet.column(listTab(list), QStringLiteral("A")))
+        result << text;
+    return result;
 }
 
-QStringList shops(const XlsxEditor& sheet)
+QStringList sorted(QStringList names)
 {
-    QStringList list;
-    for (const auto& [row, text] : sheet.column(kShopSheet, QStringLiteral("A")))
-        list << text;
-    return list;
+    // std::sort with a fixed key: QCollator would follow the system's locale.
+    std::stable_sort(names.begin(), names.end(), [](const QString& a, const QString& b) {
+        const int byKey = QString::compare(sortKey(a), sortKey(b));
+        return byKey != 0 ? byKey < 0 : QString::compare(a, b) < 0;
+    });
+    return names;
+}
+
+QString findName(const QStringList& names, const QString& name)
+{
+    const QString wanted = normalized(name);
+    if (wanted.isEmpty())
+        return QString();
+    for (const QString& n : names) {
+        if (normalized(n) == wanted)
+            return n;
+    }
+    return QString();
+}
+
+bool addName(XlsxEditor& sheet, SheetList list, const QString& name, QString* error)
+{
+    const QString tab = listTab(list);
+    const std::map<int, QString> column = sheet.column(tab, QStringLiteral("A"));
+    QStringList all;
+    for (const auto& [row, text] : column)
+        all << text;
+    all << name.simplified();
+    all = sorted(all);
+
+    // Written back from the list's first row, one name per row.
+    const int first = column.empty() ? 1 : column.begin()->first;
+    for (int i = 0; i < all.size(); ++i) {
+        if (!sheet.setCell(tab, QStringLiteral("A%1").arg(first + i), all.at(i), error))
+            return false;
+    }
+    // A list with empty rows in it was longer: clear what is left below.
+    for (const auto& [row, text] : column) {
+        if (row >= first + all.size() && !sheet.setCell(tab, QStringLiteral("A%1").arg(row), QString(), error))
+            return false;
+    }
+    return true;
 }
 
 QString currentShop(const XlsxEditor& sheet)
 {
     return sheet.cell(kCheckSheet, kShopCell).simplified();
-}
-
-QString findModel(const QStringList& models, const QString& name)
-{
-    const QString wanted = normalized(name);
-    if (wanted.isEmpty())
-        return QString();
-    for (const QString& m : models) {
-        if (normalized(m) == wanted)
-            return m;
-    }
-    return QString();
-}
-
-bool addModel(XlsxEditor& sheet, const QString& model, QString* error)
-{
-    const std::map<int, QString> list = sheet.column(kModelSheet, QStringLiteral("A"));
-    const int next = list.empty() ? 1 : list.rbegin()->first + 1;
-    return sheet.setCell(kModelSheet, QStringLiteral("A%1").arg(next), model.simplified(), error);
 }
 
 bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QString& shop,

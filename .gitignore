@@ -67,5 +67,7 @@ vcpkg_installed/
 Testing/
 .cache/
 
-# Delivery sheet copies written next to the program folder when running from build/
+# Written into the root folder when running from build/ (root = the repository)
 /*.xlsx
+/logs/
+/delivery-sheets/

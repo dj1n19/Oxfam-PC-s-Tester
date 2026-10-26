@@ -13,6 +13,7 @@ struct RunReportRow {
 
 struct RunReport {
     QDateTime when;
+    QString version;     // of the program: "v1.0.0-beta.1"
     QString model;       // "Dell Latitude 7420"; empty = unknown
     QString verdict;
     std::vector<RunReportRow> rows;
@@ -24,5 +25,5 @@ QString formatRunReport(const RunReport& report);
 // and only characters that Windows and Linux both accept.
 QString runReportFileName(const QDateTime& when, const QString& model);
 
-// Writes the report into folderAroundProgram(). False + error if it could not.
+// Writes the report into <root>/logs/ (see ProgramFolder.h). False + error if it could not.
 bool writeRunReport(const RunReport& report, QString* path, QString* error);

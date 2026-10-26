@@ -12,26 +12,40 @@
 // The checks of the sheet that a test answers.
 enum class SheetRow { Battery, Disk, Keyboard, Audio, Camera };
 
+// The lists behind the sheet's dropdowns, one tab each.
+enum class SheetList { Models, Shops };
+
 namespace DeliverySheet {
 
-// French and Dutch file names, looked for on the Desktop.
+// French and Dutch file names, in that order.
 QStringList fileNames();
+
+// The two file names, the system language's first ("nl": Dutch first,
+// anything else: French first). Both are always looked for: a technician
+// may put the Dutch sheet on a French PC.
+QStringList fileNamesFor(const QString& systemLanguage);
+
+// The file name of one language: "fr" or "nl", "" for any other.
+QString fileName(const QString& language);
 
 // False (and error) if the file is not the delivery sheet (tabs missing).
 bool check(const XlsxEditor& sheet, QString* error);
 
-// The model list used by the dropdown of the "model" cell.
-QStringList models(const XlsxEditor& sheet);
+// A list as it is in its tab (model list, shop list).
+QStringList names(const XlsxEditor& sheet, SheetList list);
+
+// Alphabetical order, ignoring case and accents ("Ecaussinnes" and
+// "\u00c9caussinnes" sort together). Pure, the same on every system.
+QStringList sorted(QStringList names);
 
 // The list's spelling of name (case and spaces ignored), or "" if absent.
-QString findModel(const QStringList& models, const QString& name);
+QString findName(const QStringList& names, const QString& name);
 
-// Adds a model at the end of the list (the dropdown takes the whole column).
-bool addModel(XlsxEditor& sheet, const QString& model, QString* error);
+// Adds a name and writes the whole column back sorted, so the dropdown is
+// alphabetical too (it takes the whole column).
+bool addName(XlsxEditor& sheet, SheetList list, const QString& name, QString* error);
 
-// The shop list used by the dropdown of the "shop" cell, and the shop the
-// sheet already holds ("" if none).
-QStringList shops(const XlsxEditor& sheet);
+// The shop the sheet already holds ("" if none).
 QString currentShop(const XlsxEditor& sheet);
 
 // Writes the operator's date (always), the sheet's date (only if empty: it

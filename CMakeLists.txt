@@ -7,6 +7,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # for clangd (Pulsar)
 set(CMAKE_AUTOMOC ON)                   # Qt's moc runs automatically
 
+# Shown in the window title and in every run report, so a report always says
+# which build made it. CI passes the tag name (v1.0.0-beta.1) or dev-<commit>.
+set(APP_VERSION "dev" CACHE STRING "Version shown to the technician")
+
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Multimedia   # Multimedia: app only (audio, camera)
                                      LinguistTools)                        # lupdate/lrelease (translations)
 
@@ -45,7 +49,7 @@ add_library(oxcore STATIC
     src/core/TestRunner.h
     src/core/TestRunner.cpp
     src/core/ProgramFolder.h
-    src/core/ProgramFolder.cpp            # where files for people go (next to the program / AppImage)
+    src/core/ProgramFolder.cpp            # the root folder: app/, config/, logs/, delivery-sheets/
     src/tests/battery/BatteryInfo.h
     src/tests/battery/BatteryTest.h
     src/tests/battery/BatteryTest.cpp
@@ -85,6 +89,7 @@ add_library(oxcore STATIC
 # OS-specific implementations (readBattery(), readSystemInfo()...), chosen here. No #ifdef in code.
 if(WIN32)
     target_sources(oxcore PRIVATE
+        src/core/hidefile_win.cpp
         src/tests/battery/battery_win.cpp
         src/tests/sysinfo/sysinfo_win.cpp
         src/tests/drivers/drivers_win.cpp
@@ -98,6 +103,7 @@ if(WIN32)
     target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc pdh)
 else()
     target_sources(oxcore PRIVATE
+        src/core/hidefile_linux.cpp
         src/tests/battery/battery_linux.cpp
         src/tests/sysinfo/sysinfo_linux.cpp
         src/tests/drivers/drivers_linux.cpp
@@ -109,6 +115,7 @@ endif()
 
 target_include_directories(oxcore PUBLIC src)
 target_link_libraries(oxcore PUBLIC Qt6::Core Qt6::Concurrent PRIVATE miniz)
+target_compile_definitions(oxcore PUBLIC OX_APP_VERSION="${APP_VERSION}")
 ox_enable_warnings(oxcore)
 
 # ---------------------------------------------------------------------------
@@ -182,18 +189,10 @@ if(MSVC)
 endif()
 ox_enable_warnings(lazy-djin-tester)
 
-# Config files are copied next to the executable (portable app).
-# One command per file, with the full destination path: copying several
-# files at once needs the folder to exist, and on a fresh Windows build
-# build/Release does not exist yet when this runs.
-add_custom_target(copy_config ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/config/thresholds.json
-            $<TARGET_FILE_DIR:lazy-djin-tester>/thresholds.json
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_SOURCE_DIR}/config/keyboard_layout.json
-            $<TARGET_FILE_DIR:lazy-djin-tester>/keyboard_layout.json)
-add_dependencies(lazy-djin-tester copy_config)
+# Config files are NOT copied next to the executable: the program reads
+# <root>/config/, root = the folder above the program's folder. From build/
+# (Linux, Ninja) that is the repository itself, so config/ is used as is.
+# The CI package puts them in "Lazy Djin's Tester/config/".
 
 # ---------------------------------------------------------------------------
 # Unit tests (ctest)
