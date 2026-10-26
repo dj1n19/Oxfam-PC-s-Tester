@@ -81,16 +81,13 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - `TestRunner`: runs tests one at a time; `add()` places automatic tests, then interactive ones, then tests with
   `runsLast()` (only `CpuTempTest`: run during the interactive tests, its full load made the keyboard and audio
   dialogs freeze on real hardware, developer's report 2026-10-14). Each automatic test has its own
-  watchdog, `ITest::timeoutMs()` (60 s; `CpuTempTest` 90 s), Error if silent; late or duplicate answers are ignored.
+  watchdog, `ITest::timeoutMs()` (60 s), Error if silent; late or duplicate answers are ignored.
   `startOne(index)` runs one test alone (same path: a sequence from index to index, watchdog, `allFinished`).
 - `TestResult`: `status`, one-line `summary` (list), `details` (raw readings shown on row selection). **Always put raw tool output in `details`**: it is how problems are diagnosed on real machines.
 - **Error summaries tell the technician what to do.** If they can fix it (password cancelled, smartctl or a config
   file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end
   with "(see details)"; the verdict already says "check the ERROR rows, then press START again". When the probe knows
   a fixable cause, give it a small enum (see `SmartctlFailure`) or flag instead of comparing English error strings.
-  Timeouts: `timedOut` flag (`PowerShellResult`, `CpuReading`) -> `slowWindowsSummary()`
-  ("...select this row and press 'Run this test again'"). Windows PowerShell probes get 45 s: right after start-up
-  the first WMI queries took > 20 s on 3 of 11 shop laptops (2026-10-15).
 - `Thresholds`: `config/thresholds.json`, shape `{ "key": { "warn": X, "fail": Y } }`.
   Direction is deduced: `fail < warn` means lower is worse (battery %); otherwise higher is worse (bad sectors).
   `thresholds.json` is copied next to the executable by CMake and loaded from `applicationDirPath()`.
@@ -102,18 +99,15 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - **No `#ifdef _WIN32`** in the code base. If you think you need one, add a function to the contract header and implement it per OS.
 - Platform probes are **plain blocking functions** returning a struct (see `BatteryInfo`). The test calls them from a worker thread with `QtConcurrent::run` + `QFutureWatcher`. Probes must not touch shared state or any QWidget.
 
-### External tools (smartctl, PowerShell, lspci, ...)
+### External tools (smartctl, ...)
 - Use `QProcess`, always with a **timeout**, check `exitStatus()` and `exitCode()`, never trust the output format blindly.
-- **Windows: native API first, PowerShell/WMI being phased out** (developer's decision 2026-10-26): both are very slow
-  right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32), Battery (no more
-  powercfg: battery driver IOCTLs),
-  Drivers (SetupAPI + `CM_Get_DevNode_Status`, links `setupapi` `cfgmgr32`), USB disks
-  (`IOCTL_STORAGE_QUERY_PROPERTY`), licence (slc.dll + ACPI `MSDM` table size). To do: CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
-  for now, `GetSystemPowerStatus`). Code signing for Smart App Control: dropped by the developer.
-- Windows PowerShell (until replaced): always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
-  with `-EncodedCommand` (quotes are fine), makes errors fatal (`$ErrorActionPreference = 'Stop'`), hides progress and
-  forces UTF-8 output (French Windows would otherwise send CP850 and break the JSON). Scripts end with `ConvertTo-Json -Compress`.
-  A long script that prints line by line (CPU test): `startPowerShell(QProcess&, script)`, same settings, no wait.
+- **Windows: native API only, no PowerShell, WMI or powercfg** (developer's decision 2026-10-26): on the shop's PCs,
+  just after start-up, PowerShell/WMI timed out (> 20 s) and powercfg /batteryreport always did (30 s). Every probe
+  now calls Windows directly (milliseconds): SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry), Battery
+  (battery driver IOCTLs), Drivers (SetupAPI + `CM_Get_DevNode_Status`), USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
+  licence (slc.dll + ACPI `MSDM` table size), CPU (PDH counters, `GetSystemPowerStatus`). System libraries linked by
+  `oxcore`: `setupapi cfgmgr32 slc pdh`. The only external program is smartctl. Don't bring PowerShell back.
+  Code signing for Smart App Control: dropped by the developer.
 - Keep C++ sources ASCII-only (MSVC warning C4819 on non-UTF-8 code pages).
 - `smartctl` is shipped as a **separate executable** in `tools/` (GPL), never linked. Call `smartctl --json -a <device>` and parse with `QJsonDocument`.
 - Parse defensively: missing keys must produce an Error or Skipped, never a crash or a false Pass.
@@ -177,7 +171,6 @@ src/
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
     cputemp/   CpuTempInfo.h CpuTempParsing.cpp CpuTempTest.{h,cpp} cputemp_linux.cpp cputemp_win.cpp
-    common/    PowerShell.h powershell_win.cpp   (Windows-only helper)
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
@@ -261,8 +254,8 @@ summary, details. Status/name/summary/verdict in the UI language, details Englis
 UTF-8, QSaveFile, `\r\n` in raw output made `\n` first (else `\r\r\n`). Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
 real run (2026-10-15): the file appears beside the program folder.
 **Field day 2026-10-15** (23 run reports, Windows, from a USB stick: 11 Lenovo 20M6, Dell Latitude 7420/7430, HP ZBook
-Fury 17 G7, Surface Pro 7): no crash, verdicts right. Found and fixed: PowerShell timeouts after start-up (above),
-CPU first reading > 12 s (now 30 s), Surface audio float, 5 s freeze before the audio test (multimedia warm-up).
+Fury 17 G7, Surface Pro 7): no crash, verdicts right. Found and fixed: PowerShell timeouts after start-up (then
+PowerShell dropped altogether, 2026-10-26), CPU first reading > 12 s, Surface audio float, 5 s freeze before the audio test (multimedia warm-up).
 ACPI temperature never reacted on any PC (Lenovo `THM0_0` fixed 50-84 C, HP `CPUZ_0` 32 C): on Windows the CPU
 speed is the real check (Dell 266 %, Lenovo 136-149 %, one Lenovo 119-124 %: dust?, HP 135 %). Lenovo driver WARN
 "Synaptics WBDI - SGX" = fingerprint reader needing SGX in the BIOS. The reports hold real smartctl JSON of 6 NVMe
@@ -326,18 +319,18 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - Test: `CpuTempTest` (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
   priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
-  thermal zones `x86_pkg_temp`, `acpitz`. Windows: `MSAcpi_ThermalZoneTemperature` (tenths of kelvin, hottest zone,
-  "Not supported" caught in PowerShell); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
+  thermal zones `x86_pkg_temp`, `acpitz`. Windows: PDH counter `\Thermal Zone Information(*)\Temperature` (kelvin,
+  the same ACPI zones as WMI's `MSAcpi_ThermalZoneTemperature`, hottest plausible zone); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
   A sensor that rises < 1 C under load is not the CPU: Skipped instead of Pass (too hot still fails).
   Readings come from `sampleCpu(seconds, startLoad)`: reading at rest, then `startLoad()` starts the burn threads only
-  if something is readable, then ~1 reading/s. Windows: ONE PowerShell loops and prints a JSON line per reading
-  (`startPowerShell()`), started before the load: a new PowerShell per reading timed out (> 10 s to start) under full
-  load on the Latitude 7420. **Speed (throttling)**, read with the temperature: % of base speed;
-  Windows `Win32_PerfFormattedData_Counters_ProcessorInformation._Total.PercentProcessorPerformance` (CIM, not
-  `Get-Counter`: counter names are translated on fr/nl Windows), Linux average `scaling_cur_freq` / `base_frequency`
+  if something is readable, then ~1 reading/s. Windows (2026-10-26, PDH instead of a PowerShell loop; not yet run on
+  Windows): one PDH query, collected every second; the values are turned into a reading by the pure
+  `windowsCpuReading()`. **Speed (throttling)**, read with the temperature: % of base speed;
+  Windows PDH `\Processor Information(_Total)\% Processor Performance` (= WMI's PercentProcessorPerformance; a rate:
+  collected once before the reading at rest; `PdhAddEnglishCounter`: names are translated on fr/nl Windows), Linux average `scaling_cur_freq` / `base_frequency`
   (intel_pstate only; AMD/acpi-cpufreq: no speed). Judged on the **median of the second half** of the load (single
   readings dip: 220 % with dips to 162 % on Arch), first 5 s left out, `cpu_speed_min_pct` (warn < 100, fail < 70).
-  On battery (Windows `BatteryStatus == 1`; Linux charger input listed but offline) a slow CPU is Warn "plug in the
+  On battery (Windows `GetSystemPowerStatus` ACLineStatus 0; Linux charger input listed but offline) a slow CPU is Warn "plug in the
   charger", never Fail. Temperature and speed are judged apart, the worse wins (`worse()` in `TestResult.h`).
   Neither sensor nor speed = Skipped; then the CPU is not loaded at all.
 - The old PowerShell `sysinfo_win.cpp` and the powercfg `battery_win.cpp` verified on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11;
@@ -351,7 +344,7 @@ Known limitations:
 - Linux RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
 - DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
-- The old PowerShell `license_win.cpp` and `runPowerShell()` verified on real Windows.
+- The old PowerShell `license_win.cpp` verified on real Windows.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
 - DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 7 NVMe models + the tester's USB stick (Windows,
   2026-10-15, `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
@@ -359,11 +352,9 @@ Known limitations:
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
-- CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base). `acpi_zones.json` is
-  hand-made; `acpi_unsupported.json` matches the real Latitude 7420 (Win11) output byte for byte. Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on
+- CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base).  Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on
   Windows is a motherboard zone: expect many Skipped (Latitude 7420: "Not supported").
-- CPU speed: the counters were read by hand on the Latitude 7420 (`cpu_win_latitude7420_*.json`: rest on battery =
-  real output; load = real values in the script's shape). Under full load: 266 % falling to 241 % (charger) / 211 %
+- CPU speed: the counters were read by hand on the Latitude 7420 (WMI then). Under full load: 266 % falling to 241 % (charger) / 211 %
   (battery) as the turbo budget runs out: normal. The app's own probe verified on the Latitude 7420 (Win11, charger, 2026-10-14): 7 readings in 32.5 s
   (one per ~4.6 s under load, not per second), 266 % flat, PASS. On battery: 5 readings in 29.1 s, 266 % flat.
   266 % is the ceiling: Windows' "base" is `MaxClockSpeed` (1498 MHz on this i5-1145G7, not the 2.6 GHz of its name),
@@ -371,7 +362,7 @@ Known limitations:
   out after our 30 s with a fresh budget. Confirmed: 3rd load in a row on battery gave 266 266 210 106 82 86 ...
   (counter live, median ~83 % -> WARN "plug in the charger"). ThinkPad L380 (Win11): ACPI zone THM0_0 fixed at
   77.1 C under load -> temperature Skipped (first real case), speed 184 -> 150 % -> PASS. Both are unit tests
-  (`cpuRealWindowsRuns`, sample `cpu_win_l380_rest.json` = real output). Limits 100/70 are
+  (`cpuRealWindowsRuns`, with the values of the real WMI output). Limits 100/70 are
   guesses: no throttling PC seen yet (M5). A real Windows run (2026-10-14) gave an empty speed list: the
   first 5 *readings* were left out and a reading under load can take ~6 s. Now the first 5 *seconds* (`atMs` on each
   reading, pure `CpuTempTest::collect()`), the details give the reading count, and a missing speed is listed.

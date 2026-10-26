@@ -820,27 +820,27 @@ Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap 
 <context>
     <name>Status</name>
     <message>
-        <location filename="../src/core/TestResult.h" line="29"/>
+        <location filename="../src/core/TestResult.h" line="20"/>
         <source>PASS</source>
         <translation type="unfinished">OK</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="30"/>
+        <location filename="../src/core/TestResult.h" line="21"/>
         <source>WARN</source>
         <translation type="unfinished">LET OP</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="31"/>
+        <location filename="../src/core/TestResult.h" line="22"/>
         <source>FAIL</source>
         <translation type="unfinished">DEFECT</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="32"/>
+        <location filename="../src/core/TestResult.h" line="23"/>
         <source>SKIPPED</source>
         <translation type="unfinished">OVERGESLAGEN</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="33"/>
+        <location filename="../src/core/TestResult.h" line="24"/>
         <source>ERROR</source>
         <translation type="unfinished">FOUT</translation>
     </message>
@@ -901,14 +901,6 @@ Tests die drempels nodig hebben, melden FOUT. Kopieer de volledige programmamap 
         <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="89"/>
         <source>Missing: %1 | %2</source>
         <translation type="unfinished">Ontbreekt: %1 | %2</translation>
-    </message>
-</context>
-<context>
-    <name>TestResult</name>
-    <message>
-        <location filename="../src/core/TestResult.h" line="22"/>
-        <source>Windows answered too slowly (PC just started?): select this row and press &quot;Run this test again&quot;</source>
-        <translation type="unfinished">Windows antwoordde te traag (pc net opgestart?): selecteer deze regel en klik op &quot;Deze test opnieuw uitvoeren&quot;</translation>
     </message>
 </context>
 <context>

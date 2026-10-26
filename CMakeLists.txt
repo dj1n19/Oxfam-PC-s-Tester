@@ -90,14 +90,12 @@ if(WIN32)
         src/tests/drivers/drivers_win.cpp
         src/tests/license/license_win.cpp
         src/tests/cputemp/cputemp_win.cpp
-        src/tests/common/PowerShell.h
-        src/tests/common/powershell_win.cpp    # shared runPowerShell()
         src/tests/keyboard/keyboard_win.cpp
         src/tests/disk/smartctl_win.cpp)
     # Windows system libraries (part of Windows, nothing to ship):
     # setupapi + cfgmgr32 = the device list and problem codes (drivers_win.cpp),
-    # slc = the licensing service (license_win.cpp).
-    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc)
+    # slc = the licensing service (license_win.cpp), pdh = performance counters (cputemp_win.cpp).
+    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc pdh)
 else()
     target_sources(oxcore PRIVATE
         src/tests/battery/battery_linux.cpp

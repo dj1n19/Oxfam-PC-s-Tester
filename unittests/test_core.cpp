@@ -545,17 +545,6 @@ private slots:
         QCOMPARE(CpuTempTest::evaluate(cpuRun(99, {99, 99}), t).status, Status::Fail);
     }
 
-    // Shop laptops just after start-up (2026-10-15): PowerShell timed out. Still
-    // Error, but the summary says how to get a result: run the row again.
-    void slowWindowsSaysRunAgain()
-    {
-        CpuLoadRun cpu;
-        cpu.idle.error = "PowerShell gave no reading within 30 s";
-        cpu.idle.timedOut = true;
-        QCOMPARE(CpuTempTest::evaluate(cpu, loaded()).status, Status::Error);
-        QVERIFY(CpuTempTest::evaluate(cpu, loaded()).summary.contains("Run this test again"));
-    }
-
     void cpuTempMissingDataIsNotPass()
     {
         const Thresholds t = loaded();
@@ -635,22 +624,19 @@ private slots:
         QVERIFY(CpuTempTest::collect({}).idle.error.size() > 0);       // never a silent empty run
     }
 
-    void cpuWindowsParsing()
+    void cpuWindowsReading()
     {
-        // Real output, at rest on battery: no ACPI zone, battery as an object.
-        const CpuReading rest = parseWindowsCpu(sample("cpu_win_latitude7420_rest_battery.json"));
+        // Values read on a real Latitude 7420 (WMI then): no ACPI zone, 88 % at rest on battery.
+        const CpuReading rest = windowsCpuReading({}, 88, true);
         QVERIFY(rest.error.isEmpty());
         QVERIFY(!rest.hasTemp);
         QVERIFY(rest.hasSpeed);
         QCOMPARE(rest.speedPct, 88.0);
         QVERIFY(rest.onBattery);
-
-        const CpuReading load = parseWindowsCpu(sample("cpu_win_latitude7420_load.json"));
-        QCOMPARE(load.speedPct, 241.0);
-        QVERIFY(!load.onBattery);   // BatteryStatus 2 = on the charger
+        QVERIFY(rest.raw.contains("zones: none"));
 
         // A counter that is not ready gives 0: not a speed.
-        QVERIFY(!parseWindowsCpu(R"({"zones":[],"cpu":{"PercentProcessorPerformance":0}})").hasSpeed);
+        QVERIFY(!windowsCpuReading({}, 0, false).hasSpeed);
     }
 
     void runReportText()
@@ -696,11 +682,11 @@ private slots:
         const Thresholds t = loaded();
 
         // ThinkPad L380: the ACPI zone stays at 77.1 C under load (not the CPU),
-        // the speed is live and settles at ~150 %.
+        // the speed is live and settles at ~150 %. Values of the real output (WMI then).
         CpuLoadRun lenovo;
-        lenovo.idle = parseWindowsCpu(sample("cpu_win_l380_rest.json"));
+        lenovo.idle = windowsCpuReading({{"ACPI\\ThermalZone\\THM0_0", 350.2}}, 67, false);
         QVERIFY(lenovo.idle.hasTemp);
-        QCOMPARE(lenovo.idle.celsius, 3502 / 10.0 - 273.15);
+        QCOMPARE(lenovo.idle.celsius, 350.2 - 273.15);
         QCOMPARE(lenovo.idle.speedPct, 67.0);
         lenovo.samples.assign(6, lenovo.idle.celsius);
         lenovo.speeds = {184, 160, 151, 150, 148, 150};
@@ -717,19 +703,15 @@ private slots:
         QVERIFY(d.summary.contains("charger"));
     }
 
-    void acpiZonesParsing()
+    void thermalZones()
     {
-        const CpuReading r = parseWindowsCpu(sample("acpi_zones.json"));
-        QVERIFY(r.error.isEmpty());
+        const CpuReading r = windowsCpuReading({{"\\_TZ.TZ00", 313.2}, {"\\_TZ.THM0", 333.2}, {"\\_TZ.TZ01", 0}}, 0, false);
         QVERIFY(r.hasTemp);
-        QCOMPARE(qRound(r.celsius), 60);   // hottest zone, 3332 = 60.05 C; the 0 K zone is ignored
-        QCOMPARE(r.source, QString("ACPI\\ThermalZone\\THM0_0"));
+        QCOMPARE(qRound(r.celsius), 60);   // hottest zone; the 0 K zone is ignored
+        QCOMPARE(r.source, QString("\\_TZ.THM0"));
+        QVERIFY(r.raw.contains("\\_TZ.TZ01 = 0 K"));   // still listed in the details
 
-        const CpuReading none = parseWindowsCpu(sample("acpi_unsupported.json"));
-        QVERIFY(none.error.isEmpty());
-        QVERIFY(!none.hasTemp);
-        QVERIFY(!none.hasSpeed);   // older script: no "cpu" key
-        QVERIFY(!parseWindowsCpu("not json").error.isEmpty());
+        QVERIFY(!windowsCpuReading({{"\\_TZ.BAD", 600}}, 0, false).hasTemp);   // 327 C: absurd
     }
 
     void scanCodesWindows()
@@ -996,7 +978,7 @@ private slots:
         s.ramBytes = 0;
         QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
         s = fullSystem();
-        s.error = "PowerShell timed out";
+        s.error = "GetSystemFirmwareTable(RSMB) failed (size 0, error 1)";
         QCOMPARE(SystemInfoTest::evaluate(s).status, Status::Error);
     }
 

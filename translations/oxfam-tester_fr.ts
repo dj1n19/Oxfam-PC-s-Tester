@@ -820,27 +820,27 @@ Les tests qui ont besoin de seuils indiqueront ERREUR. Recopiez tout le dossier 
 <context>
     <name>Status</name>
     <message>
-        <location filename="../src/core/TestResult.h" line="29"/>
+        <location filename="../src/core/TestResult.h" line="20"/>
         <source>PASS</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="30"/>
+        <location filename="../src/core/TestResult.h" line="21"/>
         <source>WARN</source>
         <translation>ATTENTION</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="31"/>
+        <location filename="../src/core/TestResult.h" line="22"/>
         <source>FAIL</source>
         <translation>ÉCHEC</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="32"/>
+        <location filename="../src/core/TestResult.h" line="23"/>
         <source>SKIPPED</source>
         <translation>IGNORÉ</translation>
     </message>
     <message>
-        <location filename="../src/core/TestResult.h" line="33"/>
+        <location filename="../src/core/TestResult.h" line="24"/>
         <source>ERROR</source>
         <translation>ERREUR</translation>
     </message>
@@ -901,14 +901,6 @@ Les tests qui ont besoin de seuils indiqueront ERREUR. Recopiez tout le dossier 
         <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="89"/>
         <source>Missing: %1 | %2</source>
         <translation>Manquant : %1 | %2</translation>
-    </message>
-</context>
-<context>
-    <name>TestResult</name>
-    <message>
-        <location filename="../src/core/TestResult.h" line="22"/>
-        <source>Windows answered too slowly (PC just started?): select this row and press &quot;Run this test again&quot;</source>
-        <translation>Windows a répondu trop lentement (PC tout juste démarré ?) : sélectionnez cette ligne et appuyez sur « Relancer ce test »</translation>
     </message>
 </context>
 <context>
