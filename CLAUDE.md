@@ -366,7 +366,11 @@ Known limitations:
   guesses: no throttling PC seen yet (M5). A real Windows run (2026-10-14) gave an empty speed list: the
   first 5 *readings* were left out and a reading under load can take ~6 s. Now the first 5 *seconds* (`atMs` on each
   reading, pure `CpuTempTest::collect()`), the details give the reading count, and a missing speed is listed.
-- Keyboard on real Windows: first run showed Qt 6.8 sends extended keys as `0xE0xx` (Qt 6.4: `0x1xx`); `scanCodeFromWindows()` now accepts both (fix not yet re-run on Windows). Labels are Belgian AZERTY only.
+- Keyboard on real Windows: first run showed Qt 6.8 sends extended keys as `0xE0xx` (Qt 6.4: `0x1xx`); `scanCodeFromWindows()` now accepts both. Labels are Belgian AZERTY only.
+  Win key, PrtSc and the dead key ^ (first press) never reached Qt as key events on Windows (developer's report
+  2026-10-26): `makeRawKeyFilter()` (`keyboard_win.cpp`, a `QAbstractNativeEventFilter`, not a system-wide hook)
+  reads `WM_KEYDOWN/UP` (+SYS) scan codes in the app's own queue before Qt; Linux returns nullptr. Not yet run on
+  Windows; the Start menu / Snipping Tool may still open (they are the shell's, not ours).
 - Windows: the app is a GUI program (`WIN32`), so `qDebug()` output is not visible; put diagnostics in `details`.
 - **Linux privileges:** run the app as the normal user (sudo breaks audio and camera: PipeWire/PulseAudio belong to the
   user session). `smartctl_linux.cpp` elevates only smartctl: if not root, ONE `pkexec /bin/sh -c <batch>` reads every

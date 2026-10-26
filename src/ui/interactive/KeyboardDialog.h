@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <QDialog>
 #include "tests/keyboard/KeyLayout.h"
 
@@ -19,6 +20,7 @@ protected:
     void closeEvent(QCloseEvent* e) override;
 
 private:
+    void keyPressed(int code);   // from Qt's key events or the raw key filter
     void finish(KeyTracker::Outcome o);
     void updateStatus();
 
@@ -27,4 +29,5 @@ private:
     QLabel* m_status = nullptr;
     QWidget* m_view = nullptr;   // the drawn keyboard
     bool m_done = false;
+    std::unique_ptr<QAbstractNativeEventFilter> m_rawKeys;   // Windows only, see makeRawKeyFilter()
 };

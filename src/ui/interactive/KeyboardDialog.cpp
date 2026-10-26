@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <QCloseEvent>
+#include <QCoreApplication>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
@@ -105,6 +106,11 @@ KeyboardDialog::KeyboardDialog(const KeyLayout& layout, QWidget* parent)
     connect(broken, &QPushButton::clicked, this, [this] { finish(KeyTracker::Outcome::KeyBroken); });
     connect(skip, &QPushButton::clicked, this, [this] { finish(KeyTracker::Outcome::Skipped); });
 
+    // Deleted with the dialog, which uninstalls it.
+    m_rawKeys = makeRawKeyFilter([this](int code) { keyPressed(code); });
+    if (m_rawKeys)
+        QCoreApplication::instance()->installNativeEventFilter(m_rawKeys.get());
+
     updateStatus();
 }
 
@@ -114,14 +120,7 @@ bool KeyboardDialog::event(QEvent* e)
     // Esc to close the dialog before keyPressEvent() would see them.
     // Release events count too: Windows sends Print Screen as a release only.
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
-        auto* ke = static_cast<QKeyEvent*>(e);
-        if (!m_done && m_tracker.press(canonicalScanCode(ke->nativeScanCode()))) {
-            m_view->update();
-            updateStatus();
-            if (m_tracker.allRequiredPressed())
-                // Short pause so the technician sees the last key light up.
-                QTimer::singleShot(600, this, [this] { finish(KeyTracker::Outcome::AllPressed); });
-        }
+        keyPressed(canonicalScanCode(static_cast<QKeyEvent*>(e)->nativeScanCode()));
         return true;
     }
     if (e->type() == QEvent::ShortcutOverride) {   // Alt+letter, etc.: keep them for us
@@ -129,6 +128,19 @@ bool KeyboardDialog::event(QEvent* e)
         return true;
     }
     return QDialog::event(e);
+}
+
+// A key may come twice (raw filter + Qt event, press + release): pressing
+// an already lit key changes nothing.
+void KeyboardDialog::keyPressed(int code)
+{
+    if (m_done || m_tracker.isPressed(code) || !m_tracker.press(code))
+        return;
+    m_view->update();
+    updateStatus();
+    if (m_tracker.allRequiredPressed())
+        // Short pause so the technician sees the last key light up.
+        QTimer::singleShot(600, this, [this] { finish(KeyTracker::Outcome::AllPressed); });
 }
 
 void KeyboardDialog::closeEvent(QCloseEvent* e)

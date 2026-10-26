@@ -1,6 +1,9 @@
 #pragma once
+#include <functional>
+#include <memory>
 #include <set>
 #include <vector>
+#include <QAbstractNativeEventFilter>
 #include <QByteArray>
 #include <QString>
 #include <QStringList>
@@ -33,6 +36,14 @@ KeyLayout parseKeyLayout(const QByteArray& json);
 int canonicalScanCode(unsigned nativeScanCode);
 int scanCodeFromXkb(unsigned xkbKeycode);       // Linux X11/Wayland: evdev code + 8
 int scanCodeFromWindows(unsigned nativeScanCode);
+
+// Windows: some keys never reach Qt as key events: the dead key ^ on its
+// first press (Qt waits for the letter), Print Screen and the Windows key.
+// This filter reads the raw key messages before Qt does and calls
+// onKey(layout code) for each; it never stops them. Install it with
+// QCoreApplication::installNativeEventFilter(); deleting it uninstalls it.
+// Linux: nullptr, Qt's own key events already give every key.
+std::unique_ptr<QAbstractNativeEventFilter> makeRawKeyFilter(std::function<void(int code)> onKey);
 
 // Which keys were pressed. Pure: the dialog only feeds it codes.
 class KeyTracker {
