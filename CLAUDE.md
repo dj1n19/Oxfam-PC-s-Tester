@@ -106,8 +106,8 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
 - Use `QProcess`, always with a **timeout**, check `exitStatus()` and `exitCode()`, never trust the output format blindly.
 - **Windows: native API first, PowerShell/WMI being phased out** (developer's decision 2026-10-26): both are very slow
   right after start-up on the shop's PCs. Done: SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry, kernel32),
-  Drivers (SetupAPI + `CM_Get_DevNode_Status`, links `setupapi` `cfgmgr32`). To do, one probe per commit: USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
-  licence (`SLIsGenuineLocal` + ACPI `MSDM` table presence), CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
+  Drivers (SetupAPI + `CM_Get_DevNode_Status`, links `setupapi` `cfgmgr32`), USB disks
+  (`IOCTL_STORAGE_QUERY_PROPERTY`). To do, one probe per commit: licence (`SLIsGenuineLocal` + ACPI `MSDM` table presence), CPU (PDH `PdhAddEnglishCounter`, thermal zone counter kept
   for now, `GetSystemPowerStatus`). Code signing for Smart App Control: dropped by the developer.
 - Windows PowerShell (until replaced): always use `runPowerShell(script, timeoutMs)` (`src/tests/common/PowerShell.h`). It sends the script
   with `-EncodedCommand` (quotes are fine), makes errors fatal (`$ErrorActionPreference = 'Stop'`), hides progress and
@@ -306,8 +306,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
   (USB stick) is Skipped, but "no disk with SMART" is Error. **USB disks are left out** (developer's decision
   2026-10-15: the tester's own stick claimed "SMART OK, 0 C"): `usbDevices()` asks the OS for the bus (Linux:
-  `/sys/block/<dev>` under `/usb`; Windows: `Get-Disk` BusType, disk N = `/dev/sd`+letter N, `parseUsbDisks()`
-  unit tested); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
+  `/sys/block/<dev>` under `/usb`; Windows: `IOCTL_STORAGE_QUERY_PROPERTY` BusType on `\\.\PhysicalDriveN`, disk N =
+  `/dev/sd`+letter N (smartctl names NVMe that way too on Windows), `physicalDriveNumber()` unit tested; not yet run on Windows); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
   Windows CI takes smartctl.exe 7.5 from the official installer (7-Zip, SHA-256 checked; Chocolatey failed with 406) into `dist/tools/`.
 - Test: `DriversTest`: Windows (2026-10-26, no PowerShell; not yet run on Windows): SetupAPI lists the present devices
   (`DIGCF_PRESENT`: the previous owner's unplugged USB devices, WMI code 45, never come), `CM_Get_DevNode_Status`

@@ -59,23 +59,12 @@ std::vector<ScannedDevice> parseScan(const QByteArray& json, QString* error)
     return devices;
 }
 
-QStringList parseUsbDisks(const QByteArray& json, QString* error)
+int physicalDriveNumber(const QString& smartctlName)
 {
-    QStringList usb;
-    QJsonParseError parseError;
-    const QJsonDocument doc = QJsonDocument::fromJson(json, &parseError);
-    if (parseError.error != QJsonParseError::NoError || !doc.isArray()) {
-        if (error) *error = QStringLiteral("Unreadable Get-Disk output: %1").arg(parseError.errorString());
-        return usb;
-    }
-    for (const QJsonValue& v : doc.array()) {
-        const QJsonObject d = v.toObject();
-        const int number = d["Number"].toInt(-1);
-        // Beyond 26 disks smartctl uses two letters: never on a shop PC.
-        if (d["BusType"].toString() == QLatin1String("USB") && number >= 0 && number < 26)
-            usb << QStringLiteral("/dev/sd") + QChar(u'a' + number);
-    }
-    return usb;
+    // Beyond 26 disks smartctl uses two letters: never on a shop PC.
+    static const QRegularExpression re(QStringLiteral("^/dev/sd([a-z])$"));
+    const QRegularExpressionMatch m = re.match(smartctlName);
+    return m.hasMatch() ? m.captured(1).at(0).unicode() - u'a' : -1;
 }
 
 DiskScan readDisks(const QString& smartctlPath)

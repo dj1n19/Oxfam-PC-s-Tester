@@ -45,14 +45,15 @@ std::vector<ScannedDevice> parseScan(const QByteArray& json, QString* error);
 
 // USB disks (the tester's own stick, an external drive) are not part of the PC
 // being sold: readDisks() leaves them out. OS-specific: Linux looks at sysfs,
-// Windows asks Get-Disk. Returns the device names on a USB bus; raw = what the
-// OS said, for the details. If the OS cannot tell, returns none: every disk
-// is then checked (never hide a disk because a query failed).
+// Windows asks each disk for its bus (IOCTL_STORAGE_QUERY_PROPERTY). Returns
+// the device names on a USB bus; raw = what the OS said, for the details. If
+// the OS cannot tell, that disk is not in the list: it is checked (never hide
+// a disk because a query failed).
 QStringList usbDevices(const std::vector<ScannedDevice>& devices, QString* raw);
 
-// Parses the Windows Get-Disk JSON ([{"Number":1,"BusType":"USB"}, ...]) into
-// smartctl names: disk number N is /dev/sd + letter N (a = 0). Pure, unit tested.
-QStringList parseUsbDisks(const QByteArray& json, QString* error);
+// smartctl's Windows name for \\.\PhysicalDriveN is /dev/sd + letter N
+// (a = 0): returns N, or -1 for any other name. Pure, unit tested.
+int physicalDriveNumber(const QString& smartctlName);
 
 // Reads every scanned device. OS-specific; called by readDisks().
 std::vector<SmartctlRun> readDevices(const QString& smartctlPath, const std::vector<ScannedDevice>& devices);

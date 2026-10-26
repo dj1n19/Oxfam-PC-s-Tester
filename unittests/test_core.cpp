@@ -291,20 +291,18 @@ private slots:
     }
 
     // The tester's own USB stick claims "SMART OK" with a fake 0 C: USB disks
-    // are left out by their bus (Get-Disk / sysfs), not by what smartctl says.
+    // are left out by their bus (Windows IOCTL / sysfs), not by what smartctl says.
     void smartctlUsbLeftOut()
     {
         QCOMPARE(DiskTest::evaluateDisk(smart("smartctl_real_usb_sandisk_cruzer.json", 4), loaded()).summary,
                  QString("/dev/test SanDisk Cruzer 16 GB: SMART OK, 0 C"));
 
-        QString err;
-        const QStringList usb = parseUsbDisks(
-            R"([{"Number":0,"BusType":"NVMe"},{"Number":1,"BusType":"USB"},{"Number":2,"BusType":"USB"}])", &err);
-        QVERIFY(err.isEmpty());
-        QCOMPARE(usb, (QStringList{"/dev/sdb", "/dev/sdc"}));   // disk number N = /dev/sd + letter N
-        QVERIFY(parseUsbDisks(R"([{"Number":0,"BusType":"SATA"}])", &err).isEmpty());
-        QVERIFY(parseUsbDisks("not json", &err).isEmpty());   // unknown: every disk is checked
-        QVERIFY(!err.isEmpty());
+        // Windows: /dev/sd + letter N = \\.\PhysicalDriveN, asked for its bus.
+        QCOMPARE(physicalDriveNumber("/dev/sda"), 0);
+        QCOMPARE(physicalDriveNumber("/dev/sdc"), 2);
+        QCOMPARE(physicalDriveNumber("/dev/nvme0"), -1);   // other names: not asked, so checked
+        QCOMPARE(physicalDriveNumber("/dev/sdaa"), -1);
+        QCOMPARE(physicalDriveNumber("/dev/sd"), -1);
 
         DiskScan scan;
         scan.disks = {smart("smartctl_real_intel_ssdpekkf256g8l.json", 0)};
