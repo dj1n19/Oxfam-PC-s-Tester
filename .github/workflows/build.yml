@@ -8,6 +8,20 @@ on: [push, pull_request]
 # command itself: sudo drops the environment by default.
 
 jobs:
+  # The version shown in the window title and in every run report: the tag
+  # name for a tagged push (v1.0.0-beta.1), else dev-<commit>.
+  version:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      value: ${{ steps.v.outputs.value }}
+    steps:
+      - id: v
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then v="$GITHUB_REF_NAME"; else v="dev-${GITHUB_SHA::7}"; fi
+          echo "value=$v" >> "$GITHUB_OUTPUT"
+          echo "Version: $v"
+
   linux:
     runs-on: ubuntu-24.04
     timeout-minutes: 30          # a normal run takes 2-5 min; GitHub's default is 6 h
@@ -32,6 +46,7 @@ jobs:
   # on (glibc), so: the oldest Ubuntu runner (22.04 = Linux Mint 21) and the
   # Qt 6.8 binaries from qt.io (apt on 22.04 only has Qt 6.2).
   appimage:
+    needs: version
     runs-on: ubuntu-22.04
     timeout-minutes: 30          # a normal run takes 2-5 min; GitHub's default is 6 h
     steps:
@@ -53,7 +68,7 @@ jobs:
             libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
             libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libpulse0
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release "-DAPP_VERSION=${{ needs.version.outputs.value }}"
       - name: Build
         run: cmake --build build
       - name: Unit tests
@@ -78,7 +93,7 @@ jobs:
       - name: Make the AppImage
         run: |
           mkdir -p AppDir/usr/bin/tools
-          cp build/lazy-djin-tester config/thresholds.json config/keyboard_layout.json AppDir/usr/bin/
+          cp build/lazy-djin-tester AppDir/usr/bin/   # config/ is outside, in the package (job "package")
           cp smartmontools-7.5/smartctl tools/README.md AppDir/usr/bin/tools/
           cp src/ui/icons/djinn-256.png lazy-djin-tester.png
           cat > lazy-djin-tester.desktop <<'EOF'
@@ -93,7 +108,7 @@ jobs:
           EOF
           # linuxdeploy's own AppRun starts the program through a symlink at the
           # AppDir root; recent Qt then takes THAT folder as applicationDirPath()
-          # and finds neither qt.conf (plugins) nor thresholds.json nor tools/
+          # and finds neither qt.conf (plugins) nor tools/
           # (seen with Arch's Qt: "no Qt platform plugin could be initialized").
           cat > AppRun.sh <<'EOF'
           #!/bin/sh
@@ -121,6 +136,7 @@ jobs:
           path: lazy-djin-tester-x86_64.AppImage
 
   windows:
+    needs: version
     runs-on: windows-latest
     timeout-minutes: 30          # a normal run takes 2-5 min; GitHub's default is 6 h
     steps:
@@ -134,15 +150,13 @@ jobs:
           modules: 'qtmultimedia'
           cache: true
       - name: Configure
-        run: cmake -S . -B build -A x64
+        run: cmake -S . -B build -A x64 "-DAPP_VERSION=${{ needs.version.outputs.value }}"
       - name: Build
         run: cmake --build build --config Release
       - name: Stage portable folder
         run: |
           New-Item -ItemType Directory dist | Out-Null
           Copy-Item build/Release/lazy-djin-tester.exe dist/
-          Copy-Item config/thresholds.json dist/
-          Copy-Item config/keyboard_layout.json dist/
           windeployqt --release dist/lazy-djin-tester.exe
           # The UAC manifest must be embedded, otherwise SMART silently needs "Run as administrator"
           if (-not (Select-String -Path dist/lazy-djin-tester.exe -Pattern requireAdministrator -SimpleMatch -Quiet)) {
@@ -168,3 +182,42 @@ jobs:
         with:
           name: lazy-djin-tester-windows
           path: dist
+
+  # What the technicians get: one "Lazy Djin's Tester" folder for both systems.
+  #   app/              Windows program (dist/ above) + the AppImage + start-linux.sh
+  #   config/           read by the program from here (see core/ProgramFolder.h)
+  #   delivery-sheets/  EMPTY: the real sheets hold operators' names, never in
+  #                     this public repository. Put them in before sharing.
+  #   two launchers + LISEZMOI.txt (from .github/package/)
+  # logs/ is made by the program on its first run (a zip keeps no empty folder:
+  # delivery-sheets/ holds a short note for the same reason).
+  package:
+    needs: [version, windows, appimage]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: lazy-djin-tester-windows
+          path: windows
+      - uses: actions/download-artifact@v4
+        with:
+          name: lazy-djin-tester-linux
+          path: linux
+      - name: Assemble the folder
+        run: |
+          ROOT="package/Lazy Djin's Tester"
+          mkdir -p "$ROOT/app" "$ROOT/config" "$ROOT/delivery-sheets"
+          cp -r windows/. "$ROOT/app/"
+          cp linux/lazy-djin-tester-x86_64.AppImage .github/package/start-linux.sh "$ROOT/app/"
+          cp config/thresholds.json config/keyboard_layout.json "$ROOT/config/"
+          cp ".github/package/Lazy Djin's Tester (Windows).cmd" \
+             ".github/package/Lazy Djin's Tester (Linux).desktop" \
+             .github/package/LISEZMOI.txt "$ROOT/"
+          cp .github/package/delivery-sheets.txt "$ROOT/delivery-sheets/LISEZMOI.txt"
+          find package -maxdepth 3 | sort
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lazy-djin-tester-${{ needs.version.outputs.value }}
+          path: package

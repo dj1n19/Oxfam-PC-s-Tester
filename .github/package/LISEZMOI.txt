@@ -1,0 +1,45 @@
+LAZY DJIN'S TESTER
+==================
+
+--- FRANÇAIS ---
+
+Lancer le programme
+- Windows : double-cliquez sur "Lazy Djin's Tester (Windows).cmd".
+  Windows demande les droits d'administrateur : répondez Oui (ils servent à lire les disques).
+- Linux : double-cliquez sur "Lazy Djin's Tester (Linux).desktop".
+  La première fois, le gestionnaire de fichiers peut demander de "faire confiance" au lanceur : acceptez.
+  Au bouton START, le mot de passe de l'ordinateur est demandé une fois (lecture des disques).
+
+Clé USB
+- Formatez la clé en exFAT, pas en FAT32 : en FAT32, Linux ne peut pas lancer le programme.
+- Copiez TOUT le dossier "Lazy Djin's Tester", sans rien déplacer dedans.
+
+Les dossiers
+- app             le programme. Ne rien changer.
+- config          les seuils des tests et la disposition du clavier.
+- logs            un rapport texte par test de PC (créé au premier test).
+- delivery-sheets les fiches de livraison à partager (FR et NL). Si la fiche n'est pas sur le Bureau,
+                  le programme l'y copie depuis ce dossier. Un nouveau modèle ou un nouveau magasin y est
+                  ajouté : partagez ensuite ce dossier avec les autres techniciens.
+
+
+--- NEDERLANDS ---
+
+Het programma starten
+- Windows: dubbelklik op "Lazy Djin's Tester (Windows).cmd".
+  Windows vraagt beheerdersrechten: antwoord Ja (nodig om de schijven te lezen).
+- Linux: dubbelklik op "Lazy Djin's Tester (Linux).desktop".
+  De eerste keer kan het bestandsbeheer vragen om de starter te "vertrouwen": aanvaard.
+  Bij START wordt één keer het wachtwoord van de computer gevraagd (schijven lezen).
+
+USB-stick
+- Formatteer de stick in exFAT, niet in FAT32: vanaf FAT32 kan Linux het programma niet starten.
+- Kopieer de HELE map "Lazy Djin's Tester", zonder er iets in te verplaatsen.
+
+De mappen
+- app             het programma. Niets wijzigen.
+- config          de drempels van de tests en de toetsenbordindeling.
+- logs            een tekstrapport per geteste pc (aangemaakt bij de eerste test).
+- delivery-sheets de te delen leveringsfiches (FR en NL). Staat de fiche niet op het bureaublad,
+                  dan kopieert het programma ze vanuit deze map. Een nieuw model of een nieuwe winkel
+                  wordt hier toegevoegd: deel deze map daarna met de andere technici.

@@ -1,0 +1,2 @@
+FR : mettez ici "Fiche Pré Livraison.xlsx" et "Pre- LeveringsFiche.xlsx".
+NL: zet hier "Fiche Pré Livraison.xlsx" en "Pre- LeveringsFiche.xlsx".

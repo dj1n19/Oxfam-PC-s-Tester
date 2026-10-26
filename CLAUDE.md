@@ -158,6 +158,11 @@ QT_QPA_PLATFORM=offscreen ctest --test-dir build   # if no display
 CI: `.github/workflows/build.yml`.
 - `linux` job: Ubuntu 24.04, Qt 6.4 from apt, builds and runs ctest. **Do not use APIs newer than Qt 6.4** without checking.
 - `windows` job: Qt 6.8 MSVC via `install-qt-action`, builds Release, runs `windeployqt` into `dist/`, uploads the portable folder as an artifact.
+- `version` job: tag name or `dev-<sha>`, passed as `-DAPP_VERSION` to `windows` and `appimage`.
+- `package` job (after both): assembles the "Lazy Djin's Tester" folder (see "Root folder", section 8) from the two
+  artifacts, `config/` and `.github/package/` (launchers, `start-linux.sh`, `LISEZMOI.txt`), and uploads it as the
+  artifact `lazy-djin-tester-<version>`. No GitHub release (developer's choice). `delivery-sheets/` stays empty:
+  the real sheets hold operators' names; the developer adds them before sharing.
 
 ## 6. Repository layout
 
@@ -190,6 +195,7 @@ tools/         README.md only; CI puts external executables (smartctl.exe) in di
 unittests/     QtTest unit tests (test_core.cpp)   <- not the same as src/tests
   samples/     golden samples of real tool output (loaded with QFINDTESTDATA)
 .github/workflows/build.yml
+.github/package/   files of the shared folder: launchers (.cmd, .desktop), start-linux.sh, LISEZMOI.txt (FR+NL)
 CMakeLists.txt
 ```
 `src/tests/` = diagnostic tests that run on the PC under test. `unittests/` = developer tests for the code.
@@ -245,8 +251,8 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
 `QApplication::setWindowIcon` (`:/icons/`), .exe icon via `app.rc` (to verify on Windows), `djinn-256.png` ready for the AppImage.
 **AppImage** done in CI (job `appimage`, artifact `lazy-djin-tester-linux`; to verify on a real Mint PC):
 - Built on Ubuntu 22.04 with Qt 6.8 from qt.io (glibc 2.35: runs on Mint 21 and newer), linuxdeploy +
-  linuxdeploy-plugin-qt (pinned, SHA-256 checked). Inside: `usr/bin/` = program, `thresholds.json`,
-  `keyboard_layout.json`, `tools/smartctl` (static smartmontools 7.5 built in CI: Mint has no smartmontools).
+  linuxdeploy-plugin-qt (pinned, SHA-256 checked). Inside: `usr/bin/` = program and
+  `tools/smartctl` (config is outside, in `<root>/config/`) (static smartmontools 7.5 built in CI: Mint has no smartmontools).
 - Custom `AppRun` (in the workflow) starts `usr/bin/lazy-djin-tester` by its real path: linuxdeploy's own AppRun goes
   through a symlink at the AppDir root and recent Qt then takes that folder as `applicationDirPath()` (no plugins,
   no config). Seen with Arch's Qt; a local build with system Qt + `NO_STRIP=1` is a quick way to test packaging.

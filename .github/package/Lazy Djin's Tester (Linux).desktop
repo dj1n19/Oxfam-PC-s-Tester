@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Lazy Djin's Tester (Linux)
+Comment=Check a refurbished PC before sale
+Exec=sh -c "exec sh \\"\\$(dirname \\"\\$1\\")/app/start-linux.sh\\"" sh %k
+Terminal=false
+Categories=System;
