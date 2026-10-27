@@ -4,7 +4,8 @@ on: [push, pull_request]
 
 # apt must never wait for an answer: nobody is there to type it. On
 # 2026-10-26 the linux job hung in "Install dependencies" until cancelled,
-# twice, with no log at all. DEBIAN_FRONTEND is set after sudo, on the
+# twice, with no log at all. (2026-10-27, with a log: not a hang, a very
+# slow mirror; see the linux job.) DEBIAN_FRONTEND is set after sudo, on the
 # command itself: sudo drops the environment by default.
 
 jobs:
@@ -31,7 +32,12 @@ jobs:
         timeout-minutes: 10        # stopped by the runner = log kept (a cancelled run had none)
         run: |
           sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ninja-build qt6-base-dev qt6-multimedia-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libgl1-mesa-dev
+          # The Azure mirror sometimes sends a few kB/s (2026-10-27: 57 packages
+          # in 10 min, then stopped). Recommended packages are not needed to
+          # build (qt6-multimedia-dev recommends GStreamer, Intel video drivers...):
+          # far fewer downloads. A failed download is tried again.
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o Acquire::Retries=3 \
+            ninja-build qt6-base-dev qt6-multimedia-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libgl1-mesa-dev
       - name: Configure
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
       - name: Build
