@@ -244,7 +244,9 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   (`hideFile()`: dot + Windows hidden attribute). The Desktop sheet's language missing there: a clean copy is saved.
 - FR and NL lists are merged (developer's decision 2026-10-27: Oxfam's NL file had Leuven and Vilvoorde, the FR one
   not). Each run: the Desktop sheet first gets every name of the `delivery-sheets/` sheets (so the dialogs offer them
-  all), then each shared sheet gets what it lacks (`missingNames()` + `addNames()`), written only if something was added.
+  all), then each shared sheet gets what it lacks (`missingNames()` + `addNames()`), written only if something was added
+  or a list was still unsorted (Oxfam's model list came unsorted: sorted on the first fill, verified on a copy of the
+  real sheets 2026-10-27).
 - **Why in place:** QXlsx was tried on a copy and lost all 6 dropdowns and the page setup. `XlsxEditor` rewrites only
   the changed cells (found with QXmlStreamReader offsets, inline strings, `s=` style kept) and copies every other zip
   entry raw. The FR file is saved by OnlyOffice (dropdowns in x14 extLst), the NL one by LibreOffice (standard

@@ -1268,6 +1268,19 @@ private slots:
         QVERIFY(DeliverySheet::missingNames(fr, fr).isEmpty());
     }
 
+    // No name to add: the list is still written back sorted (Oxfam's model
+    // list came unsorted).
+    void deliverySheetSortsOnly()
+    {
+        XlsxEditor sheet;
+        QString error;
+        QVERIFY2(sheet.load(sample("delivery_sheet_fr.xlsx"), &error), qPrintable(error));
+        const QStringList before = DeliverySheet::names(sheet, SheetList::Models);
+        QVERIFY2(DeliverySheet::addNames(sheet, SheetList::Models, {}, &error), qPrintable(error));
+        const QStringList after = DeliverySheet::names(sheet, SheetList::Models);
+        QCOMPARE(after, DeliverySheet::sorted(before));
+    }
+
     // Oxfam's French and Dutch sheets did not hold the same shops: merged.
     void deliverySheetMergeLists()
     {

@@ -71,16 +71,18 @@ bool readSheet(const QString& path, XlsxEditor* sheet, QString* error)
     return sheet->load(file.readAll(), error) && DeliverySheet::check(*sheet, error);
 }
 
-// Adds to target's lists the names that source has and target lacks.
-// *changed tells whether anything was added.
+// Adds to target's lists the names that source has and target lacks, and
+// sorts a list still in its original order (Oxfam's model list was not
+// sorted: only a list with an added name was). *changed tells whether
+// anything was rewritten.
 bool addMissingNames(XlsxEditor& target, const XlsxEditor& source, bool* changed, QString* error)
 {
     for (const SheetList list : kLists) {
-        const QStringList missing =
-            DeliverySheet::missingNames(DeliverySheet::names(target, list), DeliverySheet::names(source, list));
-        if (missing.isEmpty())
+        const QStringList have = DeliverySheet::names(target, list);
+        const QStringList missing = DeliverySheet::missingNames(have, DeliverySheet::names(source, list));
+        if (missing.isEmpty() && have == DeliverySheet::sorted(have))
             continue;
-        if (!DeliverySheet::addNames(target, list, missing, error))
+        if (!DeliverySheet::addNames(target, list, missing, error))   // writes the whole list back sorted
             return false;
         *changed = true;
     }
