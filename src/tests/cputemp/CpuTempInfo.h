@@ -34,7 +34,13 @@ struct ThermalZone {
     double kelvin = 0;
 };
 
-// Turns what cputemp_win.cpp read into one reading: the hottest plausible
-// zone, the speed (<= 0 = counter not ready: no speed) and the power source.
+// Turns what cputemp_win.cpp read into one reading: the speed (<= 0 =
+// counter not ready: no speed) and the power source. The ACPI zones are only
+// listed in raw, never used as the CPU temperature (developer's decision
+// 2026-10-27): on every PC seen they measured something else (Surface Pro 7
+// +1-3 C under full load, ThinkPad L380 fixed at 77 C, ThinkPad 20J2 at
+// 62-74 C at rest and FALLING under load). The real per-core sensors need a
+// kernel driver (CoreTemp, HWiNFO): not for a portable app. A CPU that
+// overheats slows down: the speed is the check on Windows.
 // Pure, compiled on both OSes so the unit tests can run it on Linux.
 CpuReading windowsCpuReading(const std::vector<ThermalZone>& zones, double speedPct, bool onBattery);

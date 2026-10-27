@@ -24,7 +24,8 @@ class CpuTempTest : public ITest {
 public:
     explicit CpuTempTest(Thresholds thresholds, QObject* parent = nullptr);
 
-    QString name() const override { return tr("CPU temperature"); }
+    // Not "temperature": on Windows only the speed is judged.
+    QString name() const override { return tr("CPU under load"); }
     bool runsLast() const override { return true; }   // ~30 s of full load: after the interactive tests
     void run() override;
 

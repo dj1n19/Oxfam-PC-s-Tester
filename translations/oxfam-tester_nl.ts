@@ -221,11 +221,6 @@ Waar hoorde u hem?</translation>
 <context>
     <name>CpuTempTest</name>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.h" line="27"/>
-        <source>CPU temperature</source>
-        <translation type="unfinished">CPU-temperatuur</translation>
-    </message>
-    <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation type="unfinished">Kan de CPU-temperatuur niet uitlezen (zie details)</translation>
@@ -275,6 +270,11 @@ Waar hoorde u hem?</translation>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="241"/>
         <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
         <translation type="unfinished">vertraagd tot %1 % van de basissnelheid onder belasting: oververhit? (ventilator, stof, koelpasta)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/cputemp/CpuTempTest.h" line="28"/>
+        <source>CPU under load</source>
+        <translation type="unfinished">CPU onder belasting</translation>
     </message>
 </context>
 <context>

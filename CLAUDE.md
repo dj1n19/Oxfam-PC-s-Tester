@@ -355,11 +355,15 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   "unlicensed": the best status wins (licensed > grace > notification), its name/channel from
   `SLGetProductSkuInformation`. Licensed is Pass, anything else (or no licence) is **Warn**. Firmware OEM key = the
   ACPI `MSDM` table exists (only its SIZE is asked: the key never reaches the program). Skipped on Linux.
-- Test: `CpuTempTest` (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
+- Test: `CpuTempTest`, row "CPU under load" (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
   priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
-  thermal zones `x86_pkg_temp`, `acpitz`. Windows: PDH counter `\Thermal Zone Information(*)\Temperature` (kelvin,
-  the same ACPI zones as WMI's `MSAcpi_ThermalZoneTemperature`, hottest plausible zone); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
+  thermal zones `x86_pkg_temp`, `acpitz`. **Windows: no temperature is judged** (developer's decision 2026-10-27): the
+  PDH counter `\Thermal Zone Information(*)\Temperature` (ACPI zones) is only listed in the details; on every PC seen
+  it was not the CPU (Surface Pro 7 +1-3 C under load, ThinkPad L380 fixed 77 C, ThinkPad 20J2 62-74 C at rest and
+  falling under load). Real per-core sensors (MSRs, as CoreTemp/HWiNFO read them) need a kernel driver: not for a
+  portable app (WinRing0 flagged by Defender; a signed driver like PawnIO would have to be installed). An overheating
+  CPU slows down, so on Windows the speed is the check. Row renamed "CPU temperature" -> "CPU under load".
   A sensor that rises < 5 C under load is not the CPU: Skipped instead of Pass (too hot still fails). Was 1 C until
   2026-10-27: on 7 Surface Pro 7 (Win11) the zone `\_SB._SAN.TZ01` rose only 1-3 C at 220 % speed and showed "OK, peak 33 C".
   Readings come from `sampleCpu(seconds, startLoad)`: reading at rest, then `startLoad()` starts the burn threads only
@@ -392,8 +396,8 @@ Known limitations:
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
-- CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base).  Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). The ACPI zone on
-  Windows is a motherboard zone: expect many Skipped (Latitude 7420: "Not supported").
+- CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base).  Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). Windows: see above,
+  speed only.
 - CPU speed: the counters were read by hand on the Latitude 7420 (WMI then). Under full load: 266 % falling to 241 % (charger) / 211 %
   (battery) as the turbo budget runs out: normal. The app's own probe verified on the Latitude 7420 (Win11, charger, 2026-10-14): 7 readings in 32.5 s
   (one per ~4.6 s under load, not per second), 266 % flat, PASS. On battery: 5 readings in 29.1 s, 266 % flat.

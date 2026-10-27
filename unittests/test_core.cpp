@@ -636,7 +636,7 @@ private slots:
         QVERIFY(rest.hasSpeed);
         QCOMPARE(rest.speedPct, 88.0);
         QVERIFY(rest.onBattery);
-        QVERIFY(rest.raw.contains("zones: none"));
+        QVERIFY(rest.raw.contains("ACPI zones (not used, not the CPU): none"));
 
         // A counter that is not ready gives 0: not a speed.
         QVERIFY(!windowsCpuReading({}, 0, false).hasSpeed);
@@ -703,24 +703,22 @@ private slots:
         QCOMPARE(runReportFileName(when, " ... "), QString("2026-10-15 14-32-05 unknown PC.txt"));
     }
 
-    // Real runs of the app on Windows (2026-10-14).
+    // Real runs of the app on Windows. Since 2026-10-27 the ACPI zones are
+    // never the CPU temperature there: only the speed is judged.
     void cpuRealWindowsRuns()
     {
         const Thresholds t = loaded();
 
-        // ThinkPad L380: the ACPI zone stays at 77.1 C under load (not the CPU),
-        // the speed is live and settles at ~150 %. Values of the real output (WMI then).
-        CpuLoadRun lenovo;
+        // ThinkPad L380 (2026-10-14): the zone stays at 77.1 C under load, the
+        // speed is live and settles at ~150 %.
+        CpuLoadRun lenovo = speedRun({184, 160, 151, 150, 148, 150});
         lenovo.idle = windowsCpuReading({{"ACPI\\ThermalZone\\THM0_0", 350.2}}, 67, false);
-        QVERIFY(lenovo.idle.hasTemp);
-        QCOMPARE(lenovo.idle.celsius, 350.2 - 273.15);
+        QVERIFY(!lenovo.idle.hasTemp);                                  // listed, not used
+        QVERIFY(lenovo.idle.raw.contains("THM0_0 = 350.2 K"));
         QCOMPARE(lenovo.idle.speedPct, 67.0);
-        lenovo.samples.assign(6, lenovo.idle.celsius);
-        lenovo.speeds = {184, 160, 151, 150, 148, 150};
         const TestResult l = CpuTempTest::evaluate(lenovo, t);
-        QCOMPARE(l.status, Status::Pass);   // a deaf sensor does not hide a good speed
-        QVERIFY(l.summary.contains("barely reacted"));
-        QVERIFY(l.summary.contains("150 %"));
+        QCOMPARE(l.status, Status::Pass);
+        QCOMPARE(l.summary, QString("Speed 150 % of base"));
 
         // Latitude 7420, 3rd load in a row on battery: turbo budget spent, under base speed.
         CpuLoadRun dell = speedRun({266, 266, 210, 106, 82, 86, 82, 91, 83, 84, 93, 82, 81}, true);
@@ -729,31 +727,36 @@ private slots:
         QVERIFY(d.summary.contains("83 %"));
         QVERIFY(d.summary.contains("charger"));
 
-        // Surface Pro 7 (Win11, 2026-10-27): the zone rises by 1.0 C at 220 % speed.
-        // A case zone, not the CPU: the speed alone decides.
-        CpuLoadRun surface = speedRun({220, 220, 220, 196, 178, 176, 177}, false);
-        surface.idle = windowsCpuReading({{"\\_SB._SAN.TZ01", 322.05}, {"\\_SB._SAN.TZ02", 298}}, 63, false);
-        QCOMPARE(qRound(surface.idle.celsius), 49);
-        surface.samples = {48.9, 48.9, 48.9, 49.9};
-        const TestResult s = CpuTempTest::evaluate(surface, t);
-        QCOMPARE(s.status, Status::Pass);
-        QVERIFY(s.summary.contains("barely reacted"));
-        QVERIFY(!s.summary.contains("Peak"));
-        // +3 C (another Surface, 29.9 -> 32.9): still not the CPU.
-        surface.idle = windowsCpuReading({{"\\_SB._SAN.TZ01", 303.05}}, 63, false);
-        surface.samples = {29.9, 30.9, 31.9, 32.9};
-        QVERIFY(CpuTempTest::evaluate(surface, t).summary.contains("barely reacted"));
+        // ThinkPad 20J2 (2026-10-27): zone at 74 C at rest, FALLING under load.
+        // Before, it was taken for the CPU on some PCs ("Peak 72 C"): no more.
+        CpuLoadRun thinkpad = speedRun({120, 120, 120, 119, 109, 120, 120});
+        thinkpad.idle = windowsCpuReading({{"\\_TZ.TZ00", 347.05}}, 110, false);
+        thinkpad.samples = {73.9, 69.9, 67.9, 65.9};   // ignored: no temperature at rest
+        const TestResult tp = CpuTempTest::evaluate(thinkpad, t);
+        QCOMPARE(tp.status, Status::Pass);
+        QVERIFY(!tp.summary.contains("C under load"));
+        QVERIFY(tp.details.contains("TZ00 = 347.05 K"));   // still in the details
+    }
+
+    // The "not the CPU" rule still guards Linux sensors. Values of the
+    // Surface Pro 7 zone (+1 and +3 C under full load), as if from hwmon.
+    void cpuTempBarelyReacting()
+    {
+        const Thresholds t = loaded();
+        CpuLoadRun run = cpuRun(48.9, {48.9, 48.9, 48.9, 49.9});
+        QVERIFY(CpuTempTest::evaluate(run, t).summary.contains("barely reacted"));
+        run = cpuRun(29.9, {29.9, 30.9, 31.9, 32.9});
+        QCOMPARE(CpuTempTest::evaluate(run, t).status, Status::Skipped);
+        run = cpuRun(52, {60, 68, 72});   // Arch, coretemp: +20 C
+        QCOMPARE(CpuTempTest::evaluate(run, t).status, Status::Pass);
     }
 
     void thermalZones()
     {
-        const CpuReading r = windowsCpuReading({{"\\_TZ.TZ00", 313.2}, {"\\_TZ.THM0", 333.2}, {"\\_TZ.TZ01", 0}}, 0, false);
-        QVERIFY(r.hasTemp);
-        QCOMPARE(qRound(r.celsius), 60);   // hottest zone; the 0 K zone is ignored
-        QCOMPARE(r.source, QString("\\_TZ.THM0"));
-        QVERIFY(r.raw.contains("\\_TZ.TZ01 = 0 K"));   // still listed in the details
-
-        QVERIFY(!windowsCpuReading({{"\\_TZ.BAD", 600}}, 0, false).hasTemp);   // 327 C: absurd
+        const CpuReading r = windowsCpuReading({{"\\_TZ.TZ00", 313.2}, {"\\_TZ.THM0", 333.2}}, 0, false);
+        QVERIFY(!r.hasTemp);
+        QVERIFY(r.raw.contains("\\_TZ.THM0 = 333.2 K"));   // listed in the details
+        QVERIFY(r.raw.contains("not used"));
     }
 
     void scanCodesWindows()
