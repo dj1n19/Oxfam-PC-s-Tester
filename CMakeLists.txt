@@ -53,6 +53,8 @@ add_library(oxcore STATIC
     src/tests/battery/BatteryInfo.h
     src/tests/battery/BatteryTest.h
     src/tests/battery/BatteryTest.cpp
+    src/tests/battery/ChargeTest.h
+    src/tests/battery/ChargeTest.cpp
     src/tests/sysinfo/SystemInfo.h
     src/tests/sysinfo/SystemInfoTest.h
     src/tests/sysinfo/SystemInfoTest.cpp

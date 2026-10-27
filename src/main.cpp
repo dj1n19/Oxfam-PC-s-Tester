@@ -11,6 +11,7 @@
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "tests/battery/BatteryTest.h"
+#include "tests/battery/ChargeTest.h"
 #include "tests/cputemp/CpuTempTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
@@ -68,6 +69,7 @@ int main(int argc, char* argv[])
     };
     DeliveryLinks delivery;
     delivery.rows[add(std::make_unique<BatteryTest>(thresholds))] = SheetRow::Battery;
+    add(std::make_unique<ChargeTest>());
     delivery.rows[add(std::make_unique<DiskTest>(thresholds))] = SheetRow::Disk;
     add(std::make_unique<DriversTest>());
     add(std::make_unique<LicenseTest>());

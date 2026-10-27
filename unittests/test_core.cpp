@@ -13,6 +13,7 @@
 #include "delivery/XlsxEditor.h"
 #include "report/RunReport.h"
 #include "tests/battery/BatteryTest.h"
+#include "tests/battery/ChargeTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
@@ -214,6 +215,47 @@ private slots:
     void missingThresholdIsErrorNotPass()
     {
         QCOMPARE(BatteryTest::evaluate(battery(40000), Thresholds{}).status, Status::Error);
+    }
+
+    static BatteryInfo charger(int acOnline, ChargeState state, double pct, double watts = 0)
+    {
+        BatteryInfo b = battery(40000);
+        b.acOnline = acOnline;
+        b.state = state;
+        b.chargePct = pct;
+        b.rateW = watts;
+        return b;
+    }
+
+    void chargeStates()
+    {
+        TestResult r = ChargeTest::evaluate(charger(1, ChargeState::Charging, 42, 31.5));
+        QCOMPARE(r.status, Status::Pass);
+        QCOMPARE(r.summary, QString("Charging at 31.5 W (42 %)"));
+        QCOMPARE(ChargeTest::evaluate(charger(1, ChargeState::Charging, 42)).summary, QString("Charging (42 %)"));
+
+        // Not seen = socket, cable or charger (or not plugged in: the text says so).
+        QCOMPARE(ChargeTest::evaluate(charger(0, ChargeState::Discharging, 60)).status, Status::Fail);
+        // The OS cannot tell: never a Pass.
+        QCOMPARE(ChargeTest::evaluate(charger(-1, ChargeState::Unknown, 60)).status, Status::Error);
+
+        // Seen but not charging: the charger works; why it does not charge decides.
+        QCOMPARE(ChargeTest::evaluate(charger(1, ChargeState::Full, 100)).status, Status::Pass);
+        QCOMPARE(ChargeTest::evaluate(charger(1, ChargeState::NotCharging, 97)).status, Status::Pass);
+        r = ChargeTest::evaluate(charger(1, ChargeState::NotCharging, 80));   // charge limit
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.contains("limit"));
+        r = ChargeTest::evaluate(charger(1, ChargeState::NotCharging, 0));    // pre-charge (ThinkPad 13)
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.contains("10 minutes"));
+        r = ChargeTest::evaluate(charger(1, ChargeState::Discharging, 50));   // charger too weak
+        QCOMPARE(r.status, Status::Warn);
+
+        BatteryInfo desktop;
+        QCOMPARE(ChargeTest::evaluate(desktop).status, Status::Skipped);
+        BatteryInfo broken;
+        broken.error = "boom";
+        QCOMPARE(ChargeTest::evaluate(broken).status, Status::Error);
     }
 
     // smartctl samples are hand-made from the smartctl 7.x JSON format

@@ -77,6 +77,33 @@ Read readOne(const wchar_t* path, BatteryInfo* info, QString* why)
     info->fullCapacity = known(bi.FullChargedCapacity);
     info->cycles = bi.CycleCount > 0 ? int(bi.CycleCount) : -1;   // 0 usually means "not reported"
     // RELATIVE: capacities are not in mWh. The ratio is all we use anyway.
+    // What the battery is doing now. Timeout 0 = answer at once.
+    BATTERY_WAIT_STATUS waitStatus{};
+    waitStatus.BatteryTag = tag;
+    BATTERY_STATUS status{};
+    QString statusText;
+    if (DeviceIoControl(battery, IOCTL_BATTERY_QUERY_STATUS, &waitStatus, DWORD(sizeof waitStatus), &status,
+                        DWORD(sizeof status), &returned, nullptr)) {
+        info->acOnline = (status.PowerState & BATTERY_POWER_ON_LINE) ? 1 : 0;
+        if (status.PowerState & BATTERY_CHARGING)
+            info->state = ChargeState::Charging;
+        else if (status.PowerState & BATTERY_DISCHARGING)
+            info->state = ChargeState::Discharging;
+        else if (info->acOnline == 1)
+            info->state = ChargeState::NotCharging;   // on the charger, neither: full or held
+        if (status.Capacity != BATTERY_UNKNOWN_CAPACITY && bi.FullChargedCapacity > 0
+            && bi.FullChargedCapacity != BATTERY_UNKNOWN_CAPACITY)
+            info->chargePct = 100.0 * status.Capacity / bi.FullChargedCapacity;
+        // Rate in mW, > 0 when charging; meaningless in relative units.
+        if (status.Rate != LONG(BATTERY_UNKNOWN_RATE) && status.Rate > 0
+            && !(bi.Capabilities & BATTERY_CAPACITY_RELATIVE))
+            info->rateW = status.Rate / 1000.0;
+        statusText = QStringLiteral("\nstatus: PowerState=0x%1 Capacity=%2 Voltage=%3 Rate=%4")
+                         .arg(status.PowerState, 0, 16).arg(status.Capacity).arg(status.Voltage).arg(status.Rate);
+    } else {
+        statusText = QStringLiteral("\nIOCTL_BATTERY_QUERY_STATUS error %1").arg(GetLastError());
+    }
+
     *why = QStringLiteral("%1: DesignedCapacity=%2 FullChargedCapacity=%3 CycleCount=%4 chemistry=%5%6")
                .arg(info->name)
                .arg(bi.DesignedCapacity)
@@ -84,7 +111,8 @@ Read readOne(const wchar_t* path, BatteryInfo* info, QString* why)
                .arg(bi.CycleCount)
                .arg(QString::fromLatin1(reinterpret_cast<const char*>(bi.Chemistry), sizeof bi.Chemistry))
                .arg((bi.Capabilities & BATTERY_CAPACITY_RELATIVE) ? QStringLiteral(" (relative units)")
-                                                                  : QStringLiteral(" (mWh)"));
+                                                                  : QStringLiteral(" (mWh)"))
+         + statusText;
     return Read::Battery;
 }
 

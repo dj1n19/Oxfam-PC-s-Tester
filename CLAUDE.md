@@ -337,6 +337,13 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   raw SMBIOS table from `GetSystemFirmwareTable('RSMB')` parsed by `parseSmbios()` (unit tested on a hand-made
   table), CPU name from the registry (`QSettings` NativeFormat, read only), installed RAM from
   `GetPhysicallyInstalledSystemMemory` (fallback: usable RAM).
+- Test: `ChargeTest`, row "Charger" (2026-10-27; to verify on Windows and unplugged): same `readBattery()` probe,
+  now also charger online, state, charge % and rate (Windows `IOCTL_BATTERY_QUERY_STATUS`; Linux battery `status`,
+  `capacity`, `power_now`, and any `Mains`/online `USB` supply). Charging = Pass ("at X W"); charger not seen = Fail
+  (text: plug it in and run again); OS cannot tell = Error. Charger seen but not charging: full (>= 95 %) or a charge
+  limit (ex-company laptops stop at 60-80 %) = Pass with that note; empty (<= 5 %) = Warn "run again in 10 minutes"
+  (ThinkPad 13 at 0 % pre-charges ~10 min, developer's report); discharging on the charger = Warn (charger too weak).
+  Not on the delivery sheet (open question: battery row?). Verified on Arch (charger on, full).
 - Test: `DiskTest`: `smartctl --scan --json` then `smartctl --json -a -d <type> <dev>` per disk. One shared probe
   (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART

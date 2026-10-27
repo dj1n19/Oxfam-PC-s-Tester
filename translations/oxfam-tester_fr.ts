@@ -219,6 +219,69 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
 </context>
 <context>
+    <name>ChargeTest</name>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.h" line="13"/>
+        <source>Charger</source>
+        <translation>Chargeur</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="34"/>
+        <source>Could not read the battery (see details)</source>
+        <translation>Impossible de lire la batterie (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="40"/>
+        <source>No battery (desktop?)</source>
+        <translation>Pas de batterie (ordinateur fixe ?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="45"/>
+        <source>The system does not say whether a charger is connected (see details)</source>
+        <translation>Le système n&apos;indique pas si un chargeur est branché (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="53"/>
+        <source>No charger detected: plug it in and run this test again. If it is plugged in: socket, cable or charger faulty</source>
+        <translation>Aucun chargeur détecté : branchez-le et relancez ce test. S&apos;il est branché : prise, câble ou chargeur défectueux</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="58"/>
+        <source>level unknown</source>
+        <translation>niveau inconnu</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="64"/>
+        <source>Charging at %1 W (%2)</source>
+        <translation>En charge à %1 W (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="65"/>
+        <source>Charging (%1)</source>
+        <translation>En charge (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="70"/>
+        <source>Charger detected but the battery is discharging (%1): charger too weak for this PC?</source>
+        <translation>Chargeur détecté mais la batterie se décharge (%1) : chargeur trop faible pour ce PC ?</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="79"/>
+        <source>Charger detected, battery full (%1)</source>
+        <translation>Chargeur détecté, batterie pleine (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="82"/>
+        <source>Charger detected, empty battery not charging yet (%1): normal for a few minutes, run this test again in 10 minutes</source>
+        <translation>Chargeur détecté, batterie vide pas encore en charge (%1) : normal quelques minutes, relancez ce test dans 10 minutes</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="87"/>
+        <source>Charger detected, battery not charging (%1): charge limit set in the BIOS or vendor app?</source>
+        <translation>Chargeur détecté, batterie pas en charge (%1) : limite de charge réglée dans le BIOS ou le logiciel du fabricant ?</translation>
+    </message>
+</context>
+<context>
     <name>CpuTempTest</name>
     <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
@@ -865,12 +928,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="44"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="46"/>
         <source>thresholds.json not loaded:
 %1
 

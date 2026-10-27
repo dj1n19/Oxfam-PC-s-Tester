@@ -219,6 +219,69 @@ Waar hoorde u hem?</translation>
     </message>
 </context>
 <context>
+    <name>ChargeTest</name>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.h" line="13"/>
+        <source>Charger</source>
+        <translation type="unfinished">Lader</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="34"/>
+        <source>Could not read the battery (see details)</source>
+        <translation type="unfinished">Kan de batterij niet uitlezen (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="40"/>
+        <source>No battery (desktop?)</source>
+        <translation type="unfinished">Geen batterij (desktop?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="45"/>
+        <source>The system does not say whether a charger is connected (see details)</source>
+        <translation type="unfinished">Het systeem meldt niet of er een lader aangesloten is (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="53"/>
+        <source>No charger detected: plug it in and run this test again. If it is plugged in: socket, cable or charger faulty</source>
+        <translation type="unfinished">Geen lader gedetecteerd: sluit hem aan en voer deze test opnieuw uit. Als hij aangesloten is: aansluiting, kabel of lader defect</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="58"/>
+        <source>level unknown</source>
+        <translation type="unfinished">niveau onbekend</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="64"/>
+        <source>Charging at %1 W (%2)</source>
+        <translation type="unfinished">Laadt op met %1 W (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="65"/>
+        <source>Charging (%1)</source>
+        <translation type="unfinished">Laadt op (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="70"/>
+        <source>Charger detected but the battery is discharging (%1): charger too weak for this PC?</source>
+        <translation type="unfinished">Lader gedetecteerd maar de batterij ontlaadt (%1): lader te zwak voor deze pc?</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="79"/>
+        <source>Charger detected, battery full (%1)</source>
+        <translation type="unfinished">Lader gedetecteerd, batterij vol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="82"/>
+        <source>Charger detected, empty battery not charging yet (%1): normal for a few minutes, run this test again in 10 minutes</source>
+        <translation type="unfinished">Lader gedetecteerd, lege batterij laadt nog niet op (%1): normaal gedurende enkele minuten, voer deze test over 10 minuten opnieuw uit</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="87"/>
+        <source>Charger detected, battery not charging (%1): charge limit set in the BIOS or vendor app?</source>
+        <translation type="unfinished">Lader gedetecteerd, batterij laadt niet op (%1): laadlimiet ingesteld in het BIOS of de app van de fabrikant?</translation>
+    </message>
+</context>
+<context>
     <name>CpuTempTest</name>
     <message>
         <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
@@ -865,12 +928,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="44"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="46"/>
         <source>thresholds.json not loaded:
 %1
 
