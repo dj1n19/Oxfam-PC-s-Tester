@@ -220,9 +220,9 @@ Multi-battery support was dropped by the developer (first battery only).
 
 **M3 done** (interactive tests): Keyboard, Audio, Camera, verified on Arch.
 
-**M4 in progress.** Done: Windows GUI subsystem (no console) + `requireAdministrator` manifest (to verify on Windows).
+**M4 in progress.** Done: Windows GUI subsystem (no console) + `requireAdministrator` manifest (verified: smartctl reads the NVMe disks on Win11).
 Linux privilege flow done (to verify): app runs as the normal user, only smartctl is elevated.
-French/Dutch/English done (to verify on screen and on Windows): system language fr/nl, else English, plus a
+French/Dutch/English done (French verified on Windows 11 in the run reports; Dutch not yet seen): system language fr/nl, else English, plus a
 language selector. **Dutch texts were written by Claude: have a Dutch speaker check them** (left "unfinished" in
 the .ts so Linguist lists them). French texts to proofread by the developer.
 Clear error messages done (actionable ERROR summaries, see the TestResult contract).
@@ -292,7 +292,7 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   instead of moving focus or closing; its buttons are `Qt::NoFocus` so Space/Enter never click them.
   On GNOME/Wayland mute, volume and PrtSc are taken by the desktop and never reach the app (explained in the dialog).
 - Test: `AudioTest` (interactive): `QAudioSink` on the default output, 48 kHz stereo, 16-bit, else 32-bit float
-  (`makeTone(..., SampleType)` in oxcore; Surface Pro 7's Realtek SST refused 16-bit, 2026-10-15; fix not yet seen there).
+  (`makeTone(..., SampleType)` in oxcore; Surface Pro 7's Realtek SST refused 16-bit, 2026-10-15; fix verified on 7 of them, 2026-10-27).
   Tone on the LEFT only (440 Hz), then RIGHT only (660 Hz), 750 ms each; the technician answers Left / Right / Both / Nothing, without
   being told the side. Both correct = Pass; "Both" = Warn (mono speaker); wrong side = Fail (swapped); nothing = Fail.
   No output device or unsupported format = Error.
@@ -309,11 +309,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows asks the battery driver: SetupAPI lists the
   `GUID_DEVICE_BATTERY` interfaces, `IOCTL_BATTERY_QUERY_TAG` + `IOCTL_BATTERY_QUERY_INFORMATION` give design/full
   capacity and cycles; first system battery, UPS (short-term) left out; `BATTERY_UNKNOWN_CAPACITY` = 0 = Error.
-  Since 2026-10-26, not yet run on Windows. `powercfg /batteryreport` was dropped: it also gathers weeks of usage
+  Since 2026-10-26, verified 2026-10-27 on 7 Surface Pro 7, Win11. `powercfg /batteryreport` was dropped: it also gathers weeks of usage
   history and timed out (30 s) on every shop laptop just after start-up).
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
 - Test: `SystemInfoTest`: vendor, model, serial, CPU, RAM, form factor from the SMBIOS chassis type. Runs first.
-  Linux: `/sys/class/dmi/id` + `/proc` (usable RAM). Windows (2026-10-26, no PowerShell; not yet run on Windows):
+  Linux: `/sys/class/dmi/id` + `/proc` (usable RAM). Windows (2026-10-26, no PowerShell; verified 2026-10-27 on 7 Surface Pro 7, Win11):
   raw SMBIOS table from `GetSystemFirmwareTable('RSMB')` parsed by `parseSmbios()` (unit tested on a hand-made
   table), CPU name from the registry (`QSettings` NativeFormat, read only), installed RAM from
   `GetPhysicallyInstalledSystemMemory` (fallback: usable RAM).
@@ -323,14 +323,14 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   (USB stick) is Skipped, but "no disk with SMART" is Error. **USB disks are left out** (developer's decision
   2026-10-15: the tester's own stick claimed "SMART OK, 0 C"): `usbDevices()` asks the OS for the bus (Linux:
   `/sys/block/<dev>` under `/usb`; Windows: `IOCTL_STORAGE_QUERY_PROPERTY` BusType on `\\.\PhysicalDriveN`, disk N =
-  `/dev/sd`+letter N (smartctl names NVMe that way too on Windows), `physicalDriveNumber()` unit tested; not yet run on Windows); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
+  `/dev/sd`+letter N (smartctl names NVMe that way too on Windows), `physicalDriveNumber()` unit tested; verified 2026-10-27 on 7 Surface Pro 7, Win11: the tester's stick left out); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
   Windows CI takes smartctl.exe 7.5 from the official installer (7-Zip, SHA-256 checked; Chocolatey failed with 406) into `dist/tools/`.
-- Test: `DriversTest`: Windows (2026-10-26, no PowerShell; not yet run on Windows): SetupAPI lists the present devices
+- Test: `DriversTest`: Windows (2026-10-26, no PowerShell; verified 2026-10-27 on 7 Surface Pro 7, Win11, ~206 devices): SetupAPI lists the present devices
   (`DIGCF_PRESENT`: the previous owner's unplugged USB devices, WMI code 45, never come), `CM_Get_DevNode_Status`
   gives the problem code (= WMI `ConfigManagerErrorCode`); name = friendly name, else description, else device ID. Linux reads
   `/sys/bus/pci/devices` (no lspci) and flags only buyer-relevant classes without a driver (storage, network, display,
   multimedia, wireless, USB): many chipset functions normally have no Linux driver. A driver problem is **Warn**, not Fail.
-- Test: `LicenseTest` (Windows, 2026-10-26, no PowerShell; not yet run on Windows): `SLGetLicensingStatusInformation`
+- Test: `LicenseTest` (Windows, 2026-10-26, no PowerShell; verified 2026-10-27 on 7 Surface Pro 7, Win11): `SLGetLicensingStatusInformation`
   (slc.dll, links `slc`) for the Windows ApplicationID; every edition has an entry, those without a key say
   "unlicensed": the best status wins (licensed > grace > notification), its name/channel from
   `SLGetProductSkuInformation`. Licensed is Pass, anything else (or no licence) is **Warn**. Firmware OEM key = the
@@ -343,8 +343,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   A sensor that rises < 5 C under load is not the CPU: Skipped instead of Pass (too hot still fails). Was 1 C until
   2026-10-27: on 7 Surface Pro 7 (Win11) the zone `\_SB._SAN.TZ01` rose only 1-3 C at 220 % speed and showed "OK, peak 33 C".
   Readings come from `sampleCpu(seconds, startLoad)`: reading at rest, then `startLoad()` starts the burn threads only
-  if something is readable, then ~1 reading/s. Windows (2026-10-26, PDH instead of a PowerShell loop; not yet run on
-  Windows): one PDH query, collected every second; the values are turned into a reading by the pure
+  if something is readable, then ~1 reading/s. Windows (2026-10-26, PDH instead of a PowerShell loop; verified 2026-10-27 on 7 Surface Pro 7, Win11: ~20-26
+  readings in 30 s, one per second as planned): one PDH query, collected every second; the values are turned into a reading by the pure
   `windowsCpuReading()`. **Speed (throttling)**, read with the temperature: % of base speed;
   Windows PDH `\Processor Information(_Total)\% Processor Performance` (= WMI's PercentProcessorPerformance; a rate:
   collected once before the reading at rest; `PdhAddEnglishCounter`: names are translated on fr/nl Windows), Linux average `scaling_cur_freq` / `base_frequency`
