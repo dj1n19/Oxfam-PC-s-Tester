@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QScreen>
 #include <QStatusBar>
 #include <QTableWidget>
 #include <QVBoxLayout>
@@ -137,6 +138,12 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
     // calls: on a worker thread, never on the UI thread.
     connect(&m_pcWatcher, &QFutureWatcher<SystemInfo>::finished, this, [this] {
         m_pc = m_pcWatcher.result();
+        // The screen the window opened on: the PC's own screen, unless an
+        // external monitor is the main one.
+        if (const QScreen* s = screen()) {
+            m_pc.screenMm = s->physicalSize();
+            m_pc.screenPixels = s->size() * s->devicePixelRatio();   // native pixels, not scaled ones
+        }
         m_pcRead = true;
         showPcInfo();
     });

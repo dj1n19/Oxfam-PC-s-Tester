@@ -172,7 +172,8 @@ src/
                hidefile_linux.cpp hidefile_win.cpp   (hideFile(): Windows hidden attribute)
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} battery_linux.cpp battery_win.cpp
-    sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) sysinfo_linux.cpp sysinfo_win.cpp
+    sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) SystemInfoParsing.cpp
+               sysinfo_linux.cpp sysinfo_win.cpp   ("This PC" panel, not a test)
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
@@ -321,8 +322,14 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   history and timed out (30 s) on every shop laptop just after start-up).
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
 - **"This PC" panel** (was the test `SystemInfoTest` until 2026-10-27, developer's decision: it identifies the PC, it
-  does not check hardware): vendor, model, serial (shown as "S/N", selectable), CPU, RAM, form factor from the SMBIOS
-  chassis type. `MainWindow` runs `readSystemInfo()` once at launch (QtConcurrent), keeps the raw `SystemInfo` and
+  does not check hardware). Two lines: "vendor model | S/N" (selectable), then "OS | CPU (n cores / m threads) | RAM |
+  screen 14.0" 1920x1080" (developer's choice 2026-10-27; form factor from the SMBIOS chassis type: details/report only;
+  model kept as SMBIOS gives it: no family/version swap). OS: Windows registry CurrentVersion (`windowsVersionName()`:
+  ProductName says "Windows 10" on 11, build >= 22000 decides; build.UBR shows the update level), Linux
+  `QSysInfo::prettyProductName()`. Cores: Windows `GetLogicalProcessorInformationEx`, Linux `countCpuCores()` on
+  /proc/cpuinfo (pure, `SystemInfoParsing.cpp`). Screen: `QScreen` of the window (Qt Gui, so filled by MainWindow into
+  `SystemInfo::screenMm/screenPixels`); diagonal shown only if 7-40", else resolution alone; not yet seen on a real PC.
+  RAM type/slots: dropped (Linux needs root: a second password prompt). `MainWindow` runs `readSystemInfo()` once at launch (QtConcurrent), keeps the raw `SystemInfo` and
   shows `SystemInfoTest::evaluate()` (now a plain class with static functions, name kept as translation context) in a
   framed label above the table; ERROR colour if unreadable, never in the verdict. The run report's first section and
   the delivery sheet's model come from it.

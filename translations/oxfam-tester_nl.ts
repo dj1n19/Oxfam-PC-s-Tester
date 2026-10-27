@@ -280,31 +280,31 @@ Waar hoorde u hem?</translation>
 <context>
     <name>DeliveryAction</name>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="94"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="96"/>
         <source>Delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="127"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="129"/>
         <source>Which delivery sheet should be copied to the Desktop?</source>
         <translation type="unfinished">Welke leveringsfiche moet naar het bureaublad gekopieerd worden?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="137"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="139"/>
         <source>The delivery sheet could not be copied to the Desktop:
 %1</source>
         <translation type="unfinished">De leveringsfiche kon niet naar het bureaublad gekopieerd worden:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="147"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="149"/>
         <source>No delivery sheet on the Desktop (%1) nor in the &quot;%2&quot; folder (%3).
 Put &quot;%4&quot; or &quot;%5&quot; in one of them, then click again.</source>
         <translation type="unfinished">Geen leveringsfiche op het bureaublad (%1) noch in de map &quot;%2&quot; (%3).
 Zet &quot;%4&quot; of &quot;%5&quot; in een van beide en klik opnieuw.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="157"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="159"/>
         <source>The delivery sheet seems to be open in an office program. Close it first: otherwise saving it there will erase these results.
 
 Write anyway?</source>
@@ -313,28 +313,28 @@ Write anyway?</source>
 Toch schrijven?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="165"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="167"/>
         <source>The delivery sheet cannot be read:
 %1</source>
         <translation type="unfinished">Kan de pre-leveringsfiche niet lezen:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="192"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="194"/>
         <source>The model and shop lists could not be completed from &quot;%1&quot;:
 %2</source>
         <translation type="unfinished">De modellen- en winkellijsten konden niet aangevuld worden vanuit &quot;%1&quot;:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="206"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="208"/>
         <source>This PC reports &quot;%1&quot;, which is not in the model list.
 Choose its model in the list, or type the name of a new model:</source>
         <translation type="unfinished">Deze pc meldt &quot;%1&quot;, dat niet in de modellenlijst staat.
 Kies het model in de lijst, of typ de naam van een nieuw model:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="218"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="220"/>
         <source>Add &quot;%1&quot; to the model list?
 
 The sheets of the &quot;%2&quot; folder get it too, without the results of this PC, to share with the other technicians.</source>
@@ -343,14 +343,14 @@ The sheets of the &quot;%2&quot; folder get it too, without the results of this 
 De fiches in de map &quot;%2&quot; krijgen het ook, zonder de resultaten van deze pc, om te delen met de andere technici.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="239"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="241"/>
         <source>Which shop is this PC for?
 Choose it in the list, or type the name of a new shop:</source>
         <translation type="unfinished">Voor welke winkel is deze pc?
 Kies hem in de lijst, of typ de naam van een nieuwe winkel:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="249"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="251"/>
         <source>Add &quot;%1&quot; to the shop list?
 
 The sheets of the &quot;%2&quot; folder get it too, to share with the other technicians.</source>
@@ -359,49 +359,49 @@ The sheets of the &quot;%2&quot; folder get it too, to share with the other tech
 De fiches in de map &quot;%2&quot; krijgen het ook, om te delen met de andere technici.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="254"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="256"/>
         <source>The shop could not be added:
 %1</source>
         <translation type="unfinished">De winkel kon niet toegevoegd worden:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="293"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="295"/>
         <source>The sheets for the other technicians could not all be updated:
 %1</source>
         <translation type="unfinished">De fiches voor de andere technici konden niet allemaal bijgewerkt worden:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="310"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="312"/>
         <source>It was copied to the Desktop from:
 %1</source>
         <translation type="unfinished">Ze werd naar het bureaublad gekopieerd vanuit:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="316"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="318"/>
         <source>Sheets with the new names, for the other technicians:
 %1</source>
         <translation type="unfinished">Fiches met de nieuwe namen, voor de andere technici:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="223"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="225"/>
         <source>The model could not be added:
 %1</source>
         <translation type="unfinished">Kan het model niet toevoegen:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="302"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="304"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation type="unfinished">Kan de pre-leveringsfiche niet schrijven. Staat ze open in een kantoorprogramma?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="306"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="308"/>
         <source>Delivery sheet filled:
 %1
 
@@ -787,77 +787,77 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="158"/>
+        <location filename="../src/ui/MainWindow.cpp" line="165"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="159"/>
+        <location filename="../src/ui/MainWindow.cpp" line="166"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="160"/>
+        <location filename="../src/ui/MainWindow.cpp" line="167"/>
         <source>Run this test</source>
         <translation type="unfinished">Deze test uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="161"/>
+        <location filename="../src/ui/MainWindow.cpp" line="168"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="162"/>
+        <location filename="../src/ui/MainWindow.cpp" line="169"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="162"/>
+        <location filename="../src/ui/MainWindow.cpp" line="169"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="162"/>
+        <location filename="../src/ui/MainWindow.cpp" line="169"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="163"/>
+        <location filename="../src/ui/MainWindow.cpp" line="170"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="176"/>
+        <location filename="../src/ui/MainWindow.cpp" line="183"/>
         <source>This PC: reading...</source>
         <translation type="unfinished">Deze pc: wordt gelezen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="180"/>
+        <location filename="../src/ui/MainWindow.cpp" line="187"/>
         <source>This PC: %1</source>
         <translation type="unfinished">Deze pc: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="191"/>
+        <location filename="../src/ui/MainWindow.cpp" line="198"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="193"/>
+        <location filename="../src/ui/MainWindow.cpp" line="200"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="306"/>
+        <location filename="../src/ui/MainWindow.cpp" line="313"/>
         <source>This PC</source>
         <translation type="unfinished">Deze pc</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="315"/>
+        <location filename="../src/ui/MainWindow.cpp" line="322"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="317"/>
+        <location filename="../src/ui/MainWindow.cpp" line="324"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>
@@ -912,57 +912,62 @@ Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Dji
 <context>
     <name>SystemInfoTest</name>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="10"/>
-        <source>Desktop</source>
-        <translation type="unfinished">Desktop</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="11"/>
-        <source>Laptop</source>
-        <translation type="unfinished">Laptop</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="14"/>
-        <source>Unknown form factor</source>
-        <translation type="unfinished">Onbekend type behuizing</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="40"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="43"/>
         <source>Could not read system info (see details)</source>
         <translation type="unfinished">Kan de systeeminfo niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="48"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="51"/>
         <source>model</source>
         <translation type="unfinished">model</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="49"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="52"/>
         <source>CPU</source>
         <translation type="unfinished">CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="50"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="53"/>
         <source>RAM</source>
         <translation type="unfinished">RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="58"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="67"/>
+        <source>%1 cores / %2 threads</source>
+        <translation type="unfinished">%1 kernen / %2 threads</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="69"/>
+        <source>%1 threads</source>
+        <translation type="unfinished">%1 threads</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
         <source>%1 GiB RAM</source>
         <translation type="unfinished">%1 GiB RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="65"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
         <source>serial unknown</source>
         <translation type="unfinished">serienummer onbekend</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
         <source>S/N %1</source>
         <translation type="unfinished">Serienr. %1</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="76"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="77"/>
+        <source>screen %1&quot; %2x%3</source>
+        <translation type="unfinished">scherm %1&quot; %2x%3</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="79"/>
+        <source>screen %1x%2</source>
+        <translation type="unfinished">scherm %1x%2</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="99"/>
         <source>Missing: %1 | %2</source>
         <translation type="unfinished">Ontbreekt: %1 | %2</translation>
     </message>

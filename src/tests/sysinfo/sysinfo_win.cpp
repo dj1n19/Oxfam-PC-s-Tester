@@ -3,7 +3,33 @@
 #include <QSettings>
 
 #include <cstring>
+#include <vector>
 #include <windows.h>
+
+namespace {
+
+// Physical cores: one RelationProcessorCore record per core (variable size
+// records, hence the byte buffer). 0 if Windows refuses.
+int physicalCores()
+{
+    DWORD length = 0;
+    GetLogicalProcessorInformationEx(RelationProcessorCore, nullptr, &length);
+    std::vector<char> buffer(length);
+    auto* first = reinterpret_cast<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*>(buffer.data());
+    if (length == 0 || !GetLogicalProcessorInformationEx(RelationProcessorCore, first, &length))
+        return 0;
+    int cores = 0;
+    for (DWORD offset = 0; offset < length;) {
+        const auto* record = reinterpret_cast<const SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*>(buffer.data() + offset);
+        if (record->Size == 0)
+            break;
+        ++cores;
+        offset += record->Size;
+    }
+    return cores;
+}
+
+} // namespace
 
 // No PowerShell and no WMI: both are very slow just after start-up (timeouts
 // on shop laptops, 2026-10-15). These Windows calls answer in milliseconds.
@@ -39,6 +65,21 @@ SystemInfo readSystemInfo()
                            QSettings::NativeFormat);
     info.cpu = cpuKey.value(QStringLiteral("ProcessorNameString")).toString().simplified();
 
+    info.cores = physicalCores();
+    info.threads = int(GetActiveProcessorCount(ALL_PROCESSOR_GROUPS));
+
+    // What Settings > System > About shows. UBR = the update level (the
+    // number after the dot): it tells how far Windows Update has gone.
+    const QSettings osKey(QStringLiteral("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"),
+                          QSettings::NativeFormat);
+    QString displayVersion = osKey.value(QStringLiteral("DisplayVersion")).toString();   // "24H2"
+    if (displayVersion.isEmpty())
+        displayVersion = osKey.value(QStringLiteral("ReleaseId")).toString();             // before 20H2
+    const QString productName = osKey.value(QStringLiteral("ProductName")).toString();
+    const int build = osKey.value(QStringLiteral("CurrentBuildNumber")).toInt();
+    const int ubr = osKey.value(QStringLiteral("UBR")).toInt();
+    info.os = windowsVersionName(productName, displayVersion, build, ubr);
+
     // Installed RAM (Windows takes it from SMBIOS too), in KiB. If the
     // firmware does not say, the RAM Windows can use, a bit lower.
     QString ramSource = QStringLiteral("installed");
@@ -55,13 +96,17 @@ SystemInfo readSystemInfo()
 
     info.raw = QStringLiteral("SMBIOS %1.%2, %3 bytes, system structure %4\n"
                               "vendor=%5\nmodel=%6\nserial=%7\nchassis type=%8\n"
-                              "registry ProcessorNameString=%9\nRAM %10 bytes (%11)")
+                              "registry ProcessorNameString=%9\nRAM %10 bytes (%11)\n"
+                              "cores=%12 logical processors=%13\n"
+                              "registry ProductName=%14 DisplayVersion=%15 CurrentBuildNumber=%16 UBR=%17")
                    .arg(int(quint8(buffer[1]))).arg(int(quint8(buffer[2]))).arg(length)
                    .arg(ids.hasSystem ? QStringLiteral("found") : QStringLiteral("MISSING"))
                    .arg(info.vendor, info.model, info.serial.isEmpty() ? info.serialError : info.serial)
                    .arg(info.chassisType)
                    .arg(info.cpu)
                    .arg(info.ramBytes, 0, 'f', 0)
-                   .arg(ramSource);
+                   .arg(ramSource)
+                   .arg(info.cores).arg(info.threads)
+                   .arg(productName, displayVersion).arg(build).arg(ubr);
     return info;
 }

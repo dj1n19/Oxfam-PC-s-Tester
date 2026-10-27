@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QRegularExpression>
+#include <QSysInfo>
 
 namespace {
 
@@ -42,7 +43,11 @@ SystemInfo readSystemInfo()
     if (ok)
         info.chassisType = chassis;
 
-    info.cpu = procField(readText(QStringLiteral("/proc/cpuinfo")), QStringLiteral("model name"));
+    const QString cpuinfo = readText(QStringLiteral("/proc/cpuinfo"));
+    info.cpu = procField(cpuinfo, QStringLiteral("model name"));
+    countCpuCores(cpuinfo, &info.cores, &info.threads);
+    // PRETTY_NAME of /etc/os-release: "Linux Mint 22", "Arch Linux".
+    info.os = QSysInfo::prettyProductName();
 
     // "MemTotal:  15989996 kB" (kB here means KiB)
     const QString memTotal = procField(readText(QStringLiteral("/proc/meminfo")), QStringLiteral("MemTotal"));
@@ -51,10 +56,13 @@ SystemInfo readSystemInfo()
         info.ramBytes = kib * 1024.0;
 
     info.raw = QStringLiteral("sys_vendor=%1\nproduct_name=%2\nproduct_serial=%3\n"
-                              "chassis_type=%4\ncpuinfo model name=%5\nmeminfo MemTotal=%6")
+                              "chassis_type=%4\ncpuinfo model name=%5\nmeminfo MemTotal=%6\n"
+                              "cpuinfo: %7 cores, %8 processors\nos=%9 (kernel %10)")
                    .arg(info.vendor, info.model,
                         info.serial.isEmpty() ? info.serialError : info.serial)
                    .arg(info.chassisType)
-                   .arg(info.cpu, memTotal);
+                   .arg(info.cpu, memTotal)
+                   .arg(info.cores).arg(info.threads)
+                   .arg(info.os, QSysInfo::kernelVersion());
     return info;
 }

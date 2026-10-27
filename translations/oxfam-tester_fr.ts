@@ -280,31 +280,31 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>DeliveryAction</name>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="94"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="96"/>
         <source>Delivery sheet</source>
         <translation>Fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="127"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="129"/>
         <source>Which delivery sheet should be copied to the Desktop?</source>
         <translation>Quelle fiche de livraison copier sur le Bureau ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="137"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="139"/>
         <source>The delivery sheet could not be copied to the Desktop:
 %1</source>
         <translation>La fiche de livraison n&apos;a pas pu être copiée sur le Bureau :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="147"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="149"/>
         <source>No delivery sheet on the Desktop (%1) nor in the &quot;%2&quot; folder (%3).
 Put &quot;%4&quot; or &quot;%5&quot; in one of them, then click again.</source>
         <translation>Aucune fiche de livraison sur le Bureau (%1) ni dans le dossier « %2 » (%3).
 Mettez « %4 » ou « %5 » dans l&apos;un des deux, puis cliquez à nouveau.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="157"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="159"/>
         <source>The delivery sheet seems to be open in an office program. Close it first: otherwise saving it there will erase these results.
 
 Write anyway?</source>
@@ -313,28 +313,28 @@ Write anyway?</source>
 Écrire quand même ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="165"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="167"/>
         <source>The delivery sheet cannot be read:
 %1</source>
         <translation>Impossible de lire la fiche de pré-livraison :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="192"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="194"/>
         <source>The model and shop lists could not be completed from &quot;%1&quot;:
 %2</source>
         <translation>Les listes des modèles et des magasins n&apos;ont pas pu être complétées depuis « %1 » :
 %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="206"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="208"/>
         <source>This PC reports &quot;%1&quot;, which is not in the model list.
 Choose its model in the list, or type the name of a new model:</source>
         <translation>Ce PC indique « %1 », qui n&apos;est pas dans la liste des modèles.
 Choisissez son modèle dans la liste, ou tapez le nom d&apos;un nouveau modèle :</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="218"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="220"/>
         <source>Add &quot;%1&quot; to the model list?
 
 The sheets of the &quot;%2&quot; folder get it too, without the results of this PC, to share with the other technicians.</source>
@@ -343,14 +343,14 @@ The sheets of the &quot;%2&quot; folder get it too, without the results of this 
 Les fiches du dossier « %2 » le reçoivent aussi, sans les résultats de ce PC, pour les partager avec les autres techniciens.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="239"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="241"/>
         <source>Which shop is this PC for?
 Choose it in the list, or type the name of a new shop:</source>
         <translation>Pour quel magasin est ce PC ?
 Choisissez-le dans la liste, ou tapez le nom d&apos;un nouveau magasin :</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="249"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="251"/>
         <source>Add &quot;%1&quot; to the shop list?
 
 The sheets of the &quot;%2&quot; folder get it too, to share with the other technicians.</source>
@@ -359,49 +359,49 @@ The sheets of the &quot;%2&quot; folder get it too, to share with the other tech
 Les fiches du dossier « %2 » le reçoivent aussi, pour les partager avec les autres techniciens.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="254"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="256"/>
         <source>The shop could not be added:
 %1</source>
         <translation>Le magasin n&apos;a pas pu être ajouté :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="293"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="295"/>
         <source>The sheets for the other technicians could not all be updated:
 %1</source>
         <translation>Les fiches pour les autres techniciens n&apos;ont pas toutes pu être mises à jour :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="310"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="312"/>
         <source>It was copied to the Desktop from:
 %1</source>
         <translation>Elle a été copiée sur le Bureau depuis :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="316"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="318"/>
         <source>Sheets with the new names, for the other technicians:
 %1</source>
         <translation>Fiches avec les nouveaux noms, pour les autres techniciens :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="223"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="225"/>
         <source>The model could not be added:
 %1</source>
         <translation>Impossible d&apos;ajouter le modèle :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="302"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="304"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation>Impossible d&apos;écrire la fiche de pré-livraison. Est-elle ouverte dans un programme bureautique ?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="306"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="308"/>
         <source>Delivery sheet filled:
 %1
 
@@ -787,77 +787,77 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="158"/>
+        <location filename="../src/ui/MainWindow.cpp" line="165"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="159"/>
+        <location filename="../src/ui/MainWindow.cpp" line="166"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="160"/>
+        <location filename="../src/ui/MainWindow.cpp" line="167"/>
         <source>Run this test</source>
         <translation>Lancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="161"/>
+        <location filename="../src/ui/MainWindow.cpp" line="168"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="162"/>
+        <location filename="../src/ui/MainWindow.cpp" line="169"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="162"/>
+        <location filename="../src/ui/MainWindow.cpp" line="169"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="162"/>
+        <location filename="../src/ui/MainWindow.cpp" line="169"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="163"/>
+        <location filename="../src/ui/MainWindow.cpp" line="170"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="176"/>
+        <location filename="../src/ui/MainWindow.cpp" line="183"/>
         <source>This PC: reading...</source>
         <translation>Ce PC : lecture...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="180"/>
+        <location filename="../src/ui/MainWindow.cpp" line="187"/>
         <source>This PC: %1</source>
         <translation>Ce PC : %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="191"/>
+        <location filename="../src/ui/MainWindow.cpp" line="198"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="193"/>
+        <location filename="../src/ui/MainWindow.cpp" line="200"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="306"/>
+        <location filename="../src/ui/MainWindow.cpp" line="313"/>
         <source>This PC</source>
         <translation>Ce PC</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="315"/>
+        <location filename="../src/ui/MainWindow.cpp" line="322"/>
         <source>Details saved to %1</source>
         <translation>Détails enregistrés dans %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="317"/>
+        <location filename="../src/ui/MainWindow.cpp" line="324"/>
         <source>Could not save the details (%1): %2</source>
         <translation>Impossible d&apos;enregistrer les détails (%1) : %2</translation>
     </message>
@@ -912,57 +912,62 @@ Les tests qui ont besoin de seuils seront en ERREUR. Recopiez tout le dossier «
 <context>
     <name>SystemInfoTest</name>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="10"/>
-        <source>Desktop</source>
-        <translation>Ordinateur fixe</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="11"/>
-        <source>Laptop</source>
-        <translation>Portable</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="14"/>
-        <source>Unknown form factor</source>
-        <translation>Type de boîtier inconnu</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="40"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="43"/>
         <source>Could not read system info (see details)</source>
         <translation>Impossible de lire les infos système (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="48"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="51"/>
         <source>model</source>
         <translation>modèle</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="49"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="52"/>
         <source>CPU</source>
         <translation>CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="50"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="53"/>
         <source>RAM</source>
         <translation>RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="58"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="67"/>
+        <source>%1 cores / %2 threads</source>
+        <translation>%1 cœurs / %2 threads</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="69"/>
+        <source>%1 threads</source>
+        <translation>%1 threads</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
         <source>%1 GiB RAM</source>
         <translation>%1 Gio de RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="65"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
         <source>serial unknown</source>
         <translation>n° de série inconnu</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
         <source>S/N %1</source>
         <translation>N° de série %1</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="76"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="77"/>
+        <source>screen %1&quot; %2x%3</source>
+        <translation>écran %1&quot; %2x%3</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="79"/>
+        <source>screen %1x%2</source>
+        <translation>écran %1x%2</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="99"/>
         <source>Missing: %1 | %2</source>
         <translation>Manquant : %1 | %2</translation>
     </message>

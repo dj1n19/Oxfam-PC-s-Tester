@@ -995,9 +995,66 @@ private slots:
         QCOMPARE(r.status, Status::Pass);
         QVERIFY(r.summary.contains("ThinkPad T480"));
         QVERIFY(r.summary.contains("8.0 GiB"));
-        QVERIFY(r.summary.contains("Laptop"));
+        QVERIFY(!r.summary.contains("Laptop"));          // form factor: report only
+        QVERIFY(r.details.contains("Form factor: Laptop"));
         QVERIFY(r.summary.contains("S/N PF1ABCDE"));   // shown in the panel: the technician may copy it
         QVERIFY(r.details.contains("PF1ABCDE"));
+        QCOMPARE(r.summary.count('\n'), 1);            // two lines: identity, then hardware
+    }
+
+    void systemInfoExtras()
+    {
+        SystemInfo s = fullSystem();
+        s.cores = 4;
+        s.threads = 8;
+        s.os = "Windows 11 Pro 24H2 (build 26100.2033)";
+        s.screenMm = QSizeF(309, 174);         // 14.0" laptop panel
+        s.screenPixels = QSize(1920, 1080);
+        const QString summary = SystemInfoTest::evaluate(s).summary;
+        QVERIFY(summary.contains("i5-8350U CPU @ 1.70GHz (4 cores / 8 threads)"));
+        QVERIFY(summary.contains("Windows 11 Pro 24H2"));
+        QVERIFY(summary.contains("screen 14.0\" 1920x1080"));
+
+        // A driver that gives no (or an absurd) size: the resolution alone.
+        s.screenMm = QSizeF(16, 9);
+        QVERIFY(SystemInfoTest::evaluate(s).summary.contains("screen 1920x1080"));
+        // Nothing known: nothing shown, still a pass (these are extras).
+        s.os.clear();
+        s.cores = s.threads = 0;
+        s.screenPixels = QSize();
+        const TestResult bare = SystemInfoTest::evaluate(s);
+        QCOMPARE(bare.status, Status::Pass);
+        QVERIFY(!bare.summary.contains("screen"));
+        QVERIFY(!bare.summary.contains("cores"));
+    }
+
+    void windowsVersionNames()
+    {
+        // The registry still says "Windows 10" on Windows 11: the build decides.
+        QCOMPARE(windowsVersionName("Windows 10 Pro", "24H2", 26100, 2033),
+                 QString("Windows 11 Pro 24H2 (build 26100.2033)"));
+        QCOMPARE(windowsVersionName("Windows 10 Pro", "22H2", 19045, 5011),
+                 QString("Windows 10 Pro 22H2 (build 19045.5011)"));
+        QCOMPARE(windowsVersionName("Windows 10 Home", "", 17763, 0), QString("Windows 10 Home (build 17763)"));
+        QVERIFY(windowsVersionName("", "", 0, 0).isEmpty());
+    }
+
+    void cpuinfoCores()
+    {
+        // 2 cores with Hyper-Threading (processors 0-3), the shape of /proc/cpuinfo.
+        const QString cpuinfo =
+            "processor\t: 0\nphysical id\t: 0\ncore id\t\t: 0\n\n"
+            "processor\t: 1\nphysical id\t: 0\ncore id\t\t: 1\n\n"
+            "processor\t: 2\nphysical id\t: 0\ncore id\t\t: 0\n\n"
+            "processor\t: 3\nphysical id\t: 0\ncore id\t\t: 1\n";
+        int cores = -1, threads = -1;
+        countCpuCores(cpuinfo, &cores, &threads);
+        QCOMPARE(cores, 2);
+        QCOMPARE(threads, 4);
+        // No "core id" (some virtual machines): cores unknown.
+        countCpuCores("processor\t: 0\nmodel name\t: QEMU\n", &cores, &threads);
+        QCOMPARE(cores, 0);
+        QCOMPARE(threads, 1);
     }
 
     void systemInfoMissingSerialIsOptional()
