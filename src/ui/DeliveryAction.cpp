@@ -1,7 +1,6 @@
 #include "ui/DeliveryAction.h"
 
-#include <utility>
-#include <vector>
+#include <map>
 
 #include <QDate>
 #include <QDir>
@@ -20,8 +19,7 @@ namespace {
 
 const QString kSheetsFolder = QStringLiteral("delivery-sheets");
 
-// A name added to a list of the sheet (new model, new shop).
-using Added = std::vector<std::pair<SheetList, QString>>;
+constexpr SheetList kLists[] = {SheetList::Models, SheetList::Shops};
 
 // LibreOffice and OpenOffice leave ".~lock.<name>#" next to an open file,
 // some programs "~$<name>". They do not stop us from writing, but whoever
@@ -73,20 +71,20 @@ bool readSheet(const QString& path, XlsxEditor* sheet, QString* error)
     return sheet->load(file.readAll(), error) && DeliverySheet::check(*sheet, error);
 }
 
-// Adds the new names to a sheet of delivery-sheets/, which has no results:
-// only its lists change.
-bool addToSharedSheet(const QDir& dir, const QString& fileName, const Added& added, QString* error)
+// Adds to target's lists the names that source has and target lacks.
+// *changed tells whether anything was added.
+bool addMissingNames(XlsxEditor& target, const XlsxEditor& source, bool* changed, QString* error)
 {
-    XlsxEditor sheet;
-    if (!readSheet(dir.absoluteFilePath(fileName), &sheet, error))
-        return false;
-    for (const auto& [list, name] : added) {
-        if (DeliverySheet::findName(DeliverySheet::names(sheet, list), name).isEmpty()
-            && !DeliverySheet::addName(sheet, list, name, error))
+    for (const SheetList list : kLists) {
+        const QStringList missing =
+            DeliverySheet::missingNames(DeliverySheet::names(target, list), DeliverySheet::names(source, list));
+        if (missing.isEmpty())
+            continue;
+        if (!DeliverySheet::addNames(target, list, missing, error))
             return false;
+        *changed = true;
     }
-    const QByteArray data = sheet.save(error);
-    return !data.isEmpty() && writeWithBackup(dir, fileName, data, error);
+    return true;
 }
 
 } // namespace
@@ -110,7 +108,8 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
 
     // None: copy the one of the system's language from delivery-sheets/.
     QString copiedFrom;
-    const QString sheetsPath = rootSubfolder(kSheetsFolder, &error);
+    QString sheetsError;
+    const QString sheetsPath = rootSubfolder(kSheetsFolder, &sheetsError);
     const QDir sheets(sheetsPath);
     if (path.isEmpty() && !sheetsPath.isEmpty()) {
         QStringList available;
@@ -123,7 +122,7 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
             chosen = DeliverySheet::fileName(language);
             if (chosen.isEmpty()) {   // system neither French nor Dutch: ask
                 bool ok = false;
-                const QStringList languages{QStringLiteral("Français"), QStringLiteral("Nederlands")};
+                const QStringList languages{QStringLiteral("Fran\u00e7ais"), QStringLiteral("Nederlands")};
                 const QString picked = QInputDialog::getItem(
                     parent, title, tr("Which delivery sheet should be copied to the Desktop?"), languages, 0,
                     false, &ok);
@@ -148,7 +147,7 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
                              tr("No delivery sheet on the Desktop (%1) nor in the \"%2\" folder (%3).\n"
                                 "Put \"%4\" or \"%5\" in one of them, then click again.")
                                  .arg(QDir::toNativeSeparators(desktop.path()), kSheetsFolder,
-                                      QDir::toNativeSeparators(sheetsPath.isEmpty() ? error : sheetsPath),
+                                      QDir::toNativeSeparators(sheetsPath.isEmpty() ? sheetsError : sheetsPath),
                                       DeliverySheet::fileNames().value(0), DeliverySheet::fileNames().value(1)));
         return;
     }
@@ -167,9 +166,38 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
         return;
     }
 
+    // 2b. The sheets of delivery-sheets/ (French and Dutch). Their lists and
+    // this sheet's are merged: Oxfam's two files did not hold the same shops
+    // (the Dutch one had Leuven and Vilvoorde), and the dialogs below should
+    // offer every name.
+    std::map<QString, XlsxEditor> shared;   // file name -> sheet
+    QStringList problems;
+    if (sheetsPath.isEmpty()) {
+        problems << sheetsError;
+    } else {
+        for (const QString& name : DeliverySheet::fileNames()) {
+            if (!sheets.exists(name))
+                continue;
+            QString why;
+            if (!readSheet(sheets.absoluteFilePath(name), &shared[name], &why)) {
+                problems << QStringLiteral("%1: %2").arg(name, why);
+                shared.erase(name);
+            }
+        }
+    }
+    for (const auto& [name, other] : shared) {
+        bool changed = false;
+        if (!addMissingNames(sheet, other, &changed, &error)) {
+            QMessageBox::warning(parent, title,
+                                 tr("The model and shop lists could not be completed from \"%1\":\n%2")
+                                     .arg(name, error));
+            return;
+        }
+    }
+
     // 3. The model must be one of the dropdown's list. When the PC's own
     // name is not in it (Lenovo reports "20HD..."), the technician picks it.
-    Added added;
+    bool addedName = false;
     const QStringList models = DeliverySheet::names(sheet, SheetList::Models);
     QString model = DeliverySheet::findName(models, input.systemModel);
     if (model.isEmpty()) {
@@ -196,7 +224,7 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
                 return;
             }
             model = chosen;
-            added.push_back({SheetList::Models, chosen});
+            addedName = true;
         }
         // A new model not added: the model cell is left for the technician.
     }
@@ -227,41 +255,43 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
                 return;
             }
             shop = chosen;
-            added.push_back({SheetList::Shops, chosen});
+            addedName = true;
         }
         // A new shop not added: the shop cell is left for the technician.
     }
 
-    // 5. New names go into every sheet of delivery-sheets/ (French AND
-    // Dutch: their lists stay the same). Missing there: the Desktop one is
-    // saved, now, before the results are written into it.
+    // 5. Each sheet of delivery-sheets/ gets the names it lacks: new ones, or
+    // names only the other language had. Written (with a backup) only if
+    // something was added. When the Desktop sheet's language is missing there
+    // and a name was added, it is saved there, before the results go in.
     QStringList updated;
-    if (!added.empty()) {
-        QStringList problems;
-        if (sheetsPath.isEmpty()) {
-            problems << error;
-        } else {
-            for (const QString& name : DeliverySheet::fileNames()) {
-                QString why;
-                if (sheets.exists(name)) {
-                    if (addToSharedSheet(sheets, name, added, &why))
-                        updated << sheets.absoluteFilePath(name);
-                    else
-                        problems << QStringLiteral("%1: %2").arg(name, why);
-                } else if (name == info.fileName()) {
-                    const QByteArray clean = sheet.save(&why);
-                    if (!clean.isEmpty() && writeWithBackup(sheets, name, clean, &why))
-                        updated << sheets.absoluteFilePath(name);
-                    else
-                        problems << QStringLiteral("%1: %2").arg(name, why);
-                }
-            }
+    for (auto& [name, other] : shared) {
+        bool changed = false;
+        QString why;
+        bool ok = addMissingNames(other, sheet, &changed, &why);
+        if (ok && changed) {
+            const QByteArray data = other.save(&why);
+            ok = !data.isEmpty() && writeWithBackup(sheets, name, data, &why);
         }
-        if (!problems.isEmpty())
-            QMessageBox::warning(parent, title,
-                                 tr("The sheets for the other technicians could not all be updated:\n%1")
-                                     .arg(problems.join(QLatin1Char('\n'))));
+        if (!ok)
+            problems << QStringLiteral("%1: %2").arg(name, why);
+        else if (changed)
+            updated << sheets.absoluteFilePath(name);
     }
+    if (addedName && !sheetsPath.isEmpty() && !sheets.exists(info.fileName())) {
+        QString why;
+        const QByteArray clean = sheet.save(&why);
+        if (!clean.isEmpty() && writeWithBackup(sheets, info.fileName(), clean, &why))
+            updated << sheets.absoluteFilePath(info.fileName());
+        else
+            problems << QStringLiteral("%1: %2").arg(info.fileName(), why);
+    }
+    // Only worth a dialog when the technician changed something: a folder
+    // that cannot be created is otherwise none of their business.
+    if (!problems.isEmpty() && (addedName || !updated.isEmpty()))
+        QMessageBox::warning(parent, title,
+                             tr("The sheets for the other technicians could not all be updated:\n%1")
+                                 .arg(problems.join(QLatin1Char('\n'))));
 
     // 6. Fill and write.
     QByteArray filled;

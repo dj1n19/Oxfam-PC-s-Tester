@@ -117,14 +117,30 @@ QString findName(const QStringList& names, const QString& name)
     return QString();
 }
 
+QStringList missingNames(const QStringList& have, const QStringList& wanted)
+{
+    QStringList missing;
+    for (const QString& name : wanted) {
+        if (findName(have, name).isEmpty() && findName(missing, name).isEmpty())
+            missing << name.simplified();
+    }
+    return missing;
+}
+
 bool addName(XlsxEditor& sheet, SheetList list, const QString& name, QString* error)
+{
+    return addNames(sheet, list, {name}, error);
+}
+
+bool addNames(XlsxEditor& sheet, SheetList list, const QStringList& names, QString* error)
 {
     const QString tab = listTab(list);
     const std::map<int, QString> column = sheet.column(tab, QStringLiteral("A"));
     QStringList all;
     for (const auto& [row, text] : column)
         all << text;
-    all << name.simplified();
+    for (const QString& name : names)
+        all << name.simplified();
     all = sorted(all);
 
     // Written back from the list's first row, one name per row.

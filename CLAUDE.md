@@ -241,6 +241,9 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   the whole column A sorted. New names go, in one pass before the results are written, into EVERY sheet of
   `delivery-sheets/` (FR and NL, without results), each previous version kept as the hidden `.<name> (backup).xlsx`
   (`hideFile()`: dot + Windows hidden attribute). The Desktop sheet's language missing there: a clean copy is saved.
+- FR and NL lists are merged (developer's decision 2026-10-27: Oxfam's NL file had Leuven and Vilvoorde, the FR one
+  not). Each run: the Desktop sheet first gets every name of the `delivery-sheets/` sheets (so the dialogs offer them
+  all), then each shared sheet gets what it lacks (`missingNames()` + `addNames()`), written only if something was added.
 - **Why in place:** QXlsx was tried on a copy and lost all 6 dropdowns and the page setup. `XlsxEditor` rewrites only
   the changed cells (found with QXmlStreamReader offsets, inline strings, `s=` style kept) and copies every other zip
   entry raw. The FR file is saved by OnlyOffice (dropdowns in x14 extLst), the NL one by LibreOffice (standard

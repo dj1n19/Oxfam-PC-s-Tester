@@ -280,31 +280,31 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>DeliveryAction</name>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="96"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="94"/>
         <source>Delivery sheet</source>
         <translation>Fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="128"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="127"/>
         <source>Which delivery sheet should be copied to the Desktop?</source>
         <translation>Quelle fiche de livraison copier sur le Bureau ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="138"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="137"/>
         <source>The delivery sheet could not be copied to the Desktop:
 %1</source>
         <translation>La fiche de livraison n&apos;a pas pu être copiée sur le Bureau :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="148"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="147"/>
         <source>No delivery sheet on the Desktop (%1) nor in the &quot;%2&quot; folder (%3).
 Put &quot;%4&quot; or &quot;%5&quot; in one of them, then click again.</source>
         <translation>Aucune fiche de livraison sur le Bureau (%1) ni dans le dossier « %2 » (%3).
 Mettez « %4 » ou « %5 » dans l&apos;un des deux, puis cliquez à nouveau.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="158"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="157"/>
         <source>The delivery sheet seems to be open in an office program. Close it first: otherwise saving it there will erase these results.
 
 Write anyway?</source>
@@ -313,21 +313,28 @@ Write anyway?</source>
 Écrire quand même ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="166"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="165"/>
         <source>The delivery sheet cannot be read:
 %1</source>
         <translation>Impossible de lire la fiche de pré-livraison :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="178"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="192"/>
+        <source>The model and shop lists could not be completed from &quot;%1&quot;:
+%2</source>
+        <translation>Les listes des modèles et des magasins n&apos;ont pas pu être complétées depuis « %1 » :
+%2</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DeliveryAction.cpp" line="206"/>
         <source>This PC reports &quot;%1&quot;, which is not in the model list.
 Choose its model in the list, or type the name of a new model:</source>
         <translation>Ce PC indique « %1 », qui n&apos;est pas dans la liste des modèles.
 Choisissez son modèle dans la liste, ou tapez le nom d&apos;un nouveau modèle :</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="190"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="218"/>
         <source>Add &quot;%1&quot; to the model list?
 
 The sheets of the &quot;%2&quot; folder get it too, without the results of this PC, to share with the other technicians.</source>
@@ -336,14 +343,14 @@ The sheets of the &quot;%2&quot; folder get it too, without the results of this 
 Les fiches du dossier « %2 » le reçoivent aussi, sans les résultats de ce PC, pour les partager avec les autres techniciens.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="211"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="239"/>
         <source>Which shop is this PC for?
 Choose it in the list, or type the name of a new shop:</source>
         <translation>Pour quel magasin est ce PC ?
 Choisissez-le dans la liste, ou tapez le nom d&apos;un nouveau magasin :</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="221"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="249"/>
         <source>Add &quot;%1&quot; to the shop list?
 
 The sheets of the &quot;%2&quot; folder get it too, to share with the other technicians.</source>
@@ -352,49 +359,49 @@ The sheets of the &quot;%2&quot; folder get it too, to share with the other tech
 Les fiches du dossier « %2 » le reçoivent aussi, pour les partager avec les autres techniciens.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="226"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="254"/>
         <source>The shop could not be added:
 %1</source>
         <translation>Le magasin n&apos;a pas pu être ajouté :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="262"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="293"/>
         <source>The sheets for the other technicians could not all be updated:
 %1</source>
         <translation>Les fiches pour les autres techniciens n&apos;ont pas toutes pu être mises à jour :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="280"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="310"/>
         <source>It was copied to the Desktop from:
 %1</source>
         <translation>Elle a été copiée sur le Bureau depuis :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="286"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="316"/>
         <source>Sheets with the new names, for the other technicians:
 %1</source>
         <translation>Fiches avec les nouveaux noms, pour les autres techniciens :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="195"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="223"/>
         <source>The model could not be added:
 %1</source>
         <translation>Impossible d&apos;ajouter le modèle :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="272"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="302"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation>Impossible d&apos;écrire la fiche de pré-livraison. Est-elle ouverte dans un programme bureautique ?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="276"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="306"/>
         <source>Delivery sheet filled:
 %1
 

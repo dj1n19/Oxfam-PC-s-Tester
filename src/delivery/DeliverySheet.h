@@ -41,8 +41,13 @@ QStringList sorted(QStringList names);
 // The list's spelling of name (case and spaces ignored), or "" if absent.
 QString findName(const QStringList& names, const QString& name);
 
-// Adds a name and writes the whole column back sorted, so the dropdown is
+// The names of wanted that have does not hold (case and spaces ignored),
+// each once. Used to keep the French and Dutch lists the same.
+QStringList missingNames(const QStringList& have, const QStringList& wanted);
+
+// Adds names and writes the whole column back sorted, so the dropdown is
 // alphabetical too (it takes the whole column).
+bool addNames(XlsxEditor& sheet, SheetList list, const QStringList& names, QString* error);
 bool addName(XlsxEditor& sheet, SheetList list, const QString& name, QString* error);
 
 // The shop the sheet already holds ("" if none).

@@ -1254,6 +1254,46 @@ private slots:
         QCOMPARE(DeliverySheet::names(reread, SheetList::Models), DeliverySheet::names(sheet, SheetList::Models));
     }
 
+    void deliverySheetMissingNames()
+    {
+        const QStringList fr{"Ixelles", "Li\u00e8ge", "Uccle"};
+        const QStringList nl{"ixelles", "Leuven Diestsestraat", "Vilvoorde  Leuvensestraat", "Leuven Diestsestraat"};
+        // Case and spaces ignored, each name once, spelling of the source kept (spaces tidied).
+        QCOMPARE(DeliverySheet::missingNames(fr, nl),
+                 (QStringList{"Leuven Diestsestraat", "Vilvoorde Leuvensestraat"}));
+        QCOMPARE(DeliverySheet::missingNames(nl, fr), (QStringList{"Li\u00e8ge", "Uccle"}));
+        QVERIFY(DeliverySheet::missingNames(fr, fr).isEmpty());
+    }
+
+    // Oxfam's French and Dutch sheets did not hold the same shops: merged.
+    void deliverySheetMergeLists()
+    {
+        XlsxEditor fr, nl;
+        QString error;
+        QVERIFY2(fr.load(sample("delivery_sheet_fr.xlsx"), &error), qPrintable(error));
+        QVERIFY2(nl.load(sample("delivery_sheet_nl.xlsx"), &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::addName(nl, SheetList::Shops, "Leuven Diestsestraat", &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::addName(fr, SheetList::Models, "Lenovo T480", &error), qPrintable(error));
+
+        for (const SheetList list : {SheetList::Models, SheetList::Shops}) {
+            const QStringList missing = DeliverySheet::missingNames(DeliverySheet::names(fr, list),
+                                                                    DeliverySheet::names(nl, list));
+            QVERIFY2(DeliverySheet::addNames(fr, list, missing, &error), qPrintable(error));
+            QVERIFY2(DeliverySheet::addNames(nl, list, DeliverySheet::missingNames(DeliverySheet::names(nl, list),
+                                                                                   DeliverySheet::names(fr, list)),
+                                             &error),
+                     qPrintable(error));
+        }
+        XlsxEditor reread;
+        QVERIFY2(reread.load(fr.save(&error), &error), qPrintable(error));
+        const QStringList shops = DeliverySheet::names(reread, SheetList::Shops);
+        QVERIFY(shops.contains("Leuven Diestsestraat"));
+        QCOMPARE(shops, DeliverySheet::sorted(shops));
+        QVERIFY(DeliverySheet::names(nl, SheetList::Models).contains("Lenovo T480"));
+        for (const SheetList list : {SheetList::Models, SheetList::Shops})
+            QCOMPARE(DeliverySheet::names(fr, list).size(), DeliverySheet::names(nl, list).size());
+    }
+
     void deliverySheetSorting()
     {
         // Case and accents ignored: E and \u00c9 together, "brugge" between B and C.
