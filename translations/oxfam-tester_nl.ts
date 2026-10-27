@@ -226,53 +226,53 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">CPU-temperatuur</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="128"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation type="unfinished">Kan de CPU-temperatuur niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="134"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="136"/>
         <source>No CPU temperature sensor or speed counter readable on this PC</source>
         <translation type="unfinished">Geen CPU-temperatuursensor of snelheidsteller leesbaar op deze pc</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="184"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="186"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation type="unfinished">Geen temperatuurmeting tijdens de belastingstest (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="190"/>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="218"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="192"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="220"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="197"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="199"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation type="unfinished">Piek %1 °C onder belasting (in rust %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="203"/>
-        <source>Sensor did not react to load (%1 C): not the CPU, cannot judge</source>
-        <translation type="unfinished">Sensor reageerde niet op de belasting (%1 °C): niet de CPU, geen oordeel mogelijk</translation>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="205"/>
+        <source>Sensor barely reacted to load (%1 C): not the CPU, cannot judge</source>
+        <translation type="unfinished">Sensor reageerde nauwelijks op de belasting (%1 °C): niet de CPU, geen oordeel mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="213"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
         <source>No speed reading during the load test (see details)</source>
         <translation type="unfinished">Geen snelheidsmeting tijdens de belastingstest (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="232"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="234"/>
         <source>speed %1 % of base</source>
         <translation type="unfinished">snelheid %1 % van de basissnelheid</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="236"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="238"/>
         <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
         <translation type="unfinished">vertraagd tot %1 % van de basissnelheid op batterij: sluit de lader aan en druk opnieuw op STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="239"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="241"/>
         <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
         <translation type="unfinished">vertraagd tot %1 % van de basissnelheid onder belasting: oververhit? (ventilator, stof, koelpasta)</translation>
     </message>

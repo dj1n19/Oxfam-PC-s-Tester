@@ -226,53 +226,53 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>Température CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="128"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation>Impossible de lire la température CPU (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="134"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="136"/>
         <source>No CPU temperature sensor or speed counter readable on this PC</source>
         <translation>Aucun capteur de température ni compteur de vitesse CPU lisible sur ce PC</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="184"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="186"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation>Aucune mesure de température pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="190"/>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="218"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="192"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="220"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="197"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="199"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation>Pic %1 °C en charge (au repos %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="203"/>
-        <source>Sensor did not react to load (%1 C): not the CPU, cannot judge</source>
-        <translation>Le capteur n&apos;a pas réagi à la charge (%1 °C) : ce n&apos;est pas le CPU, impossible de juger</translation>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="205"/>
+        <source>Sensor barely reacted to load (%1 C): not the CPU, cannot judge</source>
+        <translation>Le capteur a à peine réagi à la charge (%1 °C) : ce n&apos;est pas le CPU, impossible de juger</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="213"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
         <source>No speed reading during the load test (see details)</source>
         <translation>Aucune mesure de vitesse pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="232"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="234"/>
         <source>speed %1 % of base</source>
         <translation>vitesse %1 % de la fréquence de base</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="236"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="238"/>
         <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
         <translation>ralenti à %1 % de la fréquence de base sur batterie : branchez le chargeur et appuyez à nouveau sur DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="239"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="241"/>
         <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
         <translation>ralenti à %1 % de la fréquence de base en charge : surchauffe ? (ventilateur, poussière, pâte thermique)</translation>
     </message>

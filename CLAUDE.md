@@ -340,7 +340,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
   thermal zones `x86_pkg_temp`, `acpitz`. Windows: PDH counter `\Thermal Zone Information(*)\Temperature` (kelvin,
   the same ACPI zones as WMI's `MSAcpi_ThermalZoneTemperature`, hottest plausible zone); no kernel driver (LibreHardwareMonitor/WinRing0 rejected: flagged by Defender).
-  A sensor that rises < 1 C under load is not the CPU: Skipped instead of Pass (too hot still fails).
+  A sensor that rises < 5 C under load is not the CPU: Skipped instead of Pass (too hot still fails). Was 1 C until
+  2026-10-27: on 7 Surface Pro 7 (Win11) the zone `\_SB._SAN.TZ01` rose only 1-3 C at 220 % speed and showed "OK, peak 33 C".
   Readings come from `sampleCpu(seconds, startLoad)`: reading at rest, then `startLoad()` starts the burn threads only
   if something is readable, then ~1 reading/s. Windows (2026-10-26, PDH instead of a PowerShell loop; not yet run on
   Windows): one PDH query, collected every second; the values are turned into a reading by the pure

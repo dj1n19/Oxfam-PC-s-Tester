@@ -13,9 +13,11 @@ namespace {
 // limit in seconds), and keeps the test well under the 60 s watchdog.
 constexpr int kLoadSeconds = 30;
 
-// Under full load a CPU sensor always moves by more than this. A value that
-// does not move is not measuring the CPU (fixed ACPI zone on some PCs).
-constexpr double kMinRiseC = 1.0;
+// Under full load a CPU sensor always moves by more than this: +20 C in 30 s
+// on Arch (coretemp). A sensor that barely moves is not measuring the CPU:
+// fixed ACPI zone (ThinkPad L380), or a case/board zone that warms slowly
+// (Surface Pro 7 \_SB._SAN.TZ01: +1 to +3 C at 220 % speed, 7 PCs, 2026-10-27).
+constexpr double kMinRiseC = 5.0;
 
 // The first seconds of the load do not count for the speed: the cores are
 // still waking up. Real Latitude 7420: 266 % of base from the start, then a
@@ -200,7 +202,7 @@ TestResult CpuTempTest::judgeTemperature(const CpuLoadRun& run, const Thresholds
     // ignores the load proves nothing: no green for it.
     if (r.status == Status::Pass && peak - idle < kMinRiseC) {
         r.status = Status::Skipped;
-        r.summary = tr("Sensor did not react to load (%1 C): not the CPU, cannot judge").arg(peak, 0, 'f', 0);
+        r.summary = tr("Sensor barely reacted to load (%1 C): not the CPU, cannot judge").arg(peak, 0, 'f', 0);
     }
     return r;
 }

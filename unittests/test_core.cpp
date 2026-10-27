@@ -717,7 +717,7 @@ private slots:
         lenovo.speeds = {184, 160, 151, 150, 148, 150};
         const TestResult l = CpuTempTest::evaluate(lenovo, t);
         QCOMPARE(l.status, Status::Pass);   // a deaf sensor does not hide a good speed
-        QVERIFY(l.summary.contains("did not react"));
+        QVERIFY(l.summary.contains("barely reacted"));
         QVERIFY(l.summary.contains("150 %"));
 
         // Latitude 7420, 3rd load in a row on battery: turbo budget spent, under base speed.
@@ -726,6 +726,21 @@ private slots:
         QCOMPARE(d.status, Status::Warn);   // on battery: never Fail
         QVERIFY(d.summary.contains("83 %"));
         QVERIFY(d.summary.contains("charger"));
+
+        // Surface Pro 7 (Win11, 2026-10-27): the zone rises by 1.0 C at 220 % speed.
+        // A case zone, not the CPU: the speed alone decides.
+        CpuLoadRun surface = speedRun({220, 220, 220, 196, 178, 176, 177}, false);
+        surface.idle = windowsCpuReading({{"\\_SB._SAN.TZ01", 322.05}, {"\\_SB._SAN.TZ02", 298}}, 63, false);
+        QCOMPARE(qRound(surface.idle.celsius), 49);
+        surface.samples = {48.9, 48.9, 48.9, 49.9};
+        const TestResult s = CpuTempTest::evaluate(surface, t);
+        QCOMPARE(s.status, Status::Pass);
+        QVERIFY(s.summary.contains("barely reacted"));
+        QVERIFY(!s.summary.contains("Peak"));
+        // +3 C (another Surface, 29.9 -> 32.9): still not the CPU.
+        surface.idle = windowsCpuReading({{"\\_SB._SAN.TZ01", 303.05}}, 63, false);
+        surface.samples = {29.9, 30.9, 31.9, 32.9};
+        QVERIFY(CpuTempTest::evaluate(surface, t).summary.contains("barely reacted"));
     }
 
     void thermalZones()
