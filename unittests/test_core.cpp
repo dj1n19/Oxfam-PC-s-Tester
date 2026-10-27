@@ -244,6 +244,8 @@ private slots:
             << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 5% worn, 37 C, 3860 h";
         QTest::newRow("Surface Pro 7 SK Hynix") << "smartctl_real_skhynix_hfb1m8.json"
             << "/dev/test HFB1M8MO331C0MR 256 GB: SMART OK, 25% worn, 46 C, 2585 h";
+        QTest::newRow("Surface Pro 7 Toshiba (2026-10-27)") << "smartctl_real_toshiba_kbg40zpz256g.json"
+            << "/dev/test KBG40ZPZ256G TOSHIBA MEMORY 256 GB: SMART OK, 13% worn, 46 C, 12674 h";
         QTest::newRow("HP ZBook WD SN730") << "smartctl_real_wd_sn730.json"
             << "/dev/test WDC PC SN730 SDBPNTY-1T00-1006 1024 GB: SMART OK, 1% worn, 29 C, 3307 h";
         QTest::newRow("HP ZBook Micron") << "smartctl_real_micron_mtfdkba1t0tfh.json"

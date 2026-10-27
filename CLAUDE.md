@@ -377,8 +377,8 @@ Known limitations:
 - DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
 - The old PowerShell `license_win.cpp` verified on real Windows.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
-- DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 7 NVMe models + the tester's USB stick (Windows,
-  2026-10-15, `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
+- DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 8 NVMe models + the tester's USB stick (Windows,
+  2026-10-15; Toshiba KBG40ZPZ256G from a Surface Pro 7 run report, 2026-10-27; `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
   disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
