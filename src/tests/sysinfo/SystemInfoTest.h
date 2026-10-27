@@ -1,22 +1,21 @@
 #pragma once
-#include <QFutureWatcher>
-#include "core/ITest.h"
+#include <QCoreApplication>
+#include "core/TestResult.h"
 #include "tests/sysinfo/SystemInfo.h"
 
 enum class FormFactor { Unknown, Desktop, Laptop };
 
-class SystemInfoTest : public ITest {
-    Q_OBJECT
+// What the "This PC" panel above the test list shows. Not a test of the
+// runner any more (developer's decision 2026-10-27): it identifies the PC,
+// it does not check hardware, so it never counts in the verdict. Read once
+// at launch (MainWindow, readSystemInfo() on a worker thread). The name stays:
+// it is the translation context of its texts.
+class SystemInfoTest {
+    Q_DECLARE_TR_FUNCTIONS(SystemInfoTest)   // tr() without being a QObject
 public:
-    explicit SystemInfoTest(QObject* parent = nullptr);
-
-    QString name() const override { return tr("System info"); }
-    void run() override;
-
     // Pure functions: easy to unit test without any hardware.
     static FormFactor formFactorFromChassis(int smbiosChassisType);
+    // status: Pass, or Error if the probe failed or a value is missing.
+    // summary: one line for the panel, note: "vendor model", details: raw values.
     static TestResult evaluate(const SystemInfo& info);
-
-private:
-    QFutureWatcher<SystemInfo> m_watcher;
 };

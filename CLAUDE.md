@@ -315,7 +315,12 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   Since 2026-10-26, verified 2026-10-27 on 7 Surface Pro 7, Win11. `powercfg /batteryreport` was dropped: it also gathers weeks of usage
   history and timed out (30 s) on every shop laptop just after start-up).
   WMI `BatteryStaticData` was dropped: "Generic Failure" on a ThinkPad 13 (Win10) and a Latitude 7420 (Win11), even as admin.
-- Test: `SystemInfoTest`: vendor, model, serial, CPU, RAM, form factor from the SMBIOS chassis type. Runs first.
+- **"This PC" panel** (was the test `SystemInfoTest` until 2026-10-27, developer's decision: it identifies the PC, it
+  does not check hardware): vendor, model, serial (shown as "S/N", selectable), CPU, RAM, form factor from the SMBIOS
+  chassis type. `MainWindow` runs `readSystemInfo()` once at launch (QtConcurrent), keeps the raw `SystemInfo` and
+  shows `SystemInfoTest::evaluate()` (now a plain class with static functions, name kept as translation context) in a
+  framed label above the table; ERROR colour if unreadable, never in the verdict. The run report's first section and
+  the delivery sheet's model come from it.
   Linux: `/sys/class/dmi/id` + `/proc` (usable RAM). Windows (2026-10-26, no PowerShell; verified 2026-10-27 on 7 Surface Pro 7, Win11):
   raw SMBIOS table from `GetSystemFirmwareTable('RSMB')` parsed by `parseSmbios()` (unit tested on a hand-made
   table), CPU name from the registry (`QSettings` NativeFormat, read only), installed RAM from

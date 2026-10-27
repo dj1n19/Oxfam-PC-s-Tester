@@ -1,8 +1,6 @@
 #include "tests/sysinfo/SystemInfoTest.h"
 
-#include <QCoreApplication>
 #include <QStringList>
-#include <QtConcurrent>
 
 namespace {
 
@@ -17,18 +15,6 @@ QString formFactorName(FormFactor f)
 }
 
 } // namespace
-
-SystemInfoTest::SystemInfoTest(QObject* parent) : ITest(parent)
-{
-    connect(&m_watcher, &QFutureWatcher<SystemInfo>::finished, this, [this] {
-        emit finished(evaluate(m_watcher.result()));
-    });
-}
-
-void SystemInfoTest::run()
-{
-    m_watcher.setFuture(QtConcurrent::run(&readSystemInfo));
-}
 
 // SMBIOS spec, "System Enclosure or Chassis Types". Linux and Windows both
 // give us this same number, so the mapping lives here and not per OS.
@@ -81,6 +67,7 @@ TestResult SystemInfoTest::evaluate(const SystemInfo& info)
                                    "is readable by root only.)\n\n%2")
                         .arg(info.serialError, info.raw);
     } else {
+        parts << tr("S/N %1").arg(info.serial);
         r.details = QStringLiteral("Serial: %1\n\n%2").arg(info.serial, info.raw);
     }
 

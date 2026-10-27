@@ -787,62 +787,77 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="136"/>
+        <location filename="../src/ui/MainWindow.cpp" line="155"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="137"/>
+        <location filename="../src/ui/MainWindow.cpp" line="156"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="138"/>
+        <location filename="../src/ui/MainWindow.cpp" line="157"/>
         <source>Run this test again</source>
         <translation type="unfinished">Deze test opnieuw uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="158"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="141"/>
+        <location filename="../src/ui/MainWindow.cpp" line="160"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="153"/>
+        <location filename="../src/ui/MainWindow.cpp" line="173"/>
+        <source>This PC: reading...</source>
+        <translation type="unfinished">Deze pc: wordt gelezen...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="177"/>
+        <source>This PC: %1</source>
+        <translation type="unfinished">Deze pc: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="188"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="155"/>
+        <location filename="../src/ui/MainWindow.cpp" line="190"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="260"/>
+        <location filename="../src/ui/MainWindow.cpp" line="290"/>
+        <source>This PC</source>
+        <translation type="unfinished">Deze pc</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="296"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="262"/>
+        <location filename="../src/ui/MainWindow.cpp" line="298"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>
@@ -850,12 +865,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="44"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="46"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -897,57 +912,57 @@ Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Dji
 <context>
     <name>SystemInfoTest</name>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.h" line="13"/>
-        <source>System info</source>
-        <translation type="unfinished">Systeeminfo</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="12"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="10"/>
         <source>Desktop</source>
         <translation type="unfinished">Desktop</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="13"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="11"/>
         <source>Laptop</source>
         <translation type="unfinished">Laptop</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="16"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="14"/>
         <source>Unknown form factor</source>
         <translation type="unfinished">Onbekend type behuizing</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="54"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="40"/>
         <source>Could not read system info (see details)</source>
         <translation type="unfinished">Kan de systeeminfo niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="48"/>
         <source>model</source>
         <translation type="unfinished">model</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="63"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="49"/>
         <source>CPU</source>
         <translation type="unfinished">CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="64"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="50"/>
         <source>RAM</source>
         <translation type="unfinished">RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="72"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="58"/>
         <source>%1 GiB RAM</source>
         <translation type="unfinished">%1 GiB RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="79"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="65"/>
         <source>serial unknown</source>
         <translation type="unfinished">serienummer onbekend</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="89"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
+        <source>S/N %1</source>
+        <translation type="unfinished">Serienr. %1</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="76"/>
         <source>Missing: %1 | %2</source>
         <translation type="unfinished">Ontbreekt: %1 | %2</translation>
     </message>

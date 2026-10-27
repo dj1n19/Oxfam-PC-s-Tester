@@ -13,10 +13,12 @@
 #include <QStatusBar>
 #include <QTableWidget>
 #include <QVBoxLayout>
+#include <QtConcurrent>
 
 #include "core/TestRunner.h"
 #include "core/Verdict.h"
 #include "report/RunReport.h"
+#include "tests/sysinfo/SystemInfoTest.h"
 #include "ui/Language.h"
 #include "ui/Theme.h"
 
@@ -84,6 +86,14 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
     top->addWidget(m_language);
     layout->addLayout(top);
 
+    // Which PC this is, read at launch: known before START, for the run
+    // report and the delivery sheet, and never part of the verdict.
+    m_pcInfo = new QLabel(central);
+    m_pcInfo->setObjectName(QStringLiteral("pcInfo"));   // framed, see Theme.cpp
+    m_pcInfo->setWordWrap(true);
+    m_pcInfo->setTextInteractionFlags(Qt::TextSelectableByMouse);   // the serial can be copied
+    layout->addWidget(m_pcInfo);
+
     m_table = new QTableWidget(m_runner.count(), ColCount, central);
     m_table->verticalHeader()->hide();
     m_table->horizontalHeader()->setStretchLastSection(true);
@@ -119,6 +129,15 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
         updateButtons();
     });
     updateButtons();
+
+    // Milliseconds since PowerShell is gone, but still file reads and system
+    // calls: on a worker thread, never on the UI thread.
+    connect(&m_pcWatcher, &QFutureWatcher<SystemInfo>::finished, this, [this] {
+        m_pc = m_pcWatcher.result();
+        m_pcRead = true;
+        showPcInfo();
+    });
+    m_pcWatcher.setFuture(QtConcurrent::run(&readSystemInfo));
 }
 
 // setLanguage() makes Qt send LanguageChange to every widget.
@@ -139,12 +158,28 @@ void MainWindow::retranslateUi()
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
     m_details->setPlaceholderText(tr("Select a test to see the raw details."));
+    showPcInfo();
     for (int i = 0; i < m_runner.count(); ++i) {
         m_table->item(i, ColTest)->setText(m_runner.test(i).name());
         setStatusCell(i, m_table->item(i, ColStatus)->data(Qt::UserRole).toInt());
     }
     if (!m_verdict->text().isEmpty())
         m_verdict->setText(computeVerdict(statuses()).text);
+}
+
+void MainWindow::showPcInfo()
+{
+    if (!m_pcRead) {
+        m_pcInfo->setText(tr("This PC: reading..."));
+        return;
+    }
+    const TestResult pc = SystemInfoTest::evaluate(m_pc);
+    m_pcInfo->setText(tr("This PC: %1").arg(pc.summary));
+    m_pcInfo->setToolTip(pc.details);
+    // Normal text when read; the ERROR colour if not (the model is then asked
+    // for when the delivery sheet is filled).
+    const QColor color = pc.status == Status::Pass ? Theme::text() : Theme::statusColor(pc.status);
+    m_pcInfo->setStyleSheet(QStringLiteral("color:%1;").arg(color.name()));
 }
 
 void MainWindow::setStatusCell(int row, int state)
@@ -249,12 +284,13 @@ void MainWindow::saveReport(const Verdict& verdict)
     report.when = QDateTime::currentDateTime();
     report.version = QCoreApplication::applicationVersion();
     report.verdict = verdict.text;
-    for (int i = 0; i < m_runner.count(); ++i) {
-        const TestResult& result = m_results[static_cast<size_t>(i)];
-        if (&m_runner.test(i) == m_delivery.systemInfo)
-            report.model = result.note;
-        report.rows.push_back({m_runner.test(i).name(), result});
+    if (m_pcRead) {   // first section: which PC
+        const TestResult pc = SystemInfoTest::evaluate(m_pc);
+        report.model = pc.note;
+        report.rows.push_back({tr("This PC"), pc});
     }
+    for (int i = 0; i < m_runner.count(); ++i)
+        report.rows.push_back({m_runner.test(i).name(), m_results[static_cast<size_t>(i)]});
     QString path, error;
     if (writeRunReport(report, &path, &error))
         statusBar()->showMessage(tr("Details saved to %1").arg(QDir::toNativeSeparators(path)));
@@ -266,14 +302,12 @@ void MainWindow::saveReport(const Verdict& verdict)
 void MainWindow::onDeliveryClicked()
 {
     DeliveryInput input;
+    if (m_pcRead)
+        input.systemModel = SystemInfoTest::evaluate(m_pc).note;
     for (int i = 0; i < m_runner.count(); ++i) {
-        const ITest* test = &m_runner.test(i);
-        const TestResult& result = m_results[static_cast<size_t>(i)];
-        if (test == m_delivery.systemInfo)
-            input.systemModel = result.note;
-        const auto it = m_delivery.rows.find(test);
+        const auto it = m_delivery.rows.find(&m_runner.test(i));
         if (it != m_delivery.rows.end())
-            input.results[it->second] = result;
+            input.results[it->second] = m_results[static_cast<size_t>(i)];
     }
     DeliveryAction::run(this, input);
 }

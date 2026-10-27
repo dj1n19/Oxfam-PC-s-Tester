@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
+#include <QFutureWatcher>
 #include <QMainWindow>
 #include "core/TestResult.h"
+#include "tests/sysinfo/SystemInfo.h"
 #include "ui/DeliveryAction.h"
 
 class QComboBox;
@@ -23,6 +25,7 @@ protected:
 
 private:
     void retranslateUi();
+    void showPcInfo();
     void setStatusCell(int row, int state);
     void onStartClicked();
     void onRunAgainClicked();
@@ -40,6 +43,7 @@ private:
     QPushButton* m_startButton = nullptr;
     QPushButton* m_runAgainButton = nullptr;
     QComboBox* m_language = nullptr;
+    QLabel* m_pcInfo = nullptr;
     QPushButton* m_deliveryButton = nullptr;
     QTableWidget* m_table = nullptr;
     QPlainTextEdit* m_details = nullptr;
@@ -47,4 +51,9 @@ private:
     std::vector<TestResult> m_results;   // per row, latest result: verdict and delivery sheet
     bool m_fullRunDone = false;          // every row has a result
     DeliveryLinks m_delivery;
+    // "This PC": read once at launch. Kept raw, so the panel can be
+    // rewritten in another language.
+    QFutureWatcher<SystemInfo> m_pcWatcher;
+    SystemInfo m_pc;
+    bool m_pcRead = false;
 };

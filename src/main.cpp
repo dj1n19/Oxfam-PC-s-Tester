@@ -15,7 +15,6 @@
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
-#include "tests/sysinfo/SystemInfoTest.h"
 #include "ui/Language.h"
 #include "ui/MainWindow.h"
 #include "ui/Theme.h"
@@ -68,7 +67,6 @@ int main(int argc, char* argv[])
         return t;
     };
     DeliveryLinks delivery;
-    delivery.systemInfo = add(std::make_unique<SystemInfoTest>());   // first: identifies the PC
     delivery.rows[add(std::make_unique<BatteryTest>(thresholds))] = SheetRow::Battery;
     delivery.rows[add(std::make_unique<DiskTest>(thresholds))] = SheetRow::Disk;
     add(std::make_unique<DriversTest>());

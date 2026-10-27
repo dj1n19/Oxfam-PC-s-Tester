@@ -162,6 +162,7 @@ void apply(QApplication& app)
         "QPushButton:pressed { background: %1; color: #000000; }"
         "QPushButton:disabled { border-color: %2; }"
         "QPushButton#startButton { font-size: 16pt; font-weight: bold; }"
+        "QLabel#pcInfo { border: 1px solid %2; padding: 6px; font-size: 11pt; }"
         "QComboBox QAbstractItemView { border: 1px solid %1; }"
         "QTableWidget, QPlainTextEdit { border: 1px solid %2; gridline-color: #13301a; }"
         "QHeaderView::section { background: #0f1a10; color: %1; border: none;"

@@ -7,10 +7,10 @@
 class ITest;
 class QWidget;
 
-// Which test answers which part of the delivery sheet. Built in main.cpp,
-// the only place that knows the concrete tests.
+// Which test answers which row of the delivery sheet. Built in main.cpp,
+// the only place that knows the concrete tests. (The model comes from the
+// "This PC" panel, not from a test.)
 struct DeliveryLinks {
-    const ITest* systemInfo = nullptr;              // its note = "vendor model"
     std::map<const ITest*, SheetRow> rows;
 };
 

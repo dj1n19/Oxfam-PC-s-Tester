@@ -994,6 +994,7 @@ private slots:
         QVERIFY(r.summary.contains("ThinkPad T480"));
         QVERIFY(r.summary.contains("8.0 GiB"));
         QVERIFY(r.summary.contains("Laptop"));
+        QVERIFY(r.summary.contains("S/N PF1ABCDE"));   // shown in the panel: the technician may copy it
         QVERIFY(r.details.contains("PF1ABCDE"));
     }
 

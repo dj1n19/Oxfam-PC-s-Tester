@@ -787,62 +787,77 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="136"/>
+        <location filename="../src/ui/MainWindow.cpp" line="155"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="137"/>
+        <location filename="../src/ui/MainWindow.cpp" line="156"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="138"/>
+        <location filename="../src/ui/MainWindow.cpp" line="157"/>
         <source>Run this test again</source>
         <translation>Relancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="139"/>
+        <location filename="../src/ui/MainWindow.cpp" line="158"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="140"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="141"/>
+        <location filename="../src/ui/MainWindow.cpp" line="160"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="153"/>
+        <location filename="../src/ui/MainWindow.cpp" line="173"/>
+        <source>This PC: reading...</source>
+        <translation>Ce PC : lecture...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="177"/>
+        <source>This PC: %1</source>
+        <translation>Ce PC : %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="188"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="155"/>
+        <location filename="../src/ui/MainWindow.cpp" line="190"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="260"/>
+        <location filename="../src/ui/MainWindow.cpp" line="290"/>
+        <source>This PC</source>
+        <translation>Ce PC</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="296"/>
         <source>Details saved to %1</source>
         <translation>Détails enregistrés dans %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="262"/>
+        <location filename="../src/ui/MainWindow.cpp" line="298"/>
         <source>Could not save the details (%1): %2</source>
         <translation>Impossible d&apos;enregistrer les détails (%1) : %2</translation>
     </message>
@@ -850,12 +865,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="44"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="46"/>
+        <location filename="../src/main.cpp" line="45"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -897,57 +912,57 @@ Les tests qui ont besoin de seuils seront en ERREUR. Recopiez tout le dossier «
 <context>
     <name>SystemInfoTest</name>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.h" line="13"/>
-        <source>System info</source>
-        <translation>Infos système</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="12"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="10"/>
         <source>Desktop</source>
         <translation>Ordinateur fixe</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="13"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="11"/>
         <source>Laptop</source>
         <translation>Portable</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="16"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="14"/>
         <source>Unknown form factor</source>
         <translation>Type de boîtier inconnu</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="54"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="40"/>
         <source>Could not read system info (see details)</source>
         <translation>Impossible de lire les infos système (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="62"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="48"/>
         <source>model</source>
         <translation>modèle</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="63"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="49"/>
         <source>CPU</source>
         <translation>CPU</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="64"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="50"/>
         <source>RAM</source>
         <translation>RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="72"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="58"/>
         <source>%1 GiB RAM</source>
         <translation>%1 Gio de RAM</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="79"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="65"/>
         <source>serial unknown</source>
         <translation>n° de série inconnu</translation>
     </message>
     <message>
-        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="89"/>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="70"/>
+        <source>S/N %1</source>
+        <translation>N° de série %1</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/sysinfo/SystemInfoTest.cpp" line="76"/>
         <source>Missing: %1 | %2</source>
         <translation>Manquant : %1 | %2</translation>
     </message>
