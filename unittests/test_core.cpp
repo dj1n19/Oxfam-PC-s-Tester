@@ -1329,6 +1329,13 @@ private slots:
         QCOMPARE(computeVerdict({Status::Pass, Status::Warn}).level, Status::Warn);
         QCOMPARE(computeVerdict({Status::Warn, Status::Error}).level, Status::Error);
         QCOMPARE(computeVerdict({Status::Error, Status::Fail}).level, Status::Fail);
+
+        // Only some tests ran: said in the text, never a bare "OK FOR SALE".
+        const Verdict partial = computeVerdict({Status::Pass}, 8);
+        QCOMPARE(partial.text, QString("PARTIAL (1 of 8 tests) - OK FOR SALE"));
+        QCOMPARE(partial.level, Status::Warn);
+        QCOMPARE(computeVerdict({Status::Fail}, 8).level, Status::Fail);
+        QCOMPARE(computeVerdict({Status::Pass, Status::Pass}, 2).text, QString("OK FOR SALE"));
     }
 };
 

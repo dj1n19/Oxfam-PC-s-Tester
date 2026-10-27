@@ -227,7 +227,8 @@ language selector. **Dutch texts were written by Claude: have a Dutch speaker ch
 the .ts so Linguist lists them). French texts to proofread by the developer.
 Clear error messages done (actionable ERROR summaries, see the TestResult contract).
 **Delivery sheet** done, verified by the developer in LibreOffice after a real run:
-- Button "Fill the delivery sheet", enabled after a complete run. Finds the sheet on the Desktop
+- Button "Fill the delivery sheet", enabled once a test ran (only rows with a result are written; the others keep
+  what the sheet has). Finds the sheet on the Desktop
   (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C25 (operator's
   date, text dd/MM/yyyy), C7 (header date) only if empty (developer's request 2026-10-26: it may be the order date),
   C5 (model), C4 (shop, picked by the technician in the "Shops" tab's list, the sheet's current shop
@@ -265,7 +266,7 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
   `folderAroundProgram()` (`core/ProgramFolder`).
 - Only the X11 (xcb) platform plugin is bundled (Mint Cinnamon = X11); under Wayland Qt falls back to XWayland.
 **Run report** done (developer's choices: automatic, every test, one file per run, next to the program):
-`MainWindow::onAllFinished()` (full run and each "Run this test again") writes
+`MainWindow::onAllFinished()` (full run and each "Run this test") writes
 `<root>/logs/yyyy-MM-dd HH-mm-ss <model>.txt` (folder created if missing): version, date, model, verdict, then per row `==== [STATUS] name ====`,
 summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
 UTF-8, QSaveFile, `\r\n` in raw output made `\n` first (else `\r\r\n`). Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
@@ -306,8 +307,10 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   No camera = Skipped (desktops); camera error or no frame in 6 s = Error.
 - CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
-- UI: `MainWindow` with START button, "Run this test again" (selected row, enabled after a complete run so the
-  verdict covers every row; verdict recomputed from each row's latest result), table (status/test/summary), details
+- UI: `MainWindow` with START button, "Run this test" (selected row, any time: since 2026-10-27 a test can run alone
+  without a full run, e.g. battery changed and PC restarted; `m_ran` marks the rows with a result; the verdict comes
+  from those, and if some never ran it is "PARTIAL (n of m tests) - <verdict>", a partial pass in the WARN colour,
+  `computeVerdict(statuses, total)`; the run report leaves never-run rows out), table (status/test/summary), details
   pane, verdict label (word wrap: the French verdict is wider than the window). Buttons enabled in `updateButtons()`.
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows asks the battery driver: SetupAPI lists the
   `GUID_DEVICE_BATTERY` interfaces, `IOCTL_BATTERY_QUERY_TAG` + `IOCTL_BATTERY_QUERY_INFORMATION` give design/full

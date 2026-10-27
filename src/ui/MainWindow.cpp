@@ -1,5 +1,7 @@
 #include "ui/MainWindow.h"
 
+#include <algorithm>
+
 #include <QColor>
 #include <QComboBox>
 #include <QCoreApplication>
@@ -62,13 +64,14 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
     m_startButton->setMinimumHeight(48);
     top->addWidget(m_startButton, 1);
 
-    // Runs the selected row alone (an ERROR row, a key pressed too late...).
-    // Only after a complete run, so the verdict always covers every test.
+    // Runs the selected row alone: an ERROR row, a key pressed too late, or
+    // one part checked again after a repair (battery changed, PC restarted:
+    // no need to redo everything). Then the verdict says PARTIAL.
     m_runAgainButton = new QPushButton(central);
     m_runAgainButton->setMinimumHeight(48);
     top->addWidget(m_runAgainButton);
 
-    // Only after a complete run: the sheet must get this PC's results.
+    // Once some test ran: only the rows with a result are written.
     m_deliveryButton = new QPushButton(central);
     m_deliveryButton->setMinimumHeight(48);
     m_deliveryButton->setEnabled(false);
@@ -154,7 +157,7 @@ void MainWindow::retranslateUi()
 {
     setWindowTitle(tr("Lazy Djin's Tester") + QLatin1Char(' ') + QCoreApplication::applicationVersion());
     m_startButton->setText(tr("START"));
-    m_runAgainButton->setText(tr("Run this test again"));
+    m_runAgainButton->setText(tr("Run this test"));
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
     m_details->setPlaceholderText(tr("Select a test to see the raw details."));
@@ -164,7 +167,7 @@ void MainWindow::retranslateUi()
         setStatusCell(i, m_table->item(i, ColStatus)->data(Qt::UserRole).toInt());
     }
     if (!m_verdict->text().isEmpty())
-        m_verdict->setText(computeVerdict(statuses()).text);
+        m_verdict->setText(verdict().text);
 }
 
 void MainWindow::showPcInfo()
@@ -207,26 +210,39 @@ void MainWindow::resetRows()
     m_verdict->clear();
     m_verdict->setStyleSheet(QString());
     m_results.assign(static_cast<size_t>(m_runner.count()), TestResult{});
-    m_fullRunDone = false;
+    m_ran.assign(static_cast<size_t>(m_runner.count()), false);
 }
 
 // One place decides which buttons work: nothing during a run (the language
-// is chosen before it); "again" and the sheet only after a complete run.
+// is chosen before it); one test needs a selected row, the sheet a result.
 void MainWindow::updateButtons()
 {
     const bool idle = !m_runner.isRunning();
     m_startButton->setEnabled(idle);
-    m_runAgainButton->setEnabled(idle && m_fullRunDone && m_table->currentRow() >= 0);
-    m_deliveryButton->setEnabled(idle && m_fullRunDone);
+    m_runAgainButton->setEnabled(idle && m_table->currentRow() >= 0);
+    m_deliveryButton->setEnabled(idle && anyRan());
     m_language->setEnabled(idle);
 }
 
+// Statuses of the rows that ran: a row never run is not a pass.
 std::vector<Status> MainWindow::statuses() const
 {
-    std::vector<Status> all;
-    for (const TestResult& r : m_results)
-        all.push_back(r.status);
-    return all;
+    std::vector<Status> ran;
+    for (size_t i = 0; i < m_results.size(); ++i) {
+        if (m_ran[i])
+            ran.push_back(m_results[i].status);
+    }
+    return ran;
+}
+
+Verdict MainWindow::verdict() const
+{
+    return computeVerdict(statuses(), m_runner.count());
+}
+
+bool MainWindow::anyRan() const
+{
+    return std::find(m_ran.begin(), m_ran.end(), true) != m_ran.end();
 }
 
 void MainWindow::onStartClicked()
@@ -259,14 +275,14 @@ void MainWindow::onTestFinished(int row, const TestResult& result)
     setCell(m_table, row, ColSummary, result.summary, Theme::text());
     m_table->item(row, ColTest)->setData(Qt::UserRole, result.details);
     m_results[static_cast<size_t>(row)] = result;
+    m_ran[static_cast<size_t>(row)] = true;
     if (m_table->currentRow() == row)
         showDetailsOf(row);
 }
 
 void MainWindow::onAllFinished()
 {
-    m_fullRunDone = true;   // a single test again only runs after a complete run
-    const Verdict v = computeVerdict(statuses());
+    const Verdict v = verdict();
     m_verdict->setText(v.text);
     m_verdict->setStyleSheet(
         QStringLiteral("color:%1; border:2px solid %1; font-size:18pt; font-weight:bold; padding:6px;")
@@ -289,8 +305,11 @@ void MainWindow::saveReport(const Verdict& verdict)
         report.model = pc.note;
         report.rows.push_back({tr("This PC"), pc});
     }
-    for (int i = 0; i < m_runner.count(); ++i)
-        report.rows.push_back({m_runner.test(i).name(), m_results[static_cast<size_t>(i)]});
+    // Rows never run are left out: the verdict line says PARTIAL.
+    for (int i = 0; i < m_runner.count(); ++i) {
+        if (m_ran[static_cast<size_t>(i)])
+            report.rows.push_back({m_runner.test(i).name(), m_results[static_cast<size_t>(i)]});
+    }
     QString path, error;
     if (writeRunReport(report, &path, &error))
         statusBar()->showMessage(tr("Details saved to %1").arg(QDir::toNativeSeparators(path)));
@@ -306,7 +325,7 @@ void MainWindow::onDeliveryClicked()
         input.systemModel = SystemInfoTest::evaluate(m_pc).note;
     for (int i = 0; i < m_runner.count(); ++i) {
         const auto it = m_delivery.rows.find(&m_runner.test(i));
-        if (it != m_delivery.rows.end())
+        if (it != m_delivery.rows.end() && m_ran[static_cast<size_t>(i)])   // the others keep what the sheet has
             input.results[it->second] = m_results[static_cast<size_t>(i)];
     }
     DeliveryAction::run(this, input);

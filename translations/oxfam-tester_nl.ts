@@ -787,77 +787,77 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="155"/>
+        <location filename="../src/ui/MainWindow.cpp" line="158"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="156"/>
+        <location filename="../src/ui/MainWindow.cpp" line="159"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="157"/>
-        <source>Run this test again</source>
-        <translation type="unfinished">Deze test opnieuw uitvoeren</translation>
+        <location filename="../src/ui/MainWindow.cpp" line="160"/>
+        <source>Run this test</source>
+        <translation type="unfinished">Deze test uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="158"/>
+        <location filename="../src/ui/MainWindow.cpp" line="161"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="159"/>
+        <location filename="../src/ui/MainWindow.cpp" line="162"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="159"/>
+        <location filename="../src/ui/MainWindow.cpp" line="162"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="159"/>
+        <location filename="../src/ui/MainWindow.cpp" line="162"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="160"/>
+        <location filename="../src/ui/MainWindow.cpp" line="163"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="173"/>
+        <location filename="../src/ui/MainWindow.cpp" line="176"/>
         <source>This PC: reading...</source>
         <translation type="unfinished">Deze pc: wordt gelezen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="177"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>This PC: %1</source>
         <translation type="unfinished">Deze pc: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="188"/>
+        <location filename="../src/ui/MainWindow.cpp" line="191"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="190"/>
+        <location filename="../src/ui/MainWindow.cpp" line="193"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="290"/>
+        <location filename="../src/ui/MainWindow.cpp" line="306"/>
         <source>This PC</source>
         <translation type="unfinished">Deze pc</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="296"/>
+        <location filename="../src/ui/MainWindow.cpp" line="315"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="298"/>
+        <location filename="../src/ui/MainWindow.cpp" line="317"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>
@@ -996,6 +996,11 @@ Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Dji
         <location filename="../src/core/Verdict.h" line="24"/>
         <source>OK FOR SALE</source>
         <translation type="unfinished">KLAAR VOOR VERKOOP</translation>
+    </message>
+    <message>
+        <location filename="../src/core/Verdict.h" line="36"/>
+        <source>PARTIAL (%1 of %2 tests) - %3</source>
+        <translation type="unfinished">GEDEELTELIJK (%1 van %2 tests) - %3</translation>
     </message>
 </context>
 </TS>

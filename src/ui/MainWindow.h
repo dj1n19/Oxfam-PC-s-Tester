@@ -31,6 +31,8 @@ private:
     void onRunAgainClicked();
     void updateButtons();
     std::vector<Status> statuses() const;
+    Verdict verdict() const;
+    bool anyRan() const;
     void onTestStarted(int row);
     void onTestFinished(int row, const TestResult& result);
     void onAllFinished();
@@ -49,7 +51,7 @@ private:
     QPlainTextEdit* m_details = nullptr;
     QLabel* m_verdict = nullptr;
     std::vector<TestResult> m_results;   // per row, latest result: verdict and delivery sheet
-    bool m_fullRunDone = false;          // every row has a result
+    std::vector<bool> m_ran;             // per row: has a result (a test can run alone)
     DeliveryLinks m_delivery;
     // "This PC": read once at launch. Kept raw, so the panel can be
     // rewritten in another language.
