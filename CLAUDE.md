@@ -342,7 +342,10 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   ProductName says "Windows 10" on 11, build >= 22000 decides; build.UBR shows the update level), Linux
   `QSysInfo::prettyProductName()`. Cores: Windows `GetLogicalProcessorInformationEx`, Linux `countCpuCores()` on
   /proc/cpuinfo (pure, `SystemInfoParsing.cpp`). Screen: `QScreen` of the window (Qt Gui, so filled by MainWindow into
-  `SystemInfo::screenMm/screenPixels`); diagonal shown only if 7-40", else resolution alone; not yet seen on a real PC.
+  `SystemInfo::screenMm/screenPixels`); diagonal shown only if 7-40", else resolution alone. Right on Windows
+  (ThinkPads 1920x1080, Surface Pro 7 2736x1824, 2026-10-28); on Mint with display scaling Qt gave 1.6 x too much
+  (3072x1728), so the Linux probe reads the built-in panel's native mode from `/sys/class/drm/*-eDP|LVDS|DSI-*/modes`
+  (`parseDrmMode()`) and MainWindow uses Qt only when the probe found nothing.
   RAM type/slots: dropped (Linux needs root: a second password prompt). `MainWindow` runs `readSystemInfo()` once at launch (QtConcurrent), keeps the raw `SystemInfo` and
   shows `SystemInfoTest::evaluate()` (now a plain class with static functions, name kept as translation context) in a
   framed label above the table; ERROR colour if unreadable, never in the verdict. The run report's first section and
@@ -351,7 +354,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   raw SMBIOS table from `GetSystemFirmwareTable('RSMB')` parsed by `parseSmbios()` (unit tested on a hand-made
   table), CPU name from the registry (`QSettings` NativeFormat, read only), installed RAM from
   `GetPhysicallyInstalledSystemMemory` (fallback: usable RAM).
-- Test: `ChargeTest`, row "Charger" (2026-10-27; to verify on Windows and unplugged): same `readBattery()` probe,
+- Test: `ChargeTest`, row "Charger" (2026-10-27; field 2026-10-28: ~30 ThinkPads charging 10-35 W on Windows and
+  Mint, Surface Pro 7s unplugged = PowerState 0x2 discharging = Fail as designed): same `readBattery()` probe,
   now also charger online, state, charge % and rate (Windows `IOCTL_BATTERY_QUERY_STATUS`; Linux battery `status`,
   `capacity`, `power_now`, and any `Mains`/online `USB` supply). Charging = Pass ("at X W"); charger not seen = Fail
   (text: plug it in and run again); OS cannot tell = Error. Charger seen but not charging: full (>= 95 %) or a charge
@@ -359,11 +363,14 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   (ThinkPad 13 at 0 % pre-charges ~10 min, developer's report); discharging on the charger = Warn (charger too weak).
   Not on the delivery sheet (open question: battery row?). Verified on Arch (charger on, full).
 - Tests: `WifiTest` and `BluetoothTest` (2026-10-28, rows "Wi-Fi" and "Bluetooth"; verified on Arch: iwd, so networks
-  not counted, Bluetooth on and rfkill-blocked; Windows not yet run). Probes `readWifi()` / `readBluetooth()`
+  not counted, Bluetooth on and rfkill-blocked; field 2026-10-28: Surface Pro 7 Win11 5-6 networks, Mint 22.3 with
+  nmcli 8-10 networks, Bluetooth found on both). Probes `readWifi()` / `readBluetooth()`
   (`src/tests/wireless/`), the form factor from `readSystemInfo().chassisType` read again in the worker.
   Windows: `wlanapi` (first adapter, radio state of its PHYs, `WlanScan` + wait for the scan-complete notification,
   max 6 s, then `WlanGetAvailableNetworkList`; WLAN service not running = no adapter) and `bthprops`
-  (`BluetoothFindFirstRadio`; "off in Settings" not judged yet: connectable/discoverable only listed in details).
+  (`BluetoothFindFirstRadio`; "off in Settings" not judged yet: connectable/discoverable only listed in details;
+  the radio's name is the PC's Bluetooth name, "DESKTOP-9IE21V6", so the summary shows the chip maker from its
+  Bluetooth SIG company id instead: 0x0002 Intel...).
   Linux: `/sys/class/net/*/wireless`, `/sys/class/bluetooth/hci*`, rfkill (soft/hard, any entry blocked = off);
   networks via `nmcli` (radio state, then `-t -f SSID device wifi list --rescan auto`) if it exists, else not counted.
   Wi-Fi: none = Fail on a laptop, Skipped otherwise; off = Warn "turn it on and run again"; on, 0 networks = Warn
@@ -371,7 +378,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   models have none), Skipped otherwise; off = Warn; found = Pass. Not on the delivery sheet.
 - Test: `DiskTest`: `smartctl --scan --json` then `smartctl --json -a -d <type> <dev>` per disk. One shared probe
   (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
-  sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
+  sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk
+  named twice by `--scan` (same model + serial: ThinkPad L390 on Windows gave /dev/sda AND /dev/nvme0) counts once; a disk without SMART
   (USB stick) is Skipped, but "no disk with SMART" is Error. **USB disks are left out** (developer's decision
   2026-10-15: the tester's own stick claimed "SMART OK, 0 C"): `usbDevices()` asks the OS for the bus (Linux:
   `/sys/block/<dev>` under `/usb`; Windows: `IOCTL_STORAGE_QUERY_PROPERTY` BusType on `\\.\PhysicalDriveN`, disk N =

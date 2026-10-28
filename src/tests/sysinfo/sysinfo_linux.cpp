@@ -1,5 +1,6 @@
 #include "tests/sysinfo/SystemInfo.h"
 
+#include <QDir>
 #include <QFile>
 #include <QRegularExpression>
 #include <QSysInfo>
@@ -28,6 +29,26 @@ QString procField(const QString& text, const QString& key)
     return re.match(text).captured(1).trimmed();
 }
 
+// Native resolution of the built-in screen: the kernel lists each
+// connector's modes in /sys/class/drm, the preferred (native) one first.
+// eDP/LVDS/DSI = a laptop's own panel. Qt's figure was 1.6 x too big on
+// Mint with display scaling (3072x1728 for a 1920x1080 panel, 2026-10-28).
+QSize builtInPanel(QString* raw)
+{
+    const QDir drm(QStringLiteral("/sys/class/drm"));
+    for (const QString& c : drm.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::System, QDir::Name)) {
+        if (!c.contains(QLatin1String("-eDP-")) && !c.contains(QLatin1String("-LVDS-")) && !c.contains(QLatin1String("-DSI-")))
+            continue;
+        if (readText(drm.filePath(c) + "/status") != QLatin1String("connected"))
+            continue;
+        const QString first = readText(drm.filePath(c) + "/modes").section(QLatin1Char('\n'), 0, 0);
+        *raw = QStringLiteral("drm %1: %2").arg(c, first.isEmpty() ? QStringLiteral("no mode") : first);
+        return parseDrmMode(first);
+    }
+    *raw = QStringLiteral("drm: no built-in panel connected");
+    return {};
+}
+
 } // namespace
 
 SystemInfo readSystemInfo()
@@ -48,6 +69,8 @@ SystemInfo readSystemInfo()
     countCpuCores(cpuinfo, &info.cores, &info.threads);
     // PRETTY_NAME of /etc/os-release: "Linux Mint 22", "Arch Linux".
     info.os = QSysInfo::prettyProductName();
+    QString panel;
+    info.screenPixels = builtInPanel(&panel);
 
     // "MemTotal:  15989996 kB" (kB here means KiB)
     const QString memTotal = procField(readText(QStringLiteral("/proc/meminfo")), QStringLiteral("MemTotal"));
@@ -57,12 +80,12 @@ SystemInfo readSystemInfo()
 
     info.raw = QStringLiteral("sys_vendor=%1\nproduct_name=%2\nproduct_serial=%3\n"
                               "chassis_type=%4\ncpuinfo model name=%5\nmeminfo MemTotal=%6\n"
-                              "cpuinfo: %7 cores, %8 processors\nos=%9 (kernel %10)")
+                              "cpuinfo: %7 cores, %8 processors\nos=%9 (kernel %10)\n%11")
                    .arg(info.vendor, info.model,
                         info.serial.isEmpty() ? info.serialError : info.serial)
                    .arg(info.chassisType)
                    .arg(info.cpu, memTotal)
                    .arg(info.cores).arg(info.threads)
-                   .arg(info.os, QSysInfo::kernelVersion());
+                   .arg(info.os, QSysInfo::kernelVersion(), panel);
     return info;
 }

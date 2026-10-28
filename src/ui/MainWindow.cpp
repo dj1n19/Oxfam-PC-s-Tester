@@ -154,7 +154,8 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
         // external monitor is the main one.
         if (const QScreen* s = screen()) {
             m_pc.screenMm = s->physicalSize();
-            m_pc.screenPixels = s->size() * s->devicePixelRatio();   // native pixels, not scaled ones
+            if (m_pc.screenPixels.isEmpty())   // the Linux probe asks the kernel: more reliable
+                m_pc.screenPixels = s->size() * s->devicePixelRatio();   // native pixels, not scaled ones
         }
         m_pcRead = true;
         showPcInfo();

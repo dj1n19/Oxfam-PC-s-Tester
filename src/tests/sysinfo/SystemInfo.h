@@ -20,7 +20,8 @@ struct SystemInfo {
     // The screen the window is on. Not read by the probe: Qt Gui knows it,
     // and oxcore must not use Qt Gui. MainWindow fills these.
     QSizeF screenMm;            // physical size from the monitor (EDID); empty = unknown
-    QSize screenPixels;         // native resolution
+    QSize screenPixels;         // native resolution; the Linux probe fills it from the kernel
+                                // (built-in panel), MainWindow only if still empty
     QString error;              // non-empty = the probe itself failed
     QString raw;                // raw values, copied into the test details
 };
@@ -35,6 +36,8 @@ SystemInfo readSystemInfo();
 QString windowsVersionName(const QString& productName, const QString& displayVersion, int build, int ubr);
 // Physical cores and logical processors from /proc/cpuinfo (0 if unknown).
 void countCpuCores(const QString& cpuinfo, int* cores, int* threads);
+// "1920x1080" (a line of /sys/class/drm/*/modes) -> 1920 x 1080; empty if not a mode.
+QSize parseDrmMode(const QString& mode);
 
 // What the SMBIOS table (the firmware's own description of the PC) says.
 // Windows gives the raw table (GetSystemFirmwareTable); Linux has the same

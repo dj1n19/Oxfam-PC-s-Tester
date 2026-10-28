@@ -445,6 +445,21 @@ private slots:
         QCOMPARE(DiskTest::evaluate(scan, loaded()).status, Status::Fail);
     }
 
+    // ThinkPad L390 (Windows, 2026-10-28): smartctl --scan gave the NVMe disk
+    // as /dev/sda and /dev/nvme0. One disk, one entry in the summary.
+    void diskNamedTwiceCountsOnce()
+    {
+        DiskScan scan;
+        scan.disks = {smart("smartctl_real_samsung_mzvlw256.json", 0), smart("smartctl_real_samsung_mzvlw256.json", 0),
+                      smart("smartctl_real_wd_sn730.json", 0)};   // same anonymised serial, other model: kept
+        scan.disks[0].device = "/dev/sda";
+        scan.disks[1].device = "/dev/nvme0";
+        const TestResult r = DiskTest::evaluate(scan, loaded());
+        QCOMPARE(r.summary.count("MZVLW256"), 1);
+        QVERIFY(r.summary.contains("SN730"));
+        QVERIFY(r.details.contains("/dev/nvme0: same disk as /dev/sda"));
+    }
+
     void diskNothingCheckedIsError()
     {
         DiskScan scan;
@@ -1128,6 +1143,15 @@ private slots:
                  QString("Windows 10 Pro 22H2 (build 19045.5011)"));
         QCOMPARE(windowsVersionName("Windows 10 Home", "", 17763, 0), QString("Windows 10 Home (build 17763)"));
         QVERIFY(windowsVersionName("", "", 0, 0).isEmpty());
+    }
+
+    void drmModes()
+    {
+        QCOMPARE(parseDrmMode("1920x1080"), QSize(1920, 1080));
+        QCOMPARE(parseDrmMode("1920x1080i\n"), QSize(1920, 1080));
+        QVERIFY(parseDrmMode("").isEmpty());
+        QVERIFY(parseDrmMode("0x0").isEmpty());
+        QVERIFY(parseDrmMode("garbage").isEmpty());
     }
 
     void cpuinfoCores()

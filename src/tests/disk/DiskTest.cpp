@@ -1,5 +1,6 @@
 #include "tests/disk/DiskTest.h"
 
+#include <map>
 #include <optional>
 #include <QCoreApplication>
 #include <QJsonArray>
@@ -202,7 +203,22 @@ TestResult DiskTest::evaluateDisks(const DiskScan& scan, const Thresholds& thres
 
     Status status = Status::Skipped;
     QStringList summaries, details;
+    // smartctl --scan may name one disk twice: on ThinkPad L390s (Windows,
+    // 2026-10-28) the NVMe disk came as /dev/sda AND /dev/nvme0. Same model
+    // and serial = same disk: counted once.
+    std::map<QString, QString> seen;   // "model|serial" -> first device name
     for (const SmartctlRun& d : scan.disks) {
+        const QJsonObject root = QJsonDocument::fromJson(d.json).object();
+        const QString serial = root["serial_number"].toString();
+        if (!serial.isEmpty()) {
+            const QString key = root["model_name"].toString() + QLatin1Char('|') + serial;
+            const auto [it, added] = seen.emplace(key, d.device);
+            if (!added) {
+                details << QStringLiteral("=== %1: same disk as %2 (serial %3), counted once ===")
+                               .arg(d.device, it->second, serial);
+                continue;
+            }
+        }
         const TestResult one = evaluateDisk(d, thresholds);
         status = worse(status, one.status);
         summaries << one.summary;

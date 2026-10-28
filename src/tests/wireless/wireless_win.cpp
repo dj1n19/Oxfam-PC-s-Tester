@@ -46,6 +46,23 @@ QString scan(HANDLE client, const GUID& adapter)
     return result;
 }
 
+// Bluetooth SIG company identifiers of the usual laptop chips. The radio's
+// own "name" is the PC's Bluetooth name (DESKTOP-9IE21V6 on the Surface Pro 7,
+// 2026-10-28): useless to the technician.
+QString chipMaker(USHORT manufacturer)
+{
+    switch (manufacturer) {
+    case 0x0002: return QStringLiteral("Intel");
+    case 0x000A: return QStringLiteral("Qualcomm (CSR)");
+    case 0x000F: return QStringLiteral("Broadcom");
+    case 0x001D: return QStringLiteral("Qualcomm");
+    case 0x0046: return QStringLiteral("MediaTek");
+    case 0x005D: return QStringLiteral("Realtek");
+    case 0x0131: return QStringLiteral("Cypress");
+    default: return {};
+    }
+}
+
 } // namespace
 
 WifiInfo readWifi()
@@ -147,12 +164,15 @@ BluetoothInfo readBluetooth()
     info.present = true;
     BLUETOOTH_RADIO_INFO radioInfo{};
     radioInfo.dwSize = DWORD(sizeof radioInfo);
-    if (BluetoothGetRadioInfo(radio, &radioInfo) == ERROR_SUCCESS)
-        info.name = QString::fromWCharArray(radioInfo.szName).trimmed();
+    QString localName;
+    if (BluetoothGetRadioInfo(radio, &radioInfo) == ERROR_SUCCESS) {
+        localName = QString::fromWCharArray(radioInfo.szName).trimmed();
+        info.name = chipMaker(radioInfo.manufacturer);
+    }
     // Whether "off in Settings" can be seen here is not known yet: only
     // listed, never judged, until a real run shows it.
-    info.raw = QStringLiteral("radio: %1, manufacturer 0x%2, connectable %3, discoverable %4")
-                   .arg(info.name)
+    info.raw = QStringLiteral("radio: name %1 (the PC's Bluetooth name), manufacturer 0x%2, connectable %3, discoverable %4")
+                   .arg(localName)
                    .arg(radioInfo.manufacturer, 4, 16, QLatin1Char('0'))
                    .arg(BluetoothIsConnectable(radio) ? QStringLiteral("yes") : QStringLiteral("no"),
                         BluetoothIsDiscoverable(radio) ? QStringLiteral("yes") : QStringLiteral("no"));

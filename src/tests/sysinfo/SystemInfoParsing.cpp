@@ -3,6 +3,7 @@
 #include <set>
 #include <utility>
 
+#include <QRegularExpression>
 #include <QStringList>
 
 QString windowsVersionName(const QString& productName, const QString& displayVersion, int build, int ubr)
@@ -53,4 +54,15 @@ void countCpuCores(const QString& cpuinfo, int* cores, int* threads)
     endBlock();
     *threads = processors;
     *cores = int(physicalCores.size());   // 0 without "core id" (some VMs, ARM)
+}
+
+QSize parseDrmMode(const QString& mode)
+{
+    // Interlaced modes end with "i" ("1920x1080i"): the numbers come first.
+    static const QRegularExpression re(QStringLiteral("^(\\d+)x(\\d+)"));
+    const QRegularExpressionMatch m = re.match(mode.trimmed());
+    if (!m.hasMatch())
+        return {};
+    const QSize size(m.captured(1).toInt(), m.captured(2).toInt());
+    return size.width() > 0 && size.height() > 0 ? size : QSize();
 }
