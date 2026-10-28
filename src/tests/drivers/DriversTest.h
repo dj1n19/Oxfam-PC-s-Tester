@@ -11,6 +11,7 @@ public:
     explicit DriversTest(QObject* parent = nullptr);
 
     QString name() const override { return tr("Drivers"); }
+    QString id() const override { return QStringLiteral("drivers"); }
     void run() override;
 
     // Pure function: easy to unit test without any hardware.

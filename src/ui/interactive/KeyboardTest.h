@@ -10,6 +10,7 @@ public:
     explicit KeyboardTest(KeyLayout layout, QObject* parent = nullptr);
 
     QString name() const override { return tr("Keyboard"); }
+    QString id() const override { return QStringLiteral("keyboard"); }
     bool needsUser() const override { return true; }
     void run() override;
 

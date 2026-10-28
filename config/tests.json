@@ -1,0 +1,13 @@
+{
+    "battery": true,
+    "charger": true,
+    "disk": true,
+    "drivers": true,
+    "windows_licence": true,
+    "wifi": true,
+    "bluetooth": true,
+    "keyboard": true,
+    "audio": true,
+    "camera": true,
+    "cpu_load": true
+}

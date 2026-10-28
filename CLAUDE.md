@@ -76,7 +76,8 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   - **Fail** = the test ran and the hardware is bad.
   - **Error** = the test could not run (no permission, tool missing, bad output, timeout).
   - **Never show green for an Error.** A missing threshold or unparsable output is an Error.
-- `ITest` (QObject): `name()`, `needsUser()`, `run()`, signal `finished(const TestResult&)`.
+- `ITest` (QObject): `name()` (translated), `id()` (stable English key of `config/tests.json`, never translated),
+  `needsUser()`, `run()`, signal `finished(const TestResult&)`.
   `run()` **must emit `finished` exactly once**, now or later.
 - `TestRunner`: runs tests one at a time; `add()` places automatic tests, then interactive ones, then tests with
   `runsLast()` (only `CpuTempTest`: run during the interactive tests, its full load made the keyboard and audio
@@ -189,7 +190,7 @@ src/
                  lazy-djin-tester.ico; app.rc (Windows .exe icon). Generated files are committed (CI has no ImageMagick).
     interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
-config/        thresholds.json keyboard_layout.json   (read from <root>/config/: from build/, root = the repo)
+config/        thresholds.json keyboard_layout.json tests.json   (read from <root>/config/: from build/, root = the repo)
 translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable; internal names such as
                these, `oxcore` and the repo keep "oxfam": only what users see was renamed)
 third_party/   miniz/ (zip library, MIT, vendored unchanged; version + checksum in its README.md)
@@ -209,7 +210,8 @@ CMakeLists.txt
 3. Write `<Name>Test` deriving from `ITest`. Keep a **static pure `evaluate(info, thresholds)`** returning `TestResult`.
 4. Add the thresholds to `config/thresholds.json`.
 5. Add unit tests for `evaluate()` in `unittests/test_core.cpp` (golden samples of real tool output when parsing JSON/text).
-6. Register it in `main.cpp` with `runner.add(std::make_unique<...>(thresholds));`.
+6. Register it in `main.cpp` with `runner.add(std::make_unique<...>(thresholds));`, and add its `id()` to
+   `config/tests.json` (the unit test `testChoiceShippedFile` counts the entries).
 7. Build with zero warnings, run ctest, run the app. Test on a real machine, and for Windows via the CI artifact.
 
 ## 8. Current state
@@ -321,6 +323,10 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   request): one per test in the Test column, all ticked at launch (not remembered); START runs the ticked ones
   (`TestRunner::start(indexes)`, in the runner's order; `startAll()`/`startOne()` call it), the others show
   "NOT CHOSEN" and count as never run (PARTIAL verdict, not in report or sheet); START disabled if none is ticked.
+  Boxes at start from `config/tests.json` (`{ "camera": false, ... }`, keys = `ITest::id()`, edited by each technician
+  with a text editor, explained in LISEZMOI.txt; `core/TestChoice`): no file = all ticked, no pop-up; a test missing
+  from the file = ticked (a newer version's test is not hidden); invalid JSON, a non-boolean value or an unknown id =
+  warning at launch listing the known ids, the rest still applied (bad file: all ticked).
   Box style in `Theme.cpp` (`QTableWidget::indicator`: the palette's empty box was invisible). Table (status/test/summary), details
   pane, verdict label (word wrap: the French verdict is wider than the window). Buttons enabled in `updateButtons()`.
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows asks the battery driver: SetupAPI lists the

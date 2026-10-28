@@ -14,6 +14,7 @@ public:
     explicit WifiTest(QObject* parent = nullptr);
 
     QString name() const override { return tr("Wi-Fi"); }
+    QString id() const override { return QStringLiteral("wifi"); }
     void run() override;
 
     // Pure function: easy to unit test without any hardware. The form factor

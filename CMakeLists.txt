@@ -46,6 +46,8 @@ add_library(oxcore STATIC
     src/core/Verdict.h
     src/core/Thresholds.h
     src/core/Thresholds.cpp
+    src/core/TestChoice.h
+    src/core/TestChoice.cpp               # config/tests.json: tests ticked at start
     src/core/TestRunner.h
     src/core/TestRunner.cpp
     src/core/ProgramFolder.h

@@ -9,6 +9,7 @@ public:
     using ITest::ITest;
 
     QString name() const override { return tr("Camera"); }
+    QString id() const override { return QStringLiteral("camera"); }
     bool needsUser() const override { return true; }
     void run() override;
 };

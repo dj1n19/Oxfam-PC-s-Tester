@@ -11,6 +11,8 @@ public:
     ~ITest() override = default;
 
     virtual QString name() const = 0;
+    // Stable key, never translated: names the test in config/tests.json.
+    virtual QString id() const = 0;
     virtual bool needsUser() const { return false; }   // interactive test?
     // Automatic test placed after the interactive ones (CPU load): it would
     // make the keyboard and audio dialogs lag if it ran during them.

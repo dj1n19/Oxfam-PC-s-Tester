@@ -9,6 +9,7 @@ public:
     using ITest::ITest;
 
     QString name() const override { return tr("Audio"); }
+    QString id() const override { return QStringLiteral("audio"); }
     bool needsUser() const override { return true; }
     void run() override;
 };

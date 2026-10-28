@@ -26,6 +26,7 @@ public:
 
     // Not "temperature": on Windows only the speed is judged.
     QString name() const override { return tr("CPU under load"); }
+    QString id() const override { return QStringLiteral("cpu_load"); }
     bool runsLast() const override { return true; }   // ~30 s of full load: after the interactive tests
     void run() override;
 

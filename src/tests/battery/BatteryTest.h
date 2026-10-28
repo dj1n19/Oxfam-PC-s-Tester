@@ -10,6 +10,7 @@ public:
     explicit BatteryTest(Thresholds thresholds, QObject* parent = nullptr);
 
     QString name() const override { return tr("Battery"); }
+    QString id() const override { return QStringLiteral("battery"); }
     void run() override;
 
     // Pure function: easy to unit test without any hardware.

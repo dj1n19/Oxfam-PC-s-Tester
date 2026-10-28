@@ -7,6 +7,7 @@
 
 #include "core/ProgramFolder.h"
 #include "core/TestRunner.h"
+#include "core/TestChoice.h"
 #include "core/Thresholds.h"
 #include "core/Verdict.h"
 #include "delivery/DeliverySheet.h"
@@ -37,6 +38,7 @@ class FakeTest : public ITest {
 public:
     FakeTest(bool user, bool last) : m_user(user), m_last(last) {}
     QString name() const override { return QStringLiteral("fake"); }
+    QString id() const override { return QStringLiteral("fake"); }
     bool needsUser() const override { return m_user; }
     bool runsLast() const override { return m_last; }
     void run() override { ++runs; }
@@ -1249,6 +1251,35 @@ private slots:
         b->answer(Status::Pass);
         c->answer(Status::Pass);
         QCOMPARE(all.count(), 2);
+    }
+
+    void testChoiceFile()
+    {
+        TestChoice choice;
+        QString error;
+        QVERIFY2(choice.loadFromJson(R"({"camera": false, "battery": true})", &error), qPrintable(error));
+        QVERIFY(!choice.isTicked("camera"));
+        QVERIFY(choice.isTicked("battery"));
+        QVERIFY(choice.isTicked("wifi"));   // not in the file: ticked
+
+        QVERIFY(!choice.loadFromJson(R"({"camera": "no"})", &error));   // not guessed
+        QVERIFY(error.contains("camera"));
+        QVERIFY(choice.isTicked("camera"));                            // nothing kept
+        QVERIFY(!choice.loadFromJson("{ broken", &error));
+        QVERIFY(!choice.loadFromJson("[true]", &error));
+    }
+
+    // The file shipped in config/ names every test of main.cpp, all ticked.
+    void testChoiceShippedFile()
+    {
+        QFile f(QFINDTESTDATA("../config/tests.json"));
+        QVERIFY(f.open(QIODevice::ReadOnly));
+        TestChoice choice;
+        QString error;
+        QVERIFY2(choice.loadFromJson(f.readAll(), &error), qPrintable(error));
+        QCOMPARE(int(choice.ticked.size()), 11);
+        for (const auto& [id, on] : choice.ticked)
+            QVERIFY2(on, qPrintable(id));
     }
 
     // START with only some boxes ticked: those run, in the runner's order.

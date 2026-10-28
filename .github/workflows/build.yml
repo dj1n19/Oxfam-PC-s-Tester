@@ -217,7 +217,7 @@ jobs:
           mkdir -p "$ROOT/app" "$ROOT/config" "$ROOT/delivery-sheets"
           cp -r windows/. "$ROOT/app/"
           cp linux/lazy-djin-tester-x86_64.AppImage .github/package/start-linux.sh "$ROOT/app/"
-          cp config/thresholds.json config/keyboard_layout.json "$ROOT/config/"
+          cp config/thresholds.json config/keyboard_layout.json config/tests.json "$ROOT/config/"
           cp ".github/package/Lazy Djin's Tester (Windows).cmd" \
              ".github/package/Lazy Djin's Tester (Linux).desktop" \
              .github/package/LISEZMOI.txt "$ROOT/"

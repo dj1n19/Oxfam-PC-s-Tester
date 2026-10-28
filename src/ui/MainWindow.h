@@ -18,7 +18,10 @@ struct Verdict;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
-    MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* parent = nullptr);
+    // ticked: per runner index, the tick box at start (config/tests.json);
+    // missing entries are ticked.
+    MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::vector<bool>& ticked = {},
+               QWidget* parent = nullptr);
 
 protected:
     void changeEvent(QEvent* event) override;

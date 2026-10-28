@@ -8,6 +8,7 @@
 #include <QTimer>
 
 #include "core/ProgramFolder.h"
+#include "core/TestChoice.h"
 #include "core/TestRunner.h"
 #include "core/Thresholds.h"
 #include "tests/battery/BatteryTest.h"
@@ -82,7 +83,31 @@ int main(int argc, char* argv[])
     delivery.rows[add(std::make_unique<CameraTest>())] = SheetRow::Camera;
     add(std::make_unique<CpuTempTest>(thresholds));   // last: ~30 s of full load would make the dialogs lag
 
-    MainWindow window(runner, delivery);
+    // Tests ticked at start, chosen by the technician in config/tests.json.
+    // No file: all ticked, no pop-up. A file they edited wrong: they are told.
+    TestChoice choice;
+    QFile choiceFile(configFile(QStringLiteral("tests.json")));
+    QStringList problems;
+    if (choiceFile.open(QIODevice::ReadOnly) && !choice.loadFromJson(choiceFile.readAll(), &error))
+        problems << error;
+    std::vector<bool> ticked;
+    QStringList ids;
+    for (int i = 0; i < runner.count(); ++i) {
+        ids << runner.test(i).id();
+        ticked.push_back(choice.isTicked(ids.last()));
+    }
+    for (const auto& [id, on] : choice.ticked) {
+        if (!ids.contains(id))
+            problems << QObject::tr("unknown test \"%1\" (ignored)").arg(id);
+    }
+    if (!problems.isEmpty()) {
+        QMessageBox::warning(nullptr, QObject::tr("Configuration"),
+                             QObject::tr("tests.json: %1\n\nThe tests it does not set right are ticked. "
+                                         "Known tests: %2.")
+                                 .arg(problems.join(QStringLiteral("; ")), ids.join(QStringLiteral(", "))));
+    }
+
+    MainWindow window(runner, delivery, ticked);
     window.show();
 
     // Start Qt Multimedia now, while the technician gets ready. Its first use

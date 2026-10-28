@@ -13,6 +13,7 @@ public:
     explicit BluetoothTest(QObject* parent = nullptr);
 
     QString name() const override { return tr("Bluetooth"); }
+    QString id() const override { return QStringLiteral("bluetooth"); }
     void run() override;
 
     // Pure function: easy to unit test without any hardware.

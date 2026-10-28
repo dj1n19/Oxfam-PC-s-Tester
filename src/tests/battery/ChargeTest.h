@@ -11,6 +11,7 @@ public:
     explicit ChargeTest(QObject* parent = nullptr);
 
     QString name() const override { return tr("Charger"); }
+    QString id() const override { return QStringLiteral("charger"); }
     void run() override;
 
     // Pure function: easy to unit test without any hardware.

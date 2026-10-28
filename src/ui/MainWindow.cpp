@@ -52,7 +52,7 @@ void setCell(QTableWidget* table, int row, int col, const QString& text, const Q
 
 } // namespace
 
-MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* parent)
+MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::vector<bool>& ticked, QWidget* parent)
     : QMainWindow(parent), m_runner(runner), m_delivery(std::move(delivery))
 {
     resize(900, 600);
@@ -119,11 +119,12 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
 
     setCentralWidget(central);
     resetRows();
-    // A tick box per test: START runs the ticked ones (all by default).
+    // A tick box per test: START runs the ticked ones.
     for (int i = 0; i < m_runner.count(); ++i) {
         QTableWidgetItem* item = m_table->item(i, ColTest);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(Qt::Checked);
+        const auto index = static_cast<size_t>(i);
+        item->setCheckState(index >= ticked.size() || ticked[index] ? Qt::Checked : Qt::Unchecked);
     }
     retranslateUi();
 
