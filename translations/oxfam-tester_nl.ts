@@ -533,87 +533,87 @@ Open ze om de andere controles aan te vullen.</translation>
         <translation type="unfinished">Schijven (SMART)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="114"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="115"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation type="unfinished">%1: geen SMART (USB-stick of kaartlezer?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="69"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="70"/>
         <source>%1: smartctl failed (see details)</source>
         <translation type="unfinished">%1: smartctl mislukt (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="78"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="79"/>
         <source>%1: unreadable smartctl output (see details)</source>
         <translation type="unfinished">%1: onleesbare uitvoer van smartctl (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="90"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="91"/>
         <source>%1: cannot open the disk, administrator rights needed (see details)</source>
         <translation type="unfinished">%1: kan de schijf niet openen, beheerdersrechten nodig (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="115"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="116"/>
         <source>%1: no SMART health status (see details)</source>
         <translation type="unfinished">%1: geen SMART-gezondheidsstatus (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="121"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="122"/>
         <source>SMART OK</source>
         <translation type="unfinished">SMART OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="121"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="122"/>
         <source>SMART FAILED</source>
         <translation type="unfinished">SMART MISLUKT</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="131"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="132"/>
         <source>%1 reallocated</source>
         <translation type="unfinished">%1 opnieuw toegewezen</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="132"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="133"/>
         <source>%1 pending</source>
         <translation type="unfinished">%1 in afwachting</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="133"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="134"/>
         <source>%1% worn</source>
         <translation type="unfinished">%1% versleten</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="143"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="144"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation type="unfinished">geen drempel %1 in thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="177"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="178"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation type="unfinished">smartctl niet gevonden: laat de map tools naast het programma staan (Linux: installeer smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="179"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="180"/>
         <source>Could not list the disks (see details)</source>
         <translation type="unfinished">Kan de schijven niet oplijsten (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="185"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation type="unfinished">Geen schijf gevonden: controleer het BIOS (Intel RST-, VMD- of RAID-modus kan schijven verbergen)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="197"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="198"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord geannuleerd of fout: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="198"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="199"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord niet op tijd getypt: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="214"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="230"/>
         <source>No disk with SMART data</source>
         <translation type="unfinished">Geen schijf met SMART-gegevens</translation>
     </message>
@@ -900,12 +900,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="177"/>
+        <location filename="../src/ui/MainWindow.cpp" line="178"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="178"/>
+        <location filename="../src/ui/MainWindow.cpp" line="247"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
@@ -940,42 +940,47 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>This PC: reading...</source>
         <translation type="unfinished">Deze pc: wordt gelezen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="199"/>
+        <location filename="../src/ui/MainWindow.cpp" line="200"/>
         <source>This PC: %1</source>
         <translation type="unfinished">Deze pc: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="210"/>
+        <location filename="../src/ui/MainWindow.cpp" line="211"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="212"/>
+        <location filename="../src/ui/MainWindow.cpp" line="213"/>
         <source>NOT CHOSEN</source>
         <translation type="unfinished">NIET GEKOZEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="214"/>
+        <location filename="../src/ui/MainWindow.cpp" line="215"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="345"/>
+        <location filename="../src/ui/MainWindow.cpp" line="247"/>
+        <source>START (%1 of %2)</source>
+        <translation type="unfinished">START (%1 van %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="350"/>
         <source>This PC</source>
         <translation type="unfinished">Deze pc</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="354"/>
+        <location filename="../src/ui/MainWindow.cpp" line="359"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="356"/>
+        <location filename="../src/ui/MainWindow.cpp" line="361"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>

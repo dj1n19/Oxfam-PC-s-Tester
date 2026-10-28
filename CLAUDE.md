@@ -322,7 +322,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   `computeVerdict(statuses, total)`; the run report leaves never-run rows out). **Tick boxes** (2026-10-28, developer's
   request): one per test in the Test column, all ticked at launch (not remembered); START runs the ticked ones
   (`TestRunner::start(indexes)`, in the runner's order; `startAll()`/`startOne()` call it), the others show
-  "NOT CHOSEN" and count as never run (PARTIAL verdict, not in report or sheet); START disabled if none is ticked.
+  "NOT CHOSEN" and count as never run (PARTIAL verdict, not in report or sheet); START disabled if none is ticked,
+  and reads "START (3 of 11)" when not all are (a colleague missed the boxes, 2026-10-28; set in `updateButtons()`).
   Boxes at start from `config/tests.json` (`{ "camera": false, ... }`, keys = `ITest::id()`, edited by each technician
   with a text editor, explained in LISEZMOI.txt; `core/TestChoice`): no file = all ticked, no pop-up; a test missing
   from the file = ticked (a newer version's test is not hidden); invalid JSON, a non-boolean value or an unknown id =

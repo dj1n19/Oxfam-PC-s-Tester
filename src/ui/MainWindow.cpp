@@ -176,7 +176,6 @@ void MainWindow::changeEvent(QEvent* event)
 void MainWindow::retranslateUi()
 {
     setWindowTitle(tr("Lazy Djin's Tester") + QLatin1Char(' ') + QCoreApplication::applicationVersion());
-    m_startButton->setText(tr("START"));
     m_runAgainButton->setText(tr("Run this test"));
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
@@ -188,6 +187,7 @@ void MainWindow::retranslateUi()
     }
     if (!m_verdict->text().isEmpty())
         m_verdict->setText(verdict().text);
+    updateButtons();   // START's text ("START (3 of 11)") is set there
 }
 
 void MainWindow::showPcInfo()
@@ -240,7 +240,11 @@ void MainWindow::resetRows()
 void MainWindow::updateButtons()
 {
     const bool idle = !m_runner.isRunning();
-    m_startButton->setEnabled(idle && !chosenRows().empty());
+    const auto chosen = static_cast<int>(chosenRows().size());
+    m_startButton->setEnabled(idle && chosen > 0);
+    // How many tests START will run, when not all: the tick boxes alone
+    // were missed by a colleague (2026-10-28).
+    m_startButton->setText(chosen == m_runner.count() ? tr("START") : tr("START (%1 of %2)").arg(chosen).arg(m_runner.count()));
     m_runAgainButton->setEnabled(idle && m_table->currentRow() >= 0);
     m_deliveryButton->setEnabled(idle && anyRan());
     m_language->setEnabled(idle);
