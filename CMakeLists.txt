@@ -55,6 +55,11 @@ add_library(oxcore STATIC
     src/tests/battery/BatteryTest.cpp
     src/tests/battery/ChargeTest.h
     src/tests/battery/ChargeTest.cpp
+    src/tests/wireless/WirelessInfo.h
+    src/tests/wireless/WifiTest.h
+    src/tests/wireless/WifiTest.cpp
+    src/tests/wireless/BluetoothTest.h
+    src/tests/wireless/BluetoothTest.cpp
     src/tests/sysinfo/SystemInfo.h
     src/tests/sysinfo/SystemInfoTest.h
     src/tests/sysinfo/SystemInfoTest.cpp
@@ -99,11 +104,13 @@ if(WIN32)
         src/tests/license/license_win.cpp
         src/tests/cputemp/cputemp_win.cpp
         src/tests/keyboard/keyboard_win.cpp
+        src/tests/wireless/wireless_win.cpp
         src/tests/disk/smartctl_win.cpp)
     # Windows system libraries (part of Windows, nothing to ship):
     # setupapi + cfgmgr32 = the device list and problem codes (drivers_win.cpp),
-    # slc = the licensing service (license_win.cpp), pdh = performance counters (cputemp_win.cpp).
-    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc pdh)
+    # slc = the licensing service (license_win.cpp), pdh = performance counters (cputemp_win.cpp),
+    # wlanapi = the Wi-Fi service, bthprops = the Bluetooth stack (wireless_win.cpp).
+    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc pdh wlanapi bthprops)
 else()
     target_sources(oxcore PRIVATE
         src/core/hidefile_linux.cpp
@@ -113,6 +120,7 @@ else()
         src/tests/license/license_linux.cpp
         src/tests/cputemp/cputemp_linux.cpp
         src/tests/keyboard/keyboard_linux.cpp
+        src/tests/wireless/wireless_linux.cpp
         src/tests/disk/smartctl_linux.cpp)     # pkexec when not root
 endif()
 

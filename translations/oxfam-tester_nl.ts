@@ -148,6 +148,44 @@ Waar hoorde u hem?</translation>
     </message>
 </context>
 <context>
+    <name>BluetoothTest</name>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.h" line="15"/>
+        <source>Bluetooth</source>
+        <translation type="unfinished">Bluetooth</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="27"/>
+        <source>Could not read the Bluetooth adapter (see details)</source>
+        <translation type="unfinished">Kan de Bluetooth-adapter niet lezen (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="35"/>
+        <source>No Bluetooth found: none on this model, or its driver is not installed</source>
+        <translation type="unfinished">Geen Bluetooth gevonden: niet aanwezig op dit model, of stuurprogramma niet geïnstalleerd</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="38"/>
+        <source>No Bluetooth (desktop?)</source>
+        <translation type="unfinished">Geen Bluetooth (desktop?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="44"/>
+        <source>Bluetooth is off (key, switch or airplane mode): turn it on and run this test again</source>
+        <translation type="unfinished">Bluetooth staat uit (toets, schakelaar of vliegtuigmodus): zet hem aan en voer deze test opnieuw uit</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="48"/>
+        <source>Bluetooth adapter found</source>
+        <translation type="unfinished">Bluetooth-adapter gevonden</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="48"/>
+        <source>Bluetooth adapter found: %1</source>
+        <translation type="unfinished">Bluetooth-adapter gevonden: %1</translation>
+    </message>
+</context>
+<context>
     <name>CameraDialog</name>
     <message>
         <location filename="../src/ui/interactive/CameraDialog.cpp" line="23"/>
@@ -928,12 +966,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="47"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="46"/>
+        <location filename="../src/main.cpp" line="48"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -1069,6 +1107,49 @@ Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Dji
         <location filename="../src/core/Verdict.h" line="36"/>
         <source>PARTIAL (%1 of %2 tests) - %3</source>
         <translation type="unfinished">GEDEELTELIJK (%1 van %2 tests) - %3</translation>
+    </message>
+</context>
+<context>
+    <name>WifiTest</name>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.h" line="16"/>
+        <source>Wi-Fi</source>
+        <translation type="unfinished">Wifi</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="30"/>
+        <source>Could not read the Wi-Fi adapter (see details)</source>
+        <translation type="unfinished">Kan de wifi-adapter niet lezen (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="38"/>
+        <source>No Wi-Fi adapter found: card missing or its driver not installed</source>
+        <translation type="unfinished">Geen wifi-adapter gevonden: kaart ontbreekt of stuurprogramma niet geïnstalleerd</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="41"/>
+        <source>No Wi-Fi adapter (desktop?)</source>
+        <translation type="unfinished">Geen wifi-adapter (desktop?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="47"/>
+        <source>Wi-Fi is off (key, switch or airplane mode): turn it on and run this test again</source>
+        <translation type="unfinished">Wifi staat uit (toets, schakelaar of vliegtuigmodus): zet hem aan en voer deze test opnieuw uit</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="53"/>
+        <source>Wi-Fi adapter on (networks not counted: NetworkManager missing)</source>
+        <translation type="unfinished">Wifi-adapter aan (netwerken niet geteld: NetworkManager ontbreekt)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="71"/>
+        <source>Wi-Fi on but no network seen: antenna cable unplugged? (check where a network is known to be)</source>
+        <translation type="unfinished">Wifi aan maar geen netwerk gezien: antennekabel los? (controleer waar zeker een netwerk is)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="75"/>
+        <source>Wi-Fi works: %1 networks seen</source>
+        <translation type="unfinished">Wifi werkt: %1 netwerken gezien</translation>
     </message>
 </context>
 </TS>

@@ -14,6 +14,8 @@
 #include "report/RunReport.h"
 #include "tests/battery/BatteryTest.h"
 #include "tests/battery/ChargeTest.h"
+#include "tests/wireless/BluetoothTest.h"
+#include "tests/wireless/WifiTest.h"
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
@@ -256,6 +258,48 @@ private slots:
         BatteryInfo broken;
         broken.error = "boom";
         QCOMPARE(ChargeTest::evaluate(broken).status, Status::Error);
+    }
+
+    void wifiStates()
+    {
+        WifiInfo none;
+        QCOMPARE(WifiTest::evaluate(none, FormFactor::Laptop).status, Status::Fail);
+        QCOMPARE(WifiTest::evaluate(none, FormFactor::Desktop).status, Status::Skipped);
+
+        WifiInfo w;
+        w.present = true;
+        w.radioOff = true;
+        QCOMPARE(WifiTest::evaluate(w, FormFactor::Laptop).status, Status::Warn);
+        w.radioOff = false;
+        QCOMPARE(WifiTest::evaluate(w, FormFactor::Laptop).status, Status::Pass);   // not counted
+        w.counted = true;
+        QCOMPARE(WifiTest::evaluate(w, FormFactor::Laptop).status, Status::Warn);   // antenna?
+
+        // One line per access point: names once each, hidden networks each.
+        w.ssids = {"Oxfam", "Oxfam", "proximus-1234", "", ""};
+        const TestResult r = WifiTest::evaluate(w, FormFactor::Laptop);
+        QCOMPARE(r.status, Status::Pass);
+        QCOMPARE(r.summary, QString("Wi-Fi works: 4 networks seen"));
+
+        WifiInfo broken;
+        broken.error = "boom";
+        QCOMPARE(WifiTest::evaluate(broken, FormFactor::Laptop).status, Status::Error);
+    }
+
+    void bluetoothStates()
+    {
+        BluetoothInfo none;
+        QCOMPARE(BluetoothTest::evaluate(none, FormFactor::Laptop).status, Status::Warn);   // older models
+        QCOMPARE(BluetoothTest::evaluate(none, FormFactor::Unknown).status, Status::Skipped);
+        BluetoothInfo b;
+        b.present = true;
+        b.name = "btusb";
+        QCOMPARE(BluetoothTest::evaluate(b, FormFactor::Laptop).summary, QString("Bluetooth adapter found: btusb"));
+        b.radioOff = true;
+        QCOMPARE(BluetoothTest::evaluate(b, FormFactor::Laptop).status, Status::Warn);
+        BluetoothInfo broken;
+        broken.error = "boom";
+        QCOMPARE(BluetoothTest::evaluate(broken, FormFactor::Laptop).status, Status::Error);
     }
 
     // smartctl samples are hand-made from the smartctl 7.x JSON format

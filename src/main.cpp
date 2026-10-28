@@ -16,6 +16,8 @@
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
+#include "tests/wireless/BluetoothTest.h"
+#include "tests/wireless/WifiTest.h"
 #include "ui/Language.h"
 #include "ui/MainWindow.h"
 #include "ui/Theme.h"
@@ -73,6 +75,8 @@ int main(int argc, char* argv[])
     delivery.rows[add(std::make_unique<DiskTest>(thresholds))] = SheetRow::Disk;
     add(std::make_unique<DriversTest>());
     add(std::make_unique<LicenseTest>());
+    add(std::make_unique<WifiTest>());
+    add(std::make_unique<BluetoothTest>());
     delivery.rows[add(std::make_unique<KeyboardTest>(keyLayout))] = SheetRow::Keyboard;   // interactive: after the automatic ones, in this order
     delivery.rows[add(std::make_unique<AudioTest>())] = SheetRow::Audio;
     delivery.rows[add(std::make_unique<CameraTest>())] = SheetRow::Camera;

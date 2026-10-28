@@ -148,6 +148,44 @@ Où l&apos;avez-vous entendu ?</translation>
     </message>
 </context>
 <context>
+    <name>BluetoothTest</name>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.h" line="15"/>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="27"/>
+        <source>Could not read the Bluetooth adapter (see details)</source>
+        <translation>Impossible de lire l&apos;adaptateur Bluetooth (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="35"/>
+        <source>No Bluetooth found: none on this model, or its driver is not installed</source>
+        <translation>Aucun Bluetooth trouvé : absent sur ce modèle, ou pilote non installé</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="38"/>
+        <source>No Bluetooth (desktop?)</source>
+        <translation>Pas de Bluetooth (PC fixe ?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="44"/>
+        <source>Bluetooth is off (key, switch or airplane mode): turn it on and run this test again</source>
+        <translation>Le Bluetooth est coupé (touche, interrupteur ou mode avion) : activez-le et relancez ce test</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="48"/>
+        <source>Bluetooth adapter found</source>
+        <translation>Adaptateur Bluetooth trouvé</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/BluetoothTest.cpp" line="48"/>
+        <source>Bluetooth adapter found: %1</source>
+        <translation>Adaptateur Bluetooth trouvé : %1</translation>
+    </message>
+</context>
+<context>
     <name>CameraDialog</name>
     <message>
         <location filename="../src/ui/interactive/CameraDialog.cpp" line="23"/>
@@ -928,12 +966,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="45"/>
+        <location filename="../src/main.cpp" line="47"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="46"/>
+        <location filename="../src/main.cpp" line="48"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -1069,6 +1107,49 @@ Les tests qui ont besoin de seuils seront en ERREUR. Recopiez tout le dossier «
         <location filename="../src/core/Verdict.h" line="36"/>
         <source>PARTIAL (%1 of %2 tests) - %3</source>
         <translation>PARTIEL (%1 test(s) sur %2) - %3</translation>
+    </message>
+</context>
+<context>
+    <name>WifiTest</name>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.h" line="16"/>
+        <source>Wi-Fi</source>
+        <translation>Wi-Fi</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="30"/>
+        <source>Could not read the Wi-Fi adapter (see details)</source>
+        <translation>Impossible de lire la carte Wi-Fi (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="38"/>
+        <source>No Wi-Fi adapter found: card missing or its driver not installed</source>
+        <translation>Aucune carte Wi-Fi trouvée : carte absente ou pilote non installé</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="41"/>
+        <source>No Wi-Fi adapter (desktop?)</source>
+        <translation>Pas de carte Wi-Fi (PC fixe ?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="47"/>
+        <source>Wi-Fi is off (key, switch or airplane mode): turn it on and run this test again</source>
+        <translation>Le Wi-Fi est coupé (touche, interrupteur ou mode avion) : activez-le et relancez ce test</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="53"/>
+        <source>Wi-Fi adapter on (networks not counted: NetworkManager missing)</source>
+        <translation>Carte Wi-Fi active (réseaux non comptés : NetworkManager absent)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="71"/>
+        <source>Wi-Fi on but no network seen: antenna cable unplugged? (check where a network is known to be)</source>
+        <translation>Wi-Fi actif mais aucun réseau vu : câble d&apos;antenne débranché ? (vérifiez là où un réseau existe)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/wireless/WifiTest.cpp" line="75"/>
+        <source>Wi-Fi works: %1 networks seen</source>
+        <translation>Le Wi-Fi fonctionne : %1 réseaux vus</translation>
     </message>
 </context>
 </TS>

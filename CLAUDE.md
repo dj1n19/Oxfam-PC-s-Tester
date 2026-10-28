@@ -106,7 +106,7 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   now calls Windows directly (milliseconds): SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry), Battery
   (battery driver IOCTLs), Drivers (SetupAPI + `CM_Get_DevNode_Status`), USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
   licence (slc.dll + ACPI `MSDM` table size), CPU (PDH counters, `GetSystemPowerStatus`). System libraries linked by
-  `oxcore`: `setupapi cfgmgr32 slc pdh`. The only external program is smartctl. Don't bring PowerShell back.
+  `oxcore`: `setupapi cfgmgr32 slc pdh wlanapi bthprops`. The only external program is smartctl. Don't bring PowerShell back.
   Code signing for Smart App Control: dropped by the developer.
 - Keep C++ sources ASCII-only (MSVC warning C4819 on non-UTF-8 code pages).
 - `smartctl` is shipped as a **separate executable** in `tools/` (GPL), never linked. Call `smartctl --json -a <device>` and parse with `QJsonDocument`.
@@ -171,12 +171,13 @@ src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp} ProgramFolder.{h,cpp}
                hidefile_linux.cpp hidefile_win.cpp   (hideFile(): Windows hidden attribute)
   tests/
-    battery/   BatteryInfo.h BatteryTest.{h,cpp} battery_linux.cpp battery_win.cpp
+    battery/   BatteryInfo.h BatteryTest.{h,cpp} ChargeTest.{h,cpp} battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) SystemInfoParsing.cpp
                sysinfo_linux.cpp sysinfo_win.cpp   ("This PC" panel, not a test)
     disk/      DiskInfo.h Smartctl.cpp DiskTest.{h,cpp} smartctl_linux.cpp (pkexec) smartctl_win.cpp
     drivers/   DriverInfo.h DriverParsing.cpp DriversTest.{h,cpp} drivers_linux.cpp drivers_win.cpp
     license/   LicenseInfo.h LicenseTest.{h,cpp} license_linux.cpp license_win.cpp
+    wireless/  WirelessInfo.h WifiTest.{h,cpp} BluetoothTest.{h,cpp} wireless_linux.cpp wireless_win.cpp
     cputemp/   CpuTempInfo.h CpuTempParsing.cpp CpuTempTest.{h,cpp} cputemp_linux.cpp cputemp_win.cpp
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
@@ -344,6 +345,17 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   limit (ex-company laptops stop at 60-80 %) = Pass with that note; empty (<= 5 %) = Warn "run again in 10 minutes"
   (ThinkPad 13 at 0 % pre-charges ~10 min, developer's report); discharging on the charger = Warn (charger too weak).
   Not on the delivery sheet (open question: battery row?). Verified on Arch (charger on, full).
+- Tests: `WifiTest` and `BluetoothTest` (2026-10-28, rows "Wi-Fi" and "Bluetooth"; verified on Arch: iwd, so networks
+  not counted, Bluetooth on and rfkill-blocked; Windows not yet run). Probes `readWifi()` / `readBluetooth()`
+  (`src/tests/wireless/`), the form factor from `readSystemInfo().chassisType` read again in the worker.
+  Windows: `wlanapi` (first adapter, radio state of its PHYs, `WlanScan` + wait for the scan-complete notification,
+  max 6 s, then `WlanGetAvailableNetworkList`; WLAN service not running = no adapter) and `bthprops`
+  (`BluetoothFindFirstRadio`; "off in Settings" not judged yet: connectable/discoverable only listed in details).
+  Linux: `/sys/class/net/*/wireless`, `/sys/class/bluetooth/hci*`, rfkill (soft/hard, any entry blocked = off);
+  networks via `nmcli` (radio state, then `-t -f SSID device wifi list --rescan auto`) if it exists, else not counted.
+  Wi-Fi: none = Fail on a laptop, Skipped otherwise; off = Warn "turn it on and run again"; on, 0 networks = Warn
+  (antenna cable?); networks counted once per name, hidden ones each. Bluetooth: none = Warn on a laptop (older
+  models have none), Skipped otherwise; off = Warn; found = Pass. Not on the delivery sheet.
 - Test: `DiskTest`: `smartctl --scan --json` then `smartctl --json -a -d <type> <dev>` per disk. One shared probe
   (`Smartctl.cpp`, same command line on both OSes). Checks SMART overall health, reallocated (ATA 5) and pending (ATA 197)
   sectors, NVMe `percentage_used`, temperature; power-on hours shown only. One row, worst disk wins; a disk without SMART
