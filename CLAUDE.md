@@ -314,7 +314,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - UI: `MainWindow` with START button, "Run this test" (selected row, any time: since 2026-10-27 a test can run alone
   without a full run, e.g. battery changed and PC restarted; `m_ran` marks the rows with a result; the verdict comes
   from those, and if some never ran it is "PARTIAL (n of m tests) - <verdict>", a partial pass in the WARN colour,
-  `computeVerdict(statuses, total)`; the run report leaves never-run rows out), table (status/test/summary), details
+  `computeVerdict(statuses, total)`; the run report leaves never-run rows out). **Tick boxes** (2026-10-28, developer's
+  request): one per test in the Test column, all ticked at launch (not remembered); START runs the ticked ones
+  (`TestRunner::start(indexes)`, in the runner's order; `startAll()`/`startOne()` call it), the others show
+  "NOT CHOSEN" and count as never run (PARTIAL verdict, not in report or sheet); START disabled if none is ticked.
+  Box style in `Theme.cpp` (`QTableWidget::indicator`: the palette's empty box was invisible). Table (status/test/summary), details
   pane, verdict label (word wrap: the French verdict is wider than the window). Buttons enabled in `updateButtons()`.
 - Test: `BatteryTest` (Linux reads `/sys/class/power_supply`; Windows asks the battery driver: SetupAPI lists the
   `GUID_DEVICE_BATTERY` interfaces, `IOCTL_BATTERY_QUERY_TAG` + `IOCTL_BATTERY_QUERY_INFORMATION` give design/full

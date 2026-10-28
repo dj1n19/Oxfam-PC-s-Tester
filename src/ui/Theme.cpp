@@ -155,7 +155,7 @@ void apply(QApplication& app)
     font.setPointSize(10);
     app.setFont(font);
 
-    // What the palette cannot say: green borders, hover, a bigger START.
+    // What the palette cannot say: green borders, hover, a bigger START, tick boxes.
     app.setStyleSheet(QStringLiteral(
         "QPushButton { border: 1px solid %1; border-radius: 2px; padding: 6px 14px; }"
         "QPushButton:hover { background: #163a1d; }"
@@ -166,7 +166,11 @@ void apply(QApplication& app)
         "QComboBox QAbstractItemView { border: 1px solid %1; }"
         "QTableWidget, QPlainTextEdit { border: 1px solid %2; gridline-color: #13301a; }"
         "QHeaderView::section { background: #0f1a10; color: %1; border: none;"
-        "  border-bottom: 1px solid %2; padding: 4px; font-weight: bold; }")
+        "  border-bottom: 1px solid %2; padding: 4px; font-weight: bold; }"
+        // Tick boxes of the test list: the palette drew an empty box invisible
+        // on the dark table. A green frame; ticked = filled, like a lit block.
+        "QTableWidget::indicator { width: 12px; height: 12px; border: 1px solid %1; background: #000000; }"
+        "QTableWidget::indicator:checked { background: %1; }")
                           .arg(text().name(), dimText().name()));
 }
 

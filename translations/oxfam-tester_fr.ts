@@ -888,77 +888,82 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="165"/>
+        <location filename="../src/ui/MainWindow.cpp" line="176"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="166"/>
+        <location filename="../src/ui/MainWindow.cpp" line="177"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="167"/>
+        <location filename="../src/ui/MainWindow.cpp" line="178"/>
         <source>Run this test</source>
         <translation>Lancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="168"/>
+        <location filename="../src/ui/MainWindow.cpp" line="179"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="169"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="169"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="169"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="170"/>
+        <location filename="../src/ui/MainWindow.cpp" line="181"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="183"/>
+        <location filename="../src/ui/MainWindow.cpp" line="194"/>
         <source>This PC: reading...</source>
         <translation>Ce PC : lecture...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="187"/>
+        <location filename="../src/ui/MainWindow.cpp" line="198"/>
         <source>This PC: %1</source>
         <translation>Ce PC : %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="198"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="200"/>
+        <location filename="../src/ui/MainWindow.cpp" line="211"/>
+        <source>NOT CHOSEN</source>
+        <translation>NON CHOISI</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="213"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="313"/>
+        <location filename="../src/ui/MainWindow.cpp" line="344"/>
         <source>This PC</source>
         <translation>Ce PC</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="322"/>
+        <location filename="../src/ui/MainWindow.cpp" line="353"/>
         <source>Details saved to %1</source>
         <translation>Détails enregistrés dans %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="324"/>
+        <location filename="../src/ui/MainWindow.cpp" line="355"/>
         <source>Could not save the details (%1): %2</source>
         <translation>Impossible d&apos;enregistrer les détails (%1) : %2</translation>
     </message>
@@ -1076,7 +1081,7 @@ Les tests qui ont besoin de seuils seront en ERREUR. Recopiez tout le dossier «
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="80"/>
+        <location filename="../src/core/TestRunner.cpp" line="87"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation>Le test n&apos;a pas répondu en %1 s : appuyez à nouveau sur DÉMARRER</translation>
     </message>

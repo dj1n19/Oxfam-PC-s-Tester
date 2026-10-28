@@ -33,6 +33,7 @@ private:
     std::vector<Status> statuses() const;
     Verdict verdict() const;
     bool anyRan() const;
+    std::vector<int> chosenRows() const;   // ticked rows, in order
     void onTestStarted(int row);
     void onTestFinished(int row, const TestResult& result);
     void onAllFinished();

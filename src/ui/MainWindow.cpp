@@ -33,6 +33,7 @@ enum Column { ColStatus, ColTest, ColSummary, ColCount };
 // can be rebuilt when the language changes: a Status, or one of these.
 constexpr int kWaiting = -1;
 constexpr int kRunning = -2;
+constexpr int kNotChosen = -3;   // unticked before START: not part of this run
 
 // Terminal look: coloured text on the dark table, not coloured cells.
 void setCell(QTableWidget* table, int row, int col, const QString& text, const QColor& color,
@@ -118,6 +119,12 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
 
     setCentralWidget(central);
     resetRows();
+    // A tick box per test: START runs the ticked ones (all by default).
+    for (int i = 0; i < m_runner.count(); ++i) {
+        QTableWidgetItem* item = m_table->item(i, ColTest);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setCheckState(Qt::Checked);
+    }
     retranslateUi();
 
     connect(m_startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
@@ -131,6 +138,10 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, QWidget* pare
     connect(m_table, &QTableWidget::currentCellChanged, this, [this](int row, int, int, int) {
         showDetailsOf(row);
         updateButtons();
+    });
+    connect(m_table, &QTableWidget::itemChanged, this, [this](QTableWidgetItem* item) {
+        if (item->column() == ColTest)
+            updateButtons();   // a box (un)ticked: START needs at least one
     });
     updateButtons();
 
@@ -196,6 +207,8 @@ void MainWindow::setStatusCell(int row, int state)
 {
     if (state == kWaiting) {
         setCell(m_table, row, ColStatus, tr("WAITING"), Theme::waitingColor());
+    } else if (state == kNotChosen) {
+        setCell(m_table, row, ColStatus, tr("NOT CHOSEN"), Theme::dimText());
     } else if (state == kRunning) {
         setCell(m_table, row, ColStatus, tr("RUNNING"), Theme::runningColor(), Theme::runningIcon());
     } else {
@@ -225,7 +238,7 @@ void MainWindow::resetRows()
 void MainWindow::updateButtons()
 {
     const bool idle = !m_runner.isRunning();
-    m_startButton->setEnabled(idle);
+    m_startButton->setEnabled(idle && !chosenRows().empty());
     m_runAgainButton->setEnabled(idle && m_table->currentRow() >= 0);
     m_deliveryButton->setEnabled(idle && anyRan());
     m_language->setEnabled(idle);
@@ -247,6 +260,17 @@ Verdict MainWindow::verdict() const
     return computeVerdict(statuses(), m_runner.count());
 }
 
+std::vector<int> MainWindow::chosenRows() const
+{
+    std::vector<int> rows;
+    for (int i = 0; i < m_runner.count(); ++i) {
+        const QTableWidgetItem* item = m_table->item(i, ColTest);
+        if (item && item->checkState() == Qt::Checked)
+            rows.push_back(i);
+    }
+    return rows;
+}
+
 bool MainWindow::anyRan() const
 {
     return std::find(m_ran.begin(), m_ran.end(), true) != m_ran.end();
@@ -254,8 +278,15 @@ bool MainWindow::anyRan() const
 
 void MainWindow::onStartClicked()
 {
+    const std::vector<int> rows = chosenRows();
     resetRows();
-    m_runner.startAll();
+    // The unticked rows say so; they stay out of the verdict ("PARTIAL"),
+    // the run report and the delivery sheet, like a row never run.
+    for (int i = 0; i < m_runner.count(); ++i) {
+        if (std::find(rows.begin(), rows.end(), i) == rows.end())
+            setStatusCell(i, kNotChosen);
+    }
+    m_runner.start(rows);
     updateButtons();
 }
 

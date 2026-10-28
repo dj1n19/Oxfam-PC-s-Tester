@@ -32,38 +32,45 @@ void TestRunner::add(std::unique_ptr<ITest> test)
     m_waiting.push_back(false);
 }
 
-void TestRunner::startAll()
+void TestRunner::start(std::vector<int> indexes)
 {
     if (m_running)
         return;
-    m_running = true;
-    ++m_run;
-    m_current = -1;
-    m_last = count() - 1;
-    runNext();
-}
-
-// A sequence of one: the same code path as a full run, watchdog included.
-void TestRunner::startOne(int index)
-{
-    if (m_running || index < 0 || index >= count())
+    std::sort(indexes.begin(), indexes.end());
+    indexes.erase(std::unique(indexes.begin(), indexes.end()), indexes.end());
+    std::erase_if(indexes, [this](int i) { return i < 0 || i >= count(); });
+    if (indexes.empty())
         return;
     m_running = true;
     ++m_run;
-    m_current = index - 1;   // runNext() moves to index
-    m_last = index;
+    m_queue = std::move(indexes);
+    m_next = 0;
     runNext();
+}
+
+void TestRunner::startAll()
+{
+    std::vector<int> all(static_cast<size_t>(count()));
+    for (int i = 0; i < count(); ++i)
+        all[static_cast<size_t>(i)] = i;
+    start(std::move(all));
+}
+
+void TestRunner::startOne(int index)
+{
+    start({index});
 }
 
 void TestRunner::runNext()
 {
-    ++m_current;
-    if (m_current > m_last) {
+    if (m_next >= m_queue.size()) {
         m_running = false;
+        m_current = -1;
         emit allFinished();
         return;
     }
 
+    m_current = m_queue[m_next++];
     const int index = m_current;
     ITest& t = *m_tests[static_cast<size_t>(index)];
     m_waiting[static_cast<size_t>(index)] = true;

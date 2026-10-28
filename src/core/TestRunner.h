@@ -16,8 +16,11 @@ public:
     int count() const { return static_cast<int>(m_tests.size()); }
     const ITest& test(int index) const { return *m_tests[static_cast<size_t>(index)]; }
 
+    // Runs these tests, in the runner's order (the order given does not
+    // matter; unknown indexes are ignored). Same signals for every start.
+    void start(std::vector<int> indexes);
     void startAll();
-    void startOne(int index);   // run that test again, alone (same signals as startAll())
+    void startOne(int index);   // that test alone
     bool isRunning() const { return m_running; }
 
 signals:
@@ -32,8 +35,9 @@ private:
 
     std::vector<std::unique_ptr<ITest>> m_tests;
     std::vector<bool> m_waiting;   // per test: started, no answer yet
+    std::vector<int> m_queue;      // the tests of this start, in order
+    size_t m_next = 0;             // position in m_queue of the next test
     int m_current = -1;            // the test running now
-    int m_last = -1;               // the sequence ends after this test
     int m_run = 0;                 // +1 per START: old watchdogs are ignored
     bool m_running = false;
 };

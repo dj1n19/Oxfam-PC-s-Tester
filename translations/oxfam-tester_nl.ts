@@ -888,77 +888,82 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="165"/>
+        <location filename="../src/ui/MainWindow.cpp" line="176"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="166"/>
+        <location filename="../src/ui/MainWindow.cpp" line="177"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="167"/>
+        <location filename="../src/ui/MainWindow.cpp" line="178"/>
         <source>Run this test</source>
         <translation type="unfinished">Deze test uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="168"/>
+        <location filename="../src/ui/MainWindow.cpp" line="179"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="169"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="169"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="169"/>
+        <location filename="../src/ui/MainWindow.cpp" line="180"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="170"/>
+        <location filename="../src/ui/MainWindow.cpp" line="181"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="183"/>
+        <location filename="../src/ui/MainWindow.cpp" line="194"/>
         <source>This PC: reading...</source>
         <translation type="unfinished">Deze pc: wordt gelezen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="187"/>
+        <location filename="../src/ui/MainWindow.cpp" line="198"/>
         <source>This PC: %1</source>
         <translation type="unfinished">Deze pc: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="198"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="200"/>
+        <location filename="../src/ui/MainWindow.cpp" line="211"/>
+        <source>NOT CHOSEN</source>
+        <translation type="unfinished">NIET GEKOZEN</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="213"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="313"/>
+        <location filename="../src/ui/MainWindow.cpp" line="344"/>
         <source>This PC</source>
         <translation type="unfinished">Deze pc</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="322"/>
+        <location filename="../src/ui/MainWindow.cpp" line="353"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="324"/>
+        <location filename="../src/ui/MainWindow.cpp" line="355"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>
@@ -1076,7 +1081,7 @@ Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Dji
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="80"/>
+        <location filename="../src/core/TestRunner.cpp" line="87"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation type="unfinished">Test antwoordde niet binnen %1 s: druk opnieuw op STARTEN</translation>
     </message>

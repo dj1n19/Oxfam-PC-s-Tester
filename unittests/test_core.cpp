@@ -1251,6 +1251,34 @@ private slots:
         QCOMPARE(all.count(), 2);
     }
 
+    // START with only some boxes ticked: those run, in the runner's order.
+    void runnerStartsChosenTests()
+    {
+        TestRunner runner;
+        std::vector<FakeTest*> t;
+        for (int i = 0; i < 3; ++i) {
+            auto test = std::make_unique<FakeTest>(false, false);
+            t.push_back(test.get());
+            runner.add(std::move(test));
+        }
+        QSignalSpy started(&runner, &TestRunner::testStarted);
+        QSignalSpy all(&runner, &TestRunner::allFinished);
+
+        runner.start({2, 0, 7, 0});        // order given and duplicates do not matter; 7 does not exist
+        QCOMPARE(t[0]->runs, 1);
+        t[0]->answer(Status::Pass);
+        QCOMPARE(t[1]->runs, 0);           // not chosen
+        QCOMPARE(t[2]->runs, 1);
+        t[2]->answer(Status::Pass);
+        QCOMPARE(all.count(), 1);
+        QCOMPARE(started.count(), 2);
+        QCOMPARE(started.at(1).at(0).toInt(), 2);
+
+        runner.start({});                  // nothing chosen: nothing starts
+        QVERIFY(!runner.isRunning());
+        QCOMPARE(all.count(), 1);
+    }
+
     void deliverySheetReads_data() { sheetFiles(); }
     void deliverySheetReads()
     {
