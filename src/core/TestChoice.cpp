@@ -32,3 +32,15 @@ bool TestChoice::isTicked(const QString& id) const
     const auto it = ticked.find(id);
     return it == ticked.end() || it->second;
 }
+
+QByteArray TestChoice::toJson(const std::vector<std::pair<QString, bool>>& tests)
+{
+    // Written by hand: QJsonDocument would sort the keys alphabetically.
+    QByteArray out = "{\n";
+    for (size_t i = 0; i < tests.size(); ++i) {
+        out += "    \"" + tests[i].first.toUtf8() + "\": " + (tests[i].second ? "true" : "false");
+        out += i + 1 < tests.size() ? ",\n" : "\n";
+    }
+    out += "}\n";
+    return out;
+}

@@ -32,6 +32,7 @@ private:
     void setStatusCell(int row, int state);
     void onStartClicked();
     void onRunAgainClicked();
+    void onRememberClicked();
     void updateButtons();
     std::vector<Status> statuses() const;
     Verdict verdict() const;
@@ -48,6 +49,7 @@ private:
     TestRunner& m_runner;
     QPushButton* m_startButton = nullptr;
     QPushButton* m_runAgainButton = nullptr;
+    QPushButton* m_rememberButton = nullptr;
     QComboBox* m_language = nullptr;
     QLabel* m_pcInfo = nullptr;
     QPushButton* m_deliveryButton = nullptr;

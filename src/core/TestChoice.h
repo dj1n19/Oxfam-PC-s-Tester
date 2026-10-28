@@ -1,5 +1,7 @@
 #pragma once
 #include <map>
+#include <utility>
+#include <vector>
 #include <QByteArray>
 #include <QString>
 
@@ -14,4 +16,8 @@ struct TestChoice {
     // values; the choice is then left empty (everything ticked).
     bool loadFromJson(const QByteArray& json, QString* error);
     bool isTicked(const QString& id) const;
+
+    // The file as the "Remember these choices" button writes it: one test
+    // per line, in the given (runner's) order, so it stays readable by hand.
+    static QByteArray toJson(const std::vector<std::pair<QString, bool>>& tests);
 };

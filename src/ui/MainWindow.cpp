@@ -7,17 +7,21 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QEvent>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QSaveFile>
 #include <QScreen>
 #include <QStatusBar>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QtConcurrent>
 
+#include "core/ProgramFolder.h"
+#include "core/TestChoice.h"
 #include "core/TestRunner.h"
 #include "core/Verdict.h"
 #include "report/RunReport.h"
@@ -72,6 +76,13 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
     m_runAgainButton = new QPushButton(central);
     m_runAgainButton->setMinimumHeight(48);
     top->addWidget(m_runAgainButton);
+
+    // The tick boxes become the ones at start: config/tests.json is written
+    // here, so nobody has to edit it by hand. A button, not on every click:
+    // a technician trying boxes out must not change the defaults unknowingly.
+    m_rememberButton = new QPushButton(central);
+    m_rememberButton->setMinimumHeight(48);
+    top->addWidget(m_rememberButton);
 
     // Once some test ran: only the rows with a result are written.
     m_deliveryButton = new QPushButton(central);
@@ -130,6 +141,7 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
 
     connect(m_startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
     connect(m_runAgainButton, &QPushButton::clicked, this, &MainWindow::onRunAgainClicked);
+    connect(m_rememberButton, &QPushButton::clicked, this, &MainWindow::onRememberClicked);
     connect(m_deliveryButton, &QPushButton::clicked, this, &MainWindow::onDeliveryClicked);
     connect(m_language, &QComboBox::currentIndexChanged, this,
             [this] { setLanguage(m_language->currentData().toString()); });
@@ -177,6 +189,8 @@ void MainWindow::retranslateUi()
 {
     setWindowTitle(tr("Lazy Djin's Tester") + QLatin1Char(' ') + QCoreApplication::applicationVersion());
     m_runAgainButton->setText(tr("Run this test"));
+    m_rememberButton->setText(tr("Remember these choices"));
+    m_rememberButton->setToolTip(tr("The ticked tests will be ticked at the next starts"));
     m_deliveryButton->setText(tr("Fill the delivery sheet"));
     m_table->setHorizontalHeaderLabels({tr("Status"), tr("Test"), tr("Summary")});
     m_details->setPlaceholderText(tr("Select a test to see the raw details."));
@@ -248,6 +262,7 @@ void MainWindow::updateButtons()
     m_runAgainButton->setEnabled(idle && m_table->currentRow() >= 0);
     m_deliveryButton->setEnabled(idle && anyRan());
     m_language->setEnabled(idle);
+    m_rememberButton->setEnabled(idle);
 }
 
 // Statuses of the rows that ran: a row never run is not a pass.
@@ -306,6 +321,22 @@ void MainWindow::onRunAgainClicked()
     m_verdict->setStyleSheet(QString());
     m_runner.startOne(row);
     updateButtons();
+}
+
+void MainWindow::onRememberClicked()
+{
+    std::vector<std::pair<QString, bool>> tests;
+    for (int i = 0; i < m_runner.count(); ++i)
+        tests.emplace_back(m_runner.test(i).id(), m_table->item(i, ColTest)->checkState() == Qt::Checked);
+    const QString path = configFile(QStringLiteral("tests.json"));
+    QDir().mkpath(QFileInfo(path).absolutePath());
+    // QSaveFile: a write cut short (stick pulled out) leaves the old file whole.
+    QSaveFile file(path);
+    if (file.open(QIODevice::WriteOnly) && file.write(TestChoice::toJson(tests)) >= 0 && file.commit())
+        statusBar()->showMessage(tr("Ticked tests remembered for the next starts (%1)").arg(QDir::toNativeSeparators(path)));
+    else
+        statusBar()->showMessage(tr("Could not remember the ticked tests (%1): %2")
+                                     .arg(QDir::toNativeSeparators(path), file.errorString()));
 }
 
 void MainWindow::onTestStarted(int row)

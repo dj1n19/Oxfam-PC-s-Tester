@@ -325,7 +325,9 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   "NOT CHOSEN" and count as never run (PARTIAL verdict, not in report or sheet); START disabled if none is ticked,
   and reads "START (3 of 11)" when not all are (a colleague missed the boxes, 2026-10-28; set in `updateButtons()`).
   Boxes at start from `config/tests.json` (`{ "camera": false, ... }`, keys = `ITest::id()`, edited by each technician
-  with a text editor, explained in LISEZMOI.txt; `core/TestChoice`): no file = all ticked, no pop-up; a test missing
+  by the button "Remember these choices" (developer's request 2026-10-28: JSON by hand would lose colleagues; a button,
+  not a save on every click, so trying boxes out changes nothing; `TestChoice::toJson()` writes one test per line in
+  the runner's order, QSaveFile, result in the status bar); `core/TestChoice`): no file = all ticked, no pop-up; a test missing
   from the file = ticked (a newer version's test is not hidden); invalid JSON, a non-boolean value or an unknown id =
   warning at launch listing the known ids, the rest still applied (bad file: all ticked).
   Box style in `Theme.cpp` (`QTableWidget::indicator`: the palette's empty box was invisible). Table (status/test/summary), details

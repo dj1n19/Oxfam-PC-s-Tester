@@ -17,9 +17,8 @@ Clé USB
 Les dossiers
 - app             le programme. Ne rien changer.
 - config          les seuils des tests et la disposition du clavier.
-                  tests.json : les tests cochés au démarrage. Ouvrez-le avec un éditeur de texte
-                  (Bloc-notes) et mettez false au test à décocher, par exemple "camera": false.
-                  Les cases restent modifiables à l'écran avant START.
+                  tests.json : les tests cochés au démarrage. Cochez vos tests dans la liste,
+                  puis cliquez sur "Retenir ces choix" : inutile d'ouvrir ce fichier.
 - logs            un rapport texte par test de PC (créé au premier test).
 - delivery-sheets les fiches de livraison à partager (FR et NL). Si la fiche n'est pas sur le Bureau,
                   le programme l'y copie depuis ce dossier. Un nouveau modèle ou un nouveau magasin y est
@@ -42,9 +41,8 @@ USB-stick
 De mappen
 - app             het programma. Niets wijzigen.
 - config          de drempels van de tests en de toetsenbordindeling.
-                  tests.json: de tests die bij het starten aangevinkt zijn. Open het met een teksteditor
-                  (Kladblok) en zet false bij de test die uit moet, bijvoorbeeld "camera": false.
-                  De vakjes blijven op het scherm aanpasbaar vóór START.
+                  tests.json: de tests die bij het starten aangevinkt zijn. Vink uw tests aan in de lijst
+                  en klik op "Deze keuzes onthouden": dit bestand hoeft u niet te openen.
 - logs            een tekstrapport per geteste pc (aangemaakt bij de eerste test).
 - delivery-sheets de te delen leveringsfiches (FR en NL). Staat de fiche niet op het bureaublad,
                   dan kopieert het programma ze vanuit deze map. Een nieuw model of een nieuwe winkel

@@ -1293,6 +1293,18 @@ private slots:
         QVERIFY(!choice.loadFromJson("[true]", &error));
     }
 
+    // What "Remember these choices" writes: readable, in order, read back the same.
+    void testChoiceWritten()
+    {
+        const QByteArray json = TestChoice::toJson({{"battery", true}, {"camera", false}, {"audio", true}});
+        QCOMPARE(json, QByteArray("{\n    \"battery\": true,\n    \"camera\": false,\n    \"audio\": true\n}\n"));
+        TestChoice choice;
+        QString error;
+        QVERIFY2(choice.loadFromJson(json, &error), qPrintable(error));
+        QVERIFY(!choice.isTicked("camera"));
+        QVERIFY(choice.isTicked("audio"));
+    }
+
     // The file shipped in config/ names every test of main.cpp, all ticked.
     void testChoiceShippedFile()
     {
