@@ -1357,7 +1357,9 @@ private slots:
         results[SheetRow::Camera] = {Status::Skipped, "No camera found", "", ""};
         results[SheetRow::Disk] = {Status::Error, "Could not list the disks (see details)", "", ""};
         QVERIFY(DeliverySheet::currentShop(sheet).isEmpty());
-        QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", "Ixelles", results, &error),
+        QVERIFY(DeliverySheet::currentOxfamNumber(sheet).isEmpty());
+        QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", "Ixelles", "012345", results,
+                                     &error),
                  qPrintable(error));
 
         XlsxEditor reread;
@@ -1366,6 +1368,8 @@ private slots:
         QCOMPARE(at("C4"), QStringLiteral("Ixelles"));
         QCOMPARE(DeliverySheet::currentShop(reread), QStringLiteral("Ixelles"));
         QCOMPARE(at("C5"), QStringLiteral("Dell Latitude 7420"));
+        QCOMPARE(at("C6"), QStringLiteral("012345"));   // text: the leading 0 stays
+        QCOMPARE(DeliverySheet::currentOxfamNumber(reread), QStringLiteral("012345"));
         QCOMPARE(at("C25"), QStringLiteral("10/10/2026"));   // the operator's date
         QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));    // the header date was empty
         QCOMPARE(at("C12"), QStringLiteral("\u2611"));
@@ -1380,10 +1384,23 @@ private slots:
         QCOMPARE(at("D16"), QStringLiteral("No camera found"));
 
         // Filled again another day: the header date stays, the operator's date follows.
-        QVERIFY2(DeliverySheet::fill(reread, QDate(2026, 10, 12), "", "", {}, &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::fill(reread, QDate(2026, 10, 12), "", "", "", {}, &error), qPrintable(error));
         QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));
         QCOMPARE(at("C25"), QStringLiteral("12/10/2026"));
         QCOMPARE(at("C4"), QStringLiteral("Ixelles"));   // no shop given: left as it was
+        QCOMPARE(at("C6"), QStringLiteral("012345"));    // no number given: left as it was
+    }
+
+    void oxfamNumberFormat()
+    {
+        QVERIFY(DeliverySheet::isOxfamNumber("123456"));
+        QVERIFY(DeliverySheet::isOxfamNumber("000123"));
+        QVERIFY(!DeliverySheet::isOxfamNumber("12345"));
+        QVERIFY(!DeliverySheet::isOxfamNumber("1234567"));
+        QVERIFY(!DeliverySheet::isOxfamNumber("12 456"));
+        QVERIFY(!DeliverySheet::isOxfamNumber("12345a"));
+        QVERIFY(!DeliverySheet::isOxfamNumber(""));
+        QVERIFY(!DeliverySheet::isOxfamNumber("123456\n"));   // "^...$" alone lets a final newline through
     }
 
     void deliverySheetModels_data() { sheetFiles(); }

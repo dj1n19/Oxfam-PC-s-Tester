@@ -7,7 +7,7 @@
 
 // Oxfam's delivery sheet ("Fiche Pre Livraison" / "Pre- LeveringsFiche", same
 // layout in both languages): which cells the app fills. Everything else
-// (order number, Oxfam number, manual checks, operator) is left to the technician.
+// (order number, manual checks, operator) is left to the technician.
 
 // The checks of the sheet that a test answers.
 enum class SheetRow { Battery, Disk, Keyboard, Audio, Camera };
@@ -53,12 +53,18 @@ bool addName(XlsxEditor& sheet, SheetList list, const QString& name, QString* er
 // The shop the sheet already holds ("" if none).
 QString currentShop(const XlsxEditor& sheet);
 
+// Oxfam's inventory number of the PC: exactly 6 digits (developer's rule).
+bool isOxfamNumber(const QString& text);
+// The number the sheet already holds, "" if none or not 6 digits.
+QString currentOxfamNumber(const XlsxEditor& sheet);
+
 // Writes the operator's date (always), the sheet's date (only if empty: it
-// may be the order date), the model and the shop (if not empty) and the box
+// may be the order date), the model, the shop and the Oxfam number (each if
+// not empty; the number as text, so a leading 0 stays) and the box
 // + comment of each row that has a result. PASS/WARN tick the box, SKIPPED leaves it empty
 // with the reason. FAIL and ERROR are not written (developer's choice: such
 // a PC is not delivered as is), so the row keeps what the sheet had.
 bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QString& shop,
-          const std::map<SheetRow, TestResult>& results, QString* error);
+          const QString& oxfamNumber, const std::map<SheetRow, TestResult>& results, QString* error);
 
 } // namespace DeliverySheet

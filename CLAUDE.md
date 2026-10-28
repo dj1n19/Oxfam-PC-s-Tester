@@ -234,7 +234,10 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   (`QStandardPaths::DesktopLocation`, FR or NL file name), warns if an office lock file exists, writes C25 (operator's
   date, text dd/MM/yyyy), C7 (header date) only if empty (developer's request 2026-10-26: it may be the order date),
   C5 (model), C4 (shop, picked by the technician in the "Shops" tab's list, the sheet's current shop
-  preselected; no "Shops" list = not asked), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
+  preselected; no "Shops" list = not asked), C6 (Oxfam number, asked after the shop, developer's request 2026-10-28:
+  exactly 6 digits `^[0-9]{6}$`, `DeliverySheet::isOxfamNumber()`, anchored on the whole text; digits-only field,
+  wrong length = message and asked again; empty = not written; the sheet's valid number preset; written as text so a
+  leading 0 stays), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
   (battery "85 %"), WARN = ticked + summary, SKIPPED = unticked + summary, FAIL/ERROR = not written (developer's choice). Manual rows/header are never touched.
 - Desktop: both file names looked for, the system language's first (`fileNamesFor()`). None: copied from
   `<root>/delivery-sheets/` in the system language (en: the technician picks Francais/Nederlands if both exist; one

@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <QRegularExpression>
+
 namespace {
 
 // Tab names, the same in both files. é keeps this source ASCII (MSVC C4819).
@@ -11,6 +13,7 @@ const QString kShopSheet = QStringLiteral("Shops");
 
 const QString kShopCell = QStringLiteral("C4");
 const QString kModelCell = QStringLiteral("C5");
+const QString kOxfamNumberCell = QStringLiteral("C6");   // "Oxfam number"
 const QString kDateCell = QStringLiteral("C7");           // "Date / Datum" of the header
 const QString kOperatorDateCell = QStringLiteral("C25");  // date of the first operator line
 
@@ -162,8 +165,22 @@ QString currentShop(const XlsxEditor& sheet)
     return sheet.cell(kCheckSheet, kShopCell).simplified();
 }
 
+bool isOxfamNumber(const QString& text)
+{
+    // ^[0-9]{6}$, anchored on the whole text: a plain "$" also matches
+    // before a final newline ("123456\n" would pass).
+    static const QRegularExpression sixDigits(QRegularExpression::anchoredPattern(QStringLiteral("[0-9]{6}")));
+    return sixDigits.match(text).hasMatch();
+}
+
+QString currentOxfamNumber(const XlsxEditor& sheet)
+{
+    const QString number = sheet.cell(kCheckSheet, kOxfamNumberCell).trimmed();
+    return isOxfamNumber(number) ? number : QString();
+}
+
 bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QString& shop,
-          const std::map<SheetRow, TestResult>& results, QString* error)
+          const QString& oxfamNumber, const std::map<SheetRow, TestResult>& results, QString* error)
 {
     // Text, not an Excel date number: shown the same in every office program.
     const QString day = date.toString(QStringLiteral("dd/MM/yyyy"));
@@ -176,6 +193,8 @@ bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QStr
     if (!model.isEmpty() && !sheet.setCell(kCheckSheet, kModelCell, model, error))
         return false;
     if (!shop.isEmpty() && !sheet.setCell(kCheckSheet, kShopCell, shop, error))
+        return false;
+    if (!oxfamNumber.isEmpty() && !sheet.setCell(kCheckSheet, kOxfamNumberCell, oxfamNumber, error))
         return false;
 
     for (const auto& [row, result] : results) {

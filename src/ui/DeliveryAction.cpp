@@ -7,7 +7,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QInputDialog>
+#include <QLineEdit>
 #include <QMessageBox>
+#include <QRegularExpressionValidator>
 #include <QSaveFile>
 #include <QStandardPaths>
 
@@ -262,7 +264,27 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
         // A new shop not added: the shop cell is left for the technician.
     }
 
-    // 5. Each sheet of delivery-sheets/ gets the names it lacks: new ones, or
+    // 5. The Oxfam number: on the PC's label, the program cannot read it.
+    // Empty = written by hand later; otherwise exactly 6 digits.
+    QString oxfamNumber = DeliverySheet::currentOxfamNumber(sheet);
+    for (;;) {
+        QInputDialog dialog(parent);
+        dialog.setWindowTitle(title);
+        dialog.setInputMode(QInputDialog::TextInput);   // creates the text field found below
+        dialog.setLabelText(tr("Oxfam number of this PC (6 digits)?\nLeave it empty to write it on the sheet later:"));
+        dialog.setTextValue(oxfamNumber);
+        // Only digits can be typed, 6 at most.
+        if (auto* field = dialog.findChild<QLineEdit*>())
+            field->setValidator(new QRegularExpressionValidator(QRegularExpression(QStringLiteral("[0-9]{0,6}")), field));
+        if (dialog.exec() != QDialog::Accepted)
+            return;
+        oxfamNumber = dialog.textValue().trimmed();
+        if (oxfamNumber.isEmpty() || DeliverySheet::isOxfamNumber(oxfamNumber))
+            break;
+        QMessageBox::warning(parent, title, tr("An Oxfam number has exactly 6 digits: \"%1\" is not one.").arg(oxfamNumber));
+    }
+
+    // 6. Each sheet of delivery-sheets/ gets the names it lacks: new ones, or
     // names only the other language had. Written (with a backup) only if
     // something was added. When the Desktop sheet's language is missing there
     // and a name was added, it is saved there, before the results go in.
@@ -295,9 +317,9 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
                              tr("The sheets for the other technicians could not all be updated:\n%1")
                                  .arg(problems.join(QLatin1Char('\n'))));
 
-    // 6. Fill and write.
+    // 7. Fill and write.
     QByteArray filled;
-    if (DeliverySheet::fill(sheet, QDate::currentDate(), model, shop, input.results, &error))
+    if (DeliverySheet::fill(sheet, QDate::currentDate(), model, shop, oxfamNumber, input.results, &error))
         filled = sheet.save(&error);
     if (filled.isEmpty() || !writeFile(path, filled, &error)) {
         QMessageBox::warning(parent, title,
