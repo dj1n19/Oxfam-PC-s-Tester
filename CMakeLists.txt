@@ -111,8 +111,9 @@ if(WIN32)
     # Windows system libraries (part of Windows, nothing to ship):
     # setupapi + cfgmgr32 = the device list and problem codes (drivers_win.cpp),
     # slc = the licensing service (license_win.cpp), pdh = performance counters (cputemp_win.cpp),
-    # wlanapi = the Wi-Fi service, bthprops = the Bluetooth stack (wireless_win.cpp).
-    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc pdh wlanapi bthprops)
+    # wlanapi = the Wi-Fi service, bthprops = the Bluetooth stack (wireless_win.cpp),
+    # ole32 + shell32 + propsys = the shell property with the BitLocker state (license_win.cpp).
+    target_link_libraries(oxcore PRIVATE setupapi cfgmgr32 slc pdh wlanapi bthprops ole32 shell32 propsys)
 else()
     target_sources(oxcore PRIVATE
         src/core/hidefile_linux.cpp

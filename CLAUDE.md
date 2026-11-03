@@ -106,8 +106,8 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   just after start-up, PowerShell/WMI timed out (> 20 s) and powercfg /batteryreport always did (30 s). Every probe
   now calls Windows directly (milliseconds): SystemInfo (SMBIOS via `GetSystemFirmwareTable`, registry), Battery
   (battery driver IOCTLs), Drivers (SetupAPI + `CM_Get_DevNode_Status`), USB disks (`IOCTL_STORAGE_QUERY_PROPERTY`),
-  licence (slc.dll + ACPI `MSDM` table size), CPU (PDH counters, `GetSystemPowerStatus`). System libraries linked by
-  `oxcore`: `setupapi cfgmgr32 slc pdh wlanapi bthprops`. The only external program is smartctl. Don't bring PowerShell back.
+  licence (slc.dll + ACPI `MSDM` table size), BitLocker (shell property), CPU (PDH counters, `GetSystemPowerStatus`).
+  System libraries linked by `oxcore`: `setupapi cfgmgr32 slc pdh wlanapi bthprops ole32 shell32 propsys`. The only external program is smartctl. Don't bring PowerShell back.
   Code signing for Smart App Control: dropped by the developer.
 - Keep C++ sources ASCII-only (MSVC warning C4819 on non-UTF-8 code pages).
 - `smartctl` is shipped as a **separate executable** in `tools/` (GPL), never linked. Call `smartctl --json -a <device>` and parse with `QJsonDocument`.
@@ -403,6 +403,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   "unlicensed": the best status wins (licensed > grace > notification), its name/channel from
   `SLGetProductSkuInformation`. Licensed is Pass, anything else (or no licence) is **Warn**. Firmware OEM key = the
   ACPI `MSDM` table exists (only its SIZE is asked: the key never reaches the program). Skipped on Linux.
+  **BitLocker** of the system drive in the same row (developer's decision 2026-11-03: fewer rows; worse status wins):
+  shell property `System.Volume.BitLockerProtection` of `C:\` (what Explorer's padlock shows; COM on the worker thread,
+  key looked up by name, no admin, no WMI). Codes are undocumented: 0/2 = off (Pass), 1/3/5 = on = **Warn** "turn it off
+  before sale" (the recovery key may be the previous owner's), other = Warn "unknown code", unreadable = Error.
+  Not yet built or run on Windows (CI to check); field to confirm the codes (Win11 "waiting for activation"?).
 - Test: `CpuTempTest`, row "CPU under load" (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
   priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then

@@ -842,7 +842,7 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>LicenseTest</name>
     <message>
-        <location filename="../src/tests/license/LicenseTest.h" line="13"/>
+        <location filename="../src/tests/license/LicenseTest.h" line="14"/>
         <source>Windows licence</source>
         <translation>Licence Windows</translation>
     </message>
@@ -872,9 +872,29 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
         <translation>Pas Windows</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="45"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="57"/>
         <source>Could not read the Windows licence (see details)</source>
         <translation>Impossible de lire la licence Windows (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="97"/>
+        <source>Could not read the BitLocker state (see details)</source>
+        <translation>Impossible de lire l’état de BitLocker (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="107"/>
+        <source>BitLocker off</source>
+        <translation>BitLocker désactivé</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="115"/>
+        <source>BitLocker ON: turn it off before sale, then run this test again</source>
+        <translation>BitLocker ACTIVÉ : le désactiver avant la vente, puis relancer ce test</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="122"/>
+        <source>BitLocker state unknown (code %1): check it in the Control Panel</source>
+        <translation>État de BitLocker inconnu (code %1) : le vérifier dans le Panneau de configuration</translation>
     </message>
     <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="15"/>
@@ -882,27 +902,27 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
         <translation>période de grâce</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="51"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="63"/>
         <source>OEM key in firmware: yes</source>
         <translation>Clé OEM dans le firmware : oui</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="52"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="64"/>
         <source>OEM key in firmware: no</source>
         <translation>Clé OEM dans le firmware : non</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="61"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="73"/>
         <source>No Windows licence installed | %1</source>
         <translation>Aucune licence Windows installée | %1</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="66"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="78"/>
         <source>Activated: %1 | %2</source>
         <translation>Activée : %1 | %2</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="70"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="82"/>
         <source>NOT activated (%1): %2 | %3</source>
         <translation>NON activée (%1) : %2 | %3</translation>
     </message>

@@ -4,10 +4,14 @@
 
 #include <chrono>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include <windows.h>
 #include <slpublic.h>
+#include <shobjidl.h>   // IShellItem2
+#include <shlobj.h>     // SHCreateItemFromParsingName
+#include <propsys.h>    // PSGetPropertyKeyFromName
 
 // No PowerShell and no WMI (too slow just after start-up): the licensing
 // library WMI's SoftwareLicensingProduct is built on (slc.dll).
@@ -64,12 +68,65 @@ bool oemKeyInFirmware()
     return GetSystemFirmwareTable(kAcpi, kMsdm, nullptr, 0) > 0;
 }
 
+// BitLocker as Explorer shows it (the padlock on the drive). WMI's
+// Win32_EncryptableVolume is off limits (slow after start-up), manage-bde is
+// a program to parse in every language. The shell property is one local
+// call and needs no admin. Its key is looked up by name: no hard-coded GUID.
+void readBitLocker(LicenseInfo& info)
+{
+    wchar_t windowsDir[MAX_PATH] = {};
+    const UINT len = GetSystemWindowsDirectoryW(windowsDir, MAX_PATH);
+    if (len < 3 || len >= MAX_PATH || windowsDir[1] != L':') {
+        info.bitlockerError = QStringLiteral("GetSystemWindowsDirectoryW gave no drive letter");
+        return;
+    }
+    info.drive = QString::fromWCharArray(windowsDir, 2);           // "C:"
+    const std::wstring root = std::wstring(windowsDir, 2) + L"\\";  // "C:\"
+
+    // COM must be started on this worker thread (a thread pool thread: start
+    // it and stop it again, so the next task finds the thread as it was).
+    const HRESULT init = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    const bool mustUninit = SUCCEEDED(init);   // S_FALSE (already started) must be balanced too
+    // RPC_E_CHANGED_MODE: COM already runs in the other mode here; it still works.
+    if (FAILED(init) && init != RPC_E_CHANGED_MODE) {
+        info.bitlockerError = QStringLiteral("CoInitializeEx failed (%1)").arg(hex(init));
+        return;
+    }
+
+    PROPERTYKEY key{};
+    HRESULT hr = PSGetPropertyKeyFromName(L"System.Volume.BitLockerProtection", &key);
+    IShellItem2* item = nullptr;
+    if (SUCCEEDED(hr))
+        hr = SHCreateItemFromParsingName(root.c_str(), nullptr, IID_PPV_ARGS(&item));
+    else
+        info.bitlockerError = QStringLiteral("PSGetPropertyKeyFromName failed (%1)").arg(hex(hr));
+
+    if (item) {
+        int value = -1;
+        hr = item->GetInt32(key, &value);
+        if (SUCCEEDED(hr))
+            info.bitlocker = value;
+        else   // also when the property is empty
+            info.bitlockerError = QStringLiteral("GetInt32(BitLockerProtection) on %1 failed (%2)")
+                                      .arg(QString::fromStdWString(root), hex(hr));
+        item->Release();
+    } else if (info.bitlockerError.isEmpty()) {
+        info.bitlockerError = QStringLiteral("SHCreateItemFromParsingName(%1) failed (%2)")
+                                  .arg(QString::fromStdWString(root), hex(hr));
+    }
+
+    if (mustUninit)
+        CoUninitialize();
+}
+
 } // namespace
 
 LicenseInfo readLicense()
 {
     LicenseInfo info;
     info.oemKeyPresent = oemKeyInFirmware();
+    // First, and whatever the licence gives: its own result in its own fields.
+    readBitLocker(info);
 
     HSLC slc = nullptr;
     HRESULT hr = SLOpen(&slc);

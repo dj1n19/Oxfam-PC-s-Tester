@@ -562,6 +562,8 @@ private slots:
         info.description = "Windows(R) Operating System, OEM_DM channel";
         info.status = status;
         info.oemKeyPresent = oemKey;
+        info.drive = "C:";
+        info.bitlocker = 2;   // off
         return info;
     }
 
@@ -597,6 +599,52 @@ private slots:
         const TestResult r = LicenseTest::evaluate(info);
         QCOMPARE(r.status, Status::Error);
         QVERIFY(r.details.contains("0xc004f012"));
+    }
+
+    void bitlockerOffIsPass()
+    {
+        LicenseInfo info = windowsLicense(1, true);
+        info.bitlocker = 0;   // not encryptable: nothing to turn off either
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.endsWith("| BitLocker off"));
+        QVERIFY(r.details.contains("BitLockerProtection = 0"));
+    }
+
+    void bitlockerOnIsWarn()
+    {
+        for (int code : {1, 3, 5}) {
+            LicenseInfo info = windowsLicense(1, true);
+            info.bitlocker = code;
+            const TestResult r = LicenseTest::evaluate(info);
+            QCOMPARE(r.status, Status::Warn);
+            QVERIFY(r.summary.contains("BitLocker ON: turn it off"));
+            QVERIFY(r.summary.startsWith("Activated"));   // the licence part is still shown
+        }
+    }
+
+    void bitlockerUnknownCodeIsWarnNotPass()
+    {
+        LicenseInfo info = windowsLicense(1, true);
+        info.bitlocker = 6;
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.contains("code 6"));
+    }
+
+    void bitlockerUnreadableIsError()
+    {
+        LicenseInfo info = windowsLicense(1, true);
+        info.bitlocker = -1;
+        info.bitlockerError = "GetInt32(BitLockerProtection) on C:\\ failed (0x80070490)";
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Error);
+        QVERIFY(r.details.contains("0x80070490"));
+        // A licence failure and a BitLocker warning: the Error wins.
+        LicenseInfo both;
+        both.error = "SLOpen failed (0xc004f075)";
+        both.bitlocker = 1;
+        QCOMPARE(LicenseTest::evaluate(both).status, Status::Error);
     }
 
     void licenseOnLinuxIsSkipped()

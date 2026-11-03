@@ -842,7 +842,7 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>LicenseTest</name>
     <message>
-        <location filename="../src/tests/license/LicenseTest.h" line="13"/>
+        <location filename="../src/tests/license/LicenseTest.h" line="14"/>
         <source>Windows licence</source>
         <translation type="unfinished">Windows-licentie</translation>
     </message>
@@ -872,9 +872,29 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
         <translation type="unfinished">Geen Windows</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="45"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="57"/>
         <source>Could not read the Windows licence (see details)</source>
         <translation type="unfinished">Kan de Windows-licentie niet uitlezen (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="97"/>
+        <source>Could not read the BitLocker state (see details)</source>
+        <translation type="unfinished">Kan de BitLocker-status niet uitlezen (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="107"/>
+        <source>BitLocker off</source>
+        <translation type="unfinished">BitLocker uit</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="115"/>
+        <source>BitLocker ON: turn it off before sale, then run this test again</source>
+        <translation type="unfinished">BitLocker AAN: zet het uit vóór de verkoop en voer deze test opnieuw uit</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="122"/>
+        <source>BitLocker state unknown (code %1): check it in the Control Panel</source>
+        <translation type="unfinished">BitLocker-status onbekend (code %1): controleer het in het Configuratiescherm</translation>
     </message>
     <message>
         <location filename="../src/tests/license/LicenseTest.cpp" line="15"/>
@@ -882,27 +902,27 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
         <translation type="unfinished">respijtperiode</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="51"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="63"/>
         <source>OEM key in firmware: yes</source>
         <translation type="unfinished">OEM-sleutel in firmware: ja</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="52"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="64"/>
         <source>OEM key in firmware: no</source>
         <translation type="unfinished">OEM-sleutel in firmware: nee</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="61"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="73"/>
         <source>No Windows licence installed | %1</source>
         <translation type="unfinished">Geen Windows-licentie geïnstalleerd | %1</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="66"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="78"/>
         <source>Activated: %1 | %2</source>
         <translation type="unfinished">Geactiveerd: %1 | %2</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="70"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="82"/>
         <source>NOT activated (%1): %2 | %3</source>
         <translation type="unfinished">NIET geactiveerd (%1): %2 | %3</translation>
     </message>
