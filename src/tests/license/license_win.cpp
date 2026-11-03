@@ -2,7 +2,9 @@
 
 #include <QUuid>
 
+#include <chrono>
 #include <memory>
+#include <thread>
 
 #include <windows.h>
 #include <slpublic.h>
@@ -14,6 +16,11 @@ namespace {
 
 // ApplicationID of Windows itself (not Office): 55c92734-d682-4d71-983e-d6ec3f16059f
 constexpr SLID kWindowsAppId = {0x55c92734, 0xd682, 0x4d71, {0x98, 0x3e, 0xd6, 0xec, 0x3f, 0x16, 0x05, 0x9f}};
+
+// SL_E_SERVICE_STOPPING: the licensing service (sppsvc) stops itself when idle,
+// and a call at that moment fails; the next one starts it again (Surface Pro,
+// 2026-11-02: ERROR, then OK 7 s later).
+constexpr HRESULT kServiceStopping = static_cast<HRESULT>(0xC004F075L);
 
 // Which licence tells the truth: every Windows edition (Home, Pro...) has an
 // entry, and those without a product key say "unlicensed". The best one wins.
@@ -66,6 +73,11 @@ LicenseInfo readLicense()
 
     HSLC slc = nullptr;
     HRESULT hr = SLOpen(&slc);
+    // A few tries, 1 s apart (worker thread: the window does not freeze).
+    for (int tries = 1; hr == kServiceStopping && tries < 5; ++tries) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        hr = SLOpen(&slc);
+    }
     if (FAILED(hr)) {
         info.error = QStringLiteral("SLOpen failed (%1)").arg(hex(hr));
         return info;
