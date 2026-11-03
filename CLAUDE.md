@@ -181,7 +181,7 @@ src/
     wireless/  WirelessInfo.h WifiTest.{h,cpp} BluetoothTest.{h,cpp} wireless_linux.cpp wireless_win.cpp
     cputemp/   CpuTempInfo.h CpuTempParsing.cpp CpuTempTest.{h,cpp} cputemp_linux.cpp cputemp_win.cpp
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
-    audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
+    audio/     AudioCheck.{h,cpp}   (tone generation, microphone level + results, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
     screen/    ScreenCheck.{h,cpp}  (full-screen colours + result, logic only; RGB ints, no QColor)
   delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
@@ -315,6 +315,14 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   Tone on the LEFT only (440 Hz), then RIGHT only (660 Hz), 750 ms each; the technician answers Left / Right / Both / Nothing, without
   being told the side. Both correct = Pass; "Both" = Warn (mono speaker); wrong side = Fail (swapped); nothing = Fail.
   No output device or unsupported format = Error.
+  **Microphone** in the same row (2026-11-03, developer's choices: in the Audio row, speak/clap with a live meter): after
+  the second tone answer (or "Skip (no speakers)") the dialog shows a level bar (-60..0 dBFS) fed by `QAudioSource` on
+  the default input (48 kHz mono, 16-bit, else float, else the preferred format if one of those). `MicTracker`
+  (oxcore): peak >= `kMicLoudPeak` 0.05 (-26 dBFS) for 300 ms in total = automatic Pass (any real sound proves the mic;
+  a dead one gives zeros or hiss; first guesses, M5). After 8 s a hint (muted? Windows privacy setting gives silence).
+  "Microphone does not work" = Fail, Skip = Skipped, no input device = Skipped, format/open failure = Error.
+  `audioWithMic()`: "speakers | microphone", worse wins. No speaker output at all = Error before the dialog (mic not
+  tested). Not yet run.
 - Test: `CameraTest` (interactive, asks only when ambiguous): `QCamera` + `QMediaCaptureSession` -> `QVideoSink`
   (no MultimediaWidgets). Live preview in a QLabel; every 250 ms the frame is converted to Grayscale8 and
   `lumaStats()`/`classifyFrame()` (oxcore) give brightness and detail. ~1 s of real picture = automatic Pass.

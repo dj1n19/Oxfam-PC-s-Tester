@@ -4,104 +4,151 @@
 <context>
     <name>AudioDialog</name>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="21"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="45"/>
         <source>Audio test</source>
         <translation type="unfinished">Audiotest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="26"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="55"/>
         <source>Turn the volume up. A short tone plays on ONE side only.
 Where did you hear it?</source>
         <translation type="unfinished">Zet het volume hoger. Een korte toon speelt aan ÉÉN kant.
 Waar hoorde u hem?</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="32"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="61"/>
         <source>Tone 1 of 2</source>
         <translation type="unfinished">Toon 1 van 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="37"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="66"/>
         <source>Left</source>
         <translation type="unfinished">Links</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="38"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="67"/>
         <source>Right</source>
         <translation type="unfinished">Rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="39"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="68"/>
         <source>Both sides</source>
         <translation type="unfinished">Aan beide kanten</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="40"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="69"/>
         <source>Nothing</source>
         <translation type="unfinished">Niets</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="52"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="81"/>
         <source>Play again</source>
         <translation type="unfinished">Opnieuw afspelen</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="53"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="82"/>
         <source>Skip (no speakers)</source>
         <translation type="unfinished">Overslaan (geen luidsprekers)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="79"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="97"/>
+        <source>Microphone: speak or clap your hands near the PC.
+The test ends by itself when a sound is heard.</source>
+        <translation type="unfinished">Microfoon: spreek of klap in de handen bij de pc.
+De test stopt vanzelf zodra er geluid is.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="111"/>
+        <source>Microphone does not work</source>
+        <translation type="unfinished">Microfoon werkt niet</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="112"/>
+        <source>Skip</source>
+        <translation type="unfinished">Overslaan</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="143"/>
         <source>Tone %1 of 2</source>
         <translation type="unfinished">Toon %1 van 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="92"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="156"/>
         <source>Could not play the sound (see details)</source>
         <translation type="unfinished">Kan het geluid niet afspelen (zie details)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="217"/>
+        <source>No sound heard yet. Check that the microphone is not muted (key or Settings &gt; Privacy &gt; Microphone). If the bar never moves, click &quot;Microphone does not work&quot;.</source>
+        <translation type="unfinished">Nog geen geluid gehoord. Controleer of de microfoon niet gedempt is (toets of Instellingen &gt; Privacy &gt; Microfoon). Beweegt de balk nooit, klik dan op &quot;Microfoon werkt niet&quot;.</translation>
     </message>
 </context>
 <context>
     <name>AudioTest</name>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="69"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="71"/>
         <source>left silent</source>
         <translation type="unfinished">links stil</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="70"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
         <source>right silent</source>
         <translation type="unfinished">rechts stil</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="74"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="76"/>
         <source>left/right swapped</source>
         <translation type="unfinished">links/rechts omgewisseld</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="77"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="79"/>
         <source>left tone heard on the right</source>
         <translation type="unfinished">linkertoon rechts gehoord</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="79"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="81"/>
         <source>right tone heard on the left</source>
         <translation type="unfinished">rechtertoon links gehoord</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="84"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="86"/>
         <source>no stereo separation (mono speaker?)</source>
         <translation type="unfinished">geen stereoscheiding (monoluidspreker?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="94"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="96"/>
         <source>Left and right speakers work</source>
         <translation type="unfinished">Linker- en rechterluidspreker werken</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="103"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="105"/>
         <source>Skipped by the technician (no speakers?)</source>
         <translation type="unfinished">Overgeslagen door de technicus (geen luidsprekers?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="157"/>
+        <source>microphone works</source>
+        <translation type="unfinished">microfoon werkt</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="161"/>
+        <source>microphone hears nothing (confirmed by technician)</source>
+        <translation type="unfinished">microfoon hoort niets (bevestigd door de technicus)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="165"/>
+        <source>microphone skipped</source>
+        <translation type="unfinished">microfoon overgeslagen</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="170"/>
+        <source>no microphone found (desktop?)</source>
+        <translation type="unfinished">geen microfoon gevonden (desktop?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="174"/>
+        <source>microphone could not be opened (see details)</source>
+        <translation type="unfinished">kan de microfoon niet openen (zie details)</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioTest.h" line="11"/>

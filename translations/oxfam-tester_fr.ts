@@ -4,104 +4,151 @@
 <context>
     <name>AudioDialog</name>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="21"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="45"/>
         <source>Audio test</source>
         <translation>Test audio</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="26"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="55"/>
         <source>Turn the volume up. A short tone plays on ONE side only.
 Where did you hear it?</source>
         <translation>Montez le volume. Un bip court est joué d&apos;UN SEUL côté.
 Où l&apos;avez-vous entendu ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="32"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="61"/>
         <source>Tone 1 of 2</source>
         <translation>Bip 1 sur 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="37"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="66"/>
         <source>Left</source>
         <translation>Gauche</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="38"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="67"/>
         <source>Right</source>
         <translation>Droite</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="39"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="68"/>
         <source>Both sides</source>
         <translation>Des deux côtés</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="40"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="69"/>
         <source>Nothing</source>
         <translation>Rien</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="52"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="81"/>
         <source>Play again</source>
         <translation>Rejouer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="53"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="82"/>
         <source>Skip (no speakers)</source>
         <translation>Passer (pas de haut-parleurs)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="79"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="97"/>
+        <source>Microphone: speak or clap your hands near the PC.
+The test ends by itself when a sound is heard.</source>
+        <translation>Micro : parlez ou tapez dans les mains près du PC.
+Le test se termine tout seul quand un son est entendu.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="111"/>
+        <source>Microphone does not work</source>
+        <translation>Le micro ne marche pas</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="112"/>
+        <source>Skip</source>
+        <translation type="unfinished">Passer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="143"/>
         <source>Tone %1 of 2</source>
         <translation>Bip %1 sur 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="92"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="156"/>
         <source>Could not play the sound (see details)</source>
         <translation>Impossible de jouer le son (voir détails)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="217"/>
+        <source>No sound heard yet. Check that the microphone is not muted (key or Settings &gt; Privacy &gt; Microphone). If the bar never moves, click &quot;Microphone does not work&quot;.</source>
+        <translation>Aucun son entendu pour l&apos;instant. Vérifiez que le micro n&apos;est pas coupé (touche ou Paramètres &gt; Confidentialité &gt; Microphone). Si la barre ne bouge jamais, cliquez sur « Le micro ne marche pas ».</translation>
     </message>
 </context>
 <context>
     <name>AudioTest</name>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="69"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="71"/>
         <source>left silent</source>
         <translation>gauche muet</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="70"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
         <source>right silent</source>
         <translation>droite muet</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="74"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="76"/>
         <source>left/right swapped</source>
         <translation>gauche/droite inversés</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="77"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="79"/>
         <source>left tone heard on the right</source>
         <translation>son gauche entendu à droite</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="79"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="81"/>
         <source>right tone heard on the left</source>
         <translation>son droit entendu à gauche</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="84"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="86"/>
         <source>no stereo separation (mono speaker?)</source>
         <translation>pas de stéréo (haut-parleur mono ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="94"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="96"/>
         <source>Left and right speakers work</source>
         <translation>Haut-parleurs gauche et droit OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="103"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="105"/>
         <source>Skipped by the technician (no speakers?)</source>
         <translation>Passé par le technicien (pas de haut-parleurs ?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="157"/>
+        <source>microphone works</source>
+        <translation>micro OK</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="161"/>
+        <source>microphone hears nothing (confirmed by technician)</source>
+        <translation>le micro n&apos;entend rien (confirmé par le technicien)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="165"/>
+        <source>microphone skipped</source>
+        <translation>micro passé</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="170"/>
+        <source>no microphone found (desktop?)</source>
+        <translation>aucun micro trouvé (PC fixe ?)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="174"/>
+        <source>microphone could not be opened (see details)</source>
+        <translation>impossible d&apos;ouvrir le micro (voir détails)</translation>
     </message>
     <message>
         <location filename="../src/ui/interactive/AudioTest.h" line="11"/>

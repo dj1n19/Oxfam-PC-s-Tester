@@ -1,7 +1,9 @@
 #include "tests/audio/AudioCheck.h"
 
 #include <cmath>
+#include <algorithm>
 #include <cstdint>
+#include <cstring>
 #include <numbers>
 #include <QCoreApplication>
 #include <QStringList>
@@ -101,5 +103,86 @@ TestResult audioSkipped()
     TestResult r;
     r.status = Status::Skipped;
     r.summary = QCoreApplication::translate("AudioTest", "Skipped by the technician (no speakers?)");
+    return r;
+}
+
+double peakLevel(const QByteArray& samples, SampleType type)
+{
+    double peak = 0;
+    // memcpy, not a cast: the bytes of a QByteArray need not be aligned.
+    if (type == SampleType::Int16) {
+        for (qsizetype i = 0; i + 1 < samples.size(); i += 2) {
+            std::int16_t v = 0;
+            std::memcpy(&v, samples.constData() + i, sizeof v);
+            peak = std::max(peak, std::abs(double(v)) / 32768.0);
+        }
+    } else {
+        for (qsizetype i = 0; i + 3 < samples.size(); i += 4) {
+            float v = 0;
+            std::memcpy(&v, samples.constData() + i, sizeof v);
+            if (std::isfinite(v))
+                peak = std::max(peak, std::abs(double(v)));
+        }
+    }
+    return std::min(peak, 1.0);
+}
+
+void MicTracker::add(double peak, int ms)
+{
+    m_maxPeak = std::max(m_maxPeak, peak);
+    m_totalMs += ms;
+    if (peak >= kMicLoudPeak)
+        m_loudMs += ms;
+}
+
+double toDbfs(double peak)
+{
+    return peak > 0 ? std::max(-90.0, 20.0 * std::log10(peak)) : -90.0;
+}
+
+TestResult micResult(MicOutcome outcome, const MicTracker& t, const QString& device, const QString& error)
+{
+    TestResult r;
+    r.details = QStringLiteral("Microphone: %1\nLoudest peak %2 dBFS; above %3 dBFS for %4 ms of %5 ms (needs %6 ms)")
+                    .arg(device.isEmpty() ? QStringLiteral("-") : device)
+                    .arg(toDbfs(t.maxPeak()), 0, 'f', 1)
+                    .arg(toDbfs(kMicLoudPeak), 0, 'f', 1)
+                    .arg(t.loudMs()).arg(t.totalMs()).arg(kMicHeardMs);
+    if (!error.isEmpty())
+        r.details += QStringLiteral("\nError: ") + error;
+
+    switch (outcome) {
+    case MicOutcome::Heard:
+        r.status = Status::Pass;
+        r.summary = QCoreApplication::translate("AudioTest", "microphone works");
+        break;
+    case MicOutcome::Broken:
+        r.status = Status::Fail;
+        r.summary = QCoreApplication::translate("AudioTest", "microphone hears nothing (confirmed by technician)");
+        break;
+    case MicOutcome::Skipped:
+        r.status = Status::Skipped;
+        r.summary = QCoreApplication::translate("AudioTest", "microphone skipped");
+        break;
+    case MicOutcome::NoDevice:
+        // Desktops usually have none. On a laptop the Drivers row tells more.
+        r.status = Status::Skipped;
+        r.summary = QCoreApplication::translate("AudioTest", "no microphone found (desktop?)");
+        break;
+    case MicOutcome::Error:
+        r.status = Status::Error;
+        r.summary = QCoreApplication::translate("AudioTest", "microphone could not be opened (see details)");
+        break;
+    }
+    return r;
+}
+
+TestResult audioWithMic(const TestResult& speakers, const TestResult& mic)
+{
+    TestResult r;
+    r.status = worse(speakers.status, mic.status);
+    r.summary = speakers.summary + QStringLiteral(" | ") + mic.summary;
+    r.details = speakers.details + QStringLiteral("\n\n") + mic.details;
+    r.note = speakers.note;
     return r;
 }

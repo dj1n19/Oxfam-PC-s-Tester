@@ -170,7 +170,10 @@ void apply(QApplication& app)
         // Tick boxes of the test list: the palette drew an empty box invisible
         // on the dark table. A green frame; ticked = filled, like a lit block.
         "QTableWidget::indicator { width: 12px; height: 12px; border: 1px solid %1; background: #000000; }"
-        "QTableWidget::indicator:checked { background: %1; }")
+        "QTableWidget::indicator:checked { background: %1; }"
+        // Microphone level bar: the palette's Highlight is too dark on black.
+        "QProgressBar { border: 1px solid %2; background: #000000; }"
+        "QProgressBar::chunk { background: %1; }")
                           .arg(text().name(), dimText().name()));
 }
 

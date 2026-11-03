@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 #include <memory>
 #include <vector>
 #include <QtTest>
@@ -1126,6 +1127,53 @@ private slots:
         QCOMPARE(combineCameraResults({{"Front", good}, {"IR", skipped}}).status, Status::Pass);
         QCOMPARE(combineCameraResults({{"IR", skipped}, {"Rear", broken}}).status, Status::Fail);
         QCOMPARE(combineCameraResults({{"A", skipped}, {"B", skipped}}).status, Status::Skipped);
+    }
+
+        void micLevels()
+    {
+        // 16-bit: one sample at half scale among quiet ones.
+        QByteArray pcm(8, '\0');
+        const qint16 half = 16384, quiet = -100;
+        std::memcpy(pcm.data() + 2, &half, 2);
+        std::memcpy(pcm.data() + 4, &quiet, 2);
+        QCOMPARE(peakLevel(pcm, SampleType::Int16), 0.5);
+        QCOMPARE(peakLevel(QByteArray(64, '\0'), SampleType::Int16), 0.0);   // dead mic: zeros
+        QCOMPARE(peakLevel(QByteArray(3, '\x7f'), SampleType::Float), 0.0);  // too short for one float
+        QByteArray f(8, '\0');
+        const float a = -0.25f, b = 2.0f;   // clipped to full scale
+        std::memcpy(f.data(), &a, 4);
+        QCOMPARE(peakLevel(f, SampleType::Float), 0.25);
+        std::memcpy(f.data() + 4, &b, 4);
+        QCOMPARE(peakLevel(f, SampleType::Float), 1.0);
+
+        QCOMPARE(toDbfs(1.0), 0.0);
+        QCOMPARE(qRound(toDbfs(0.05)), -26);
+        QCOMPARE(toDbfs(0), -90.0);
+
+        // Hiss never counts; 300 ms of voice does, in several bits.
+        MicTracker t;
+        for (int i = 0; i < 100; ++i)
+            t.add(0.01, 50);
+        QVERIFY(!t.heard());
+        t.add(0.3, 200);
+        QVERIFY(!t.heard());
+        t.add(0.06, 100);
+        QVERIFY(t.heard());
+        QCOMPARE(t.totalMs(), 5300);
+
+        QCOMPARE(micResult(MicOutcome::Heard, t, "Mic").status, Status::Pass);
+        QCOMPARE(micResult(MicOutcome::Broken, t, "Mic").status, Status::Fail);
+        QCOMPARE(micResult(MicOutcome::NoDevice, {}, {}).status, Status::Skipped);
+        QCOMPARE(micResult(MicOutcome::Error, {}, "Mic", "format").status, Status::Error);
+        QVERIFY(micResult(MicOutcome::Heard, t, "Mic").details.contains("Loudest peak -10.5 dBFS"));
+
+        // One Audio row: speakers OK + mic broken = Fail, both said.
+        const TestResult row = audioWithMic(audioResult(Heard::Left, Heard::Right), micResult(MicOutcome::Broken, t, "Mic"));
+        QCOMPARE(row.status, Status::Fail);
+        QCOMPARE(row.summary, QString("Left and right speakers work | microphone hears nothing (confirmed by technician)"));
+        // Mic skipped never hides the speakers' result.
+        QCOMPARE(audioWithMic(audioResult(Heard::Left, Heard::Right), micResult(MicOutcome::Skipped, t, "Mic")).status,
+                 Status::Pass);
     }
 
         void screenAnswers()
