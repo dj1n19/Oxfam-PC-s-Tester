@@ -1043,13 +1043,13 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="48"/>
-        <location filename="../src/main.cpp" line="109"/>
+        <location filename="../src/main.cpp" line="49"/>
+        <location filename="../src/main.cpp" line="111"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="49"/>
+        <location filename="../src/main.cpp" line="50"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -1060,18 +1060,109 @@ Tests needing thresholds will report ERROR. Copy the whole &quot;Lazy Djin&apos;
 Les tests qui ont besoin de seuils seront en ERREUR. Recopiez tout le dossier « Lazy Djin&apos;s Tester » : thresholds.json doit être dans son dossier config.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="106"/>
+        <location filename="../src/main.cpp" line="108"/>
         <source>unknown test &quot;%1&quot; (ignored)</source>
         <translation>test inconnu « %1 » (ignoré)</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="110"/>
+        <location filename="../src/main.cpp" line="112"/>
         <source>tests.json: %1
 
 The tests it does not set right are ticked. Known tests: %2.</source>
         <translation>tests.json : %1
 
 Les tests qu&apos;il ne règle pas correctement sont cochés. Tests connus : %2.</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenDialog</name>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="101"/>
+        <source>Screen test</source>
+        <translation>Test de l&apos;écran</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="106"/>
+        <source>%1 plain colours will fill the whole screen, one after the other.
+Look for dead or bright dots, stains, lines and darker zones.
+
+Next colour: click, tap or Space. Back: left arrow. Stop: Esc.</source>
+        <translation>%1 couleurs unies vont remplir tout l&apos;écran, l&apos;une après l&apos;autre.
+Cherchez les points morts ou trop lumineux, les taches, les lignes et les zones plus sombres.
+
+Couleur suivante : clic, toucher ou Espace. Retour : flèche gauche. Arrêter : Échap.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="114"/>
+        <source>Show the colours</source>
+        <translation>Afficher les couleurs</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="127"/>
+        <source>No defect</source>
+        <translation>Aucun défaut</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="128"/>
+        <source>Small defect
+(dead pixel, light stain)</source>
+        <translation>Petit défaut
+(pixel mort, tache légère)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="129"/>
+        <source>Broken
+(lines, dead zone, big stain, flicker)</source>
+        <translation>Cassé
+(lignes, zone morte, grosse tache, scintillement)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="143"/>
+        <source>Skip</source>
+        <translation type="unfinished">Passer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="166"/>
+        <source>What did you see?</source>
+        <translation>Qu&apos;avez-vous vu ?</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="169"/>
+        <source>See again</source>
+        <translation>Revoir</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="173"/>
+        <source>Stopped before the last colour: show them again, or Skip.</source>
+        <translation>Arrêté avant la dernière couleur : les afficher à nouveau, ou Passer.</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenTest</name>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="39"/>
+        <source>No defect seen</source>
+        <translation>Aucun défaut vu</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="43"/>
+        <source>Small defect seen (dead pixel, light stain...): sell with a note</source>
+        <translation>Petit défaut vu (pixel mort, tache légère...) : vendre avec une remarque</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="48"/>
+        <source>Screen defect: lines, dead zone, big stain or flicker</source>
+        <translation>Écran défectueux : lignes, zone morte, grosse tache ou scintillement</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="64"/>
+        <source>Skipped by the technician</source>
+        <translation type="unfinished">Passé par le technicien</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenTest.h" line="11"/>
+        <source>Screen</source>
+        <translation>Écran</translation>
     </message>
 </context>
 <context>

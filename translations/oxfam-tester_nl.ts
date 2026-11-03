@@ -1043,13 +1043,13 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="48"/>
-        <location filename="../src/main.cpp" line="109"/>
+        <location filename="../src/main.cpp" line="49"/>
+        <location filename="../src/main.cpp" line="111"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="49"/>
+        <location filename="../src/main.cpp" line="50"/>
         <source>thresholds.json not loaded:
 %1
 
@@ -1060,18 +1060,109 @@ Tests needing thresholds will report ERROR. Copy the whole &quot;Lazy Djin&apos;
 Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Djin&apos;s Tester&quot; opnieuw: thresholds.json moet in de map config staan.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="106"/>
+        <location filename="../src/main.cpp" line="108"/>
         <source>unknown test &quot;%1&quot; (ignored)</source>
         <translation type="unfinished">onbekende test &quot;%1&quot; (genegeerd)</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="110"/>
+        <location filename="../src/main.cpp" line="112"/>
         <source>tests.json: %1
 
 The tests it does not set right are ticked. Known tests: %2.</source>
         <translation type="unfinished">tests.json: %1
 
 De tests die het niet juist instelt, zijn aangevinkt. Bekende tests: %2.</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenDialog</name>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="101"/>
+        <source>Screen test</source>
+        <translation type="unfinished">Schermtest</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="106"/>
+        <source>%1 plain colours will fill the whole screen, one after the other.
+Look for dead or bright dots, stains, lines and darker zones.
+
+Next colour: click, tap or Space. Back: left arrow. Stop: Esc.</source>
+        <translation type="unfinished">%1 effen kleuren vullen het hele scherm, de ene na de andere.
+Zoek naar dode of te heldere puntjes, vlekken, lijnen en donkere zones.
+
+Volgende kleur: klikken, tikken of spatie. Terug: pijl links. Stoppen: Esc.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="114"/>
+        <source>Show the colours</source>
+        <translation type="unfinished">Kleuren tonen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="127"/>
+        <source>No defect</source>
+        <translation type="unfinished">Geen defect</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="128"/>
+        <source>Small defect
+(dead pixel, light stain)</source>
+        <translation type="unfinished">Klein defect
+(dode pixel, lichte vlek)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="129"/>
+        <source>Broken
+(lines, dead zone, big stain, flicker)</source>
+        <translation type="unfinished">Kapot
+(lijnen, dode zone, grote vlek, flikkeren)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="143"/>
+        <source>Skip</source>
+        <translation type="unfinished">Overslaan</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="166"/>
+        <source>What did you see?</source>
+        <translation type="unfinished">Wat hebt u gezien?</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="169"/>
+        <source>See again</source>
+        <translation type="unfinished">Opnieuw bekijken</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="173"/>
+        <source>Stopped before the last colour: show them again, or Skip.</source>
+        <translation type="unfinished">Gestopt voor de laatste kleur: toon ze opnieuw, of Overslaan.</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenTest</name>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="39"/>
+        <source>No defect seen</source>
+        <translation type="unfinished">Geen defect gezien</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="43"/>
+        <source>Small defect seen (dead pixel, light stain...): sell with a note</source>
+        <translation type="unfinished">Klein defect gezien (dode pixel, lichte vlek...): verkopen met een opmerking</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="48"/>
+        <source>Screen defect: lines, dead zone, big stain or flicker</source>
+        <translation type="unfinished">Schermdefect: lijnen, dode zone, grote vlek of flikkeren</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/ScreenCheck.cpp" line="64"/>
+        <source>Skipped by the technician</source>
+        <translation type="unfinished">Overgeslagen door de technicus</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenTest.h" line="11"/>
+        <source>Screen</source>
+        <translation type="unfinished">Scherm</translation>
     </message>
 </context>
 <context>

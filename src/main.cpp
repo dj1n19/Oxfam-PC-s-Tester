@@ -25,6 +25,7 @@
 #include "ui/interactive/AudioTest.h"
 #include "ui/interactive/CameraTest.h"
 #include "ui/interactive/KeyboardTest.h"
+#include "ui/interactive/ScreenTest.h"
 
 int main(int argc, char* argv[])
 {
@@ -78,7 +79,8 @@ int main(int argc, char* argv[])
     add(std::make_unique<LicenseTest>());
     add(std::make_unique<WifiTest>());
     add(std::make_unique<BluetoothTest>());
-    delivery.rows[add(std::make_unique<KeyboardTest>(keyLayout))] = SheetRow::Keyboard;   // interactive: after the automatic ones, in this order
+    add(std::make_unique<ScreenTest>());   // interactive: after the automatic ones, in this order (screen first: it is the first thing the buyer sees)
+    delivery.rows[add(std::make_unique<KeyboardTest>(keyLayout))] = SheetRow::Keyboard;
     delivery.rows[add(std::make_unique<AudioTest>())] = SheetRow::Audio;
     delivery.rows[add(std::make_unique<CameraTest>())] = SheetRow::Camera;
     add(std::make_unique<CpuTempTest>(thresholds));   // last: ~30 s of full load would make the dialogs lag

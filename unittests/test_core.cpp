@@ -20,6 +20,7 @@
 #include "tests/disk/DiskTest.h"
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
+#include "tests/screen/ScreenCheck.h"
 #include "tests/keyboard/KeyLayout.h"
 #include "tests/audio/AudioCheck.h"
 #include "tests/camera/FrameCheck.h"
@@ -1103,7 +1104,18 @@ private slots:
         QVERIFY(r.summary.contains("speed not measured"));
     }
 
-    void cameraFrames()
+    void screenAnswers()
+    {
+        QCOMPARE(int(screenPatterns().size()), 4);   // developer's choice: black, white, grey, red
+        QCOMPARE(screenPatterns().front().name, QString("black"));
+        QCOMPARE(screenResult(ScreenAnswer::Ok).status, Status::Pass);
+        QCOMPARE(screenResult(ScreenAnswer::SmallDefect).status, Status::Warn);   // sell with a note
+        QCOMPARE(screenResult(ScreenAnswer::Broken).status, Status::Fail);
+        QVERIFY(screenResult(ScreenAnswer::Broken).details.contains("black, white, grey, red"));
+        QCOMPARE(screenSkipped().status, Status::Skipped);
+    }
+
+        void cameraFrames()
     {
         const int w = 64, h = 48, stride = 72;   // stride > width: padding must be skipped
         std::vector<unsigned char> img(size_t(stride) * h, 255);   // padding = white
@@ -1432,7 +1444,7 @@ private slots:
         TestChoice choice;
         QString error;
         QVERIFY2(choice.loadFromJson(f.readAll(), &error), qPrintable(error));
-        QCOMPARE(int(choice.ticked.size()), 11);
+        QCOMPARE(int(choice.ticked.size()), 12);
         for (const auto& [id, on] : choice.ticked)
             QVERIFY2(on, qPrintable(id));
     }

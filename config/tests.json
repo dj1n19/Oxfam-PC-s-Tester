@@ -6,6 +6,7 @@
     "windows_licence": true,
     "wifi": true,
     "bluetooth": true,
+    "screen": true,
     "keyboard": true,
     "audio": true,
     "camera": true,

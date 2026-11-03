@@ -183,12 +183,13 @@ src/
     keyboard/  KeyLayout.{h,cpp} keyboard_linux.cpp keyboard_win.cpp   (logic only)
     audio/     AudioCheck.{h,cpp}   (tone generation + result, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
+    screen/    ScreenCheck.{h,cpp}  (full-screen colours + result, logic only; RGB ints, no QColor)
   delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
   report/      RunReport.{h,cpp} (run report text + file name: pure, unit tested; written by MainWindow)
   ui/          MainWindow.{h,cpp} Language.{h,cpp} Theme.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
     icons/       djinn.png (32 px pixel-art master) -> make_icons.sh (ImageMagick, run by hand) -> djinn-<size>.png,
                  lazy-djin-tester.ico; app.rc (Windows .exe icon). Generated files are committed (CI has no ImageMagick).
-    interactive/ KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
+    interactive/ ScreenTest/Dialog, KeyboardTest/Dialog, AudioTest/Dialog, CameraTest/Dialog (.h/.cpp each)
   main.cpp
 config/        thresholds.json keyboard_layout.json tests.json   (read from <root>/config/: from build/, root = the repo)
 translations/  oxfam-tester_fr.ts oxfam-tester_nl.ts   (compiled into the executable; internal names such as
@@ -319,6 +320,12 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   `lumaStats()`/`classifyFrame()` (oxcore) give brightness and detail. ~1 s of real picture = automatic Pass.
   Black/uniform for 3 s = prompt (shutter? lens?) and the technician may click "Camera is broken" (Fail).
   No camera = Skipped (desktops); camera error or no frame in 6 s = Error.
+- Test: `ScreenTest`, row "Screen" (interactive, first of them; 2026-11-03, developer's choices): a dialog explains,
+  "Show the colours" (Enter/Space) opens `PatternWindow`, a frameless full-screen child window of the dialog (an
+  application-modal dialog does not block its children) on the main window's screen, no cursor, no text. 4 colours
+  (`screenPatterns()`: black, white, grey, red); next = click/tap/Space/Right/Enter, back = Left/right click, Esc or
+  Alt+F4 = stop. The answers unlock once every colour was seen: "No defect" = Pass, "Small defect" = Warn "sell with a
+  note", "Broken" = Fail; Skip or closing = Skipped. Not on the delivery sheet. Built and unit tested only: not yet run.
 - CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, "Run this test" (selected row, any time: since 2026-10-27 a test can run alone

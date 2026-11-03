@@ -88,6 +88,8 @@ add_library(oxcore STATIC
     src/tests/audio/AudioCheck.cpp        # tone generation + result: logic of the audio test
     src/tests/camera/FrameCheck.h
     src/tests/camera/FrameCheck.cpp       # frame statistics + result: logic of the camera test
+    src/tests/screen/ScreenCheck.h
+    src/tests/screen/ScreenCheck.cpp      # full-screen colours + result: logic of the screen test
     src/delivery/XlsxEditor.h
     src/delivery/XlsxEditor.cpp           # edits .xlsx cells in place (miniz)
     src/delivery/DeliverySheet.h
@@ -159,6 +161,10 @@ add_executable(lazy-djin-tester WIN32
     src/ui/interactive/CameraTest.cpp
     src/ui/interactive/CameraDialog.h
     src/ui/interactive/CameraDialog.cpp
+    src/ui/interactive/ScreenTest.h
+    src/ui/interactive/ScreenTest.cpp
+    src/ui/interactive/ScreenDialog.h
+    src/ui/interactive/ScreenDialog.cpp
 )
 target_link_libraries(lazy-djin-tester PRIVATE oxcore Qt6::Widgets Qt6::Multimedia)
 
