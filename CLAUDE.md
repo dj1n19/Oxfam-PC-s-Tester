@@ -225,8 +225,8 @@ Multi-battery support was dropped by the developer (first battery only).
 **M3 done** (interactive tests): Keyboard, Audio, Camera, verified on Arch.
 
 **M4 in progress.** Done: Windows GUI subsystem (no console) + `requireAdministrator` manifest (verified: smartctl reads the NVMe disks on Win11).
-Linux privilege flow done (to verify): app runs as the normal user, only smartctl is elevated.
-French/Dutch/English done (French verified on Windows 11 in the run reports; Dutch not yet seen): system language fr/nl, else English, plus a
+Linux privilege flow done (verified on Mint 22.3, 2026-10-29): app runs as the normal user, only smartctl is elevated.
+French/Dutch/English done (French and Dutch seen in real run reports, Windows and Mint): system language fr/nl, else English, plus a
 language selector. **Dutch texts were written by Claude: have a Dutch speaker check them** (left "unfinished" in
 the .ts so Linguist lists them). French texts to proofread by the developer.
 Clear error messages done (actionable ERROR summaries, see the TestResult contract).
@@ -262,7 +262,8 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
 Dark terminal theme + status icons done (checked by rendering the window offscreen; not yet seen on Windows).
 App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no Oxfam logo): window/taskbar icon via
 `QApplication::setWindowIcon` (`:/icons/`), .exe icon via `app.rc` (to verify on Windows), `djinn-256.png` ready for the AppImage.
-**AppImage** done in CI (job `appimage`, artifact `lazy-djin-tester-linux`; to verify on a real Mint PC):
+**AppImage** done in CI (job `appimage`, artifact `lazy-djin-tester-linux`; verified 2026-10-29 on Mint 22.3,
+11 runs on ThinkPad 13 20J2: password prompt + SMART, audio, camera, keyboard, CPU all OK; delivery sheet not yet seen):
 - Built on Ubuntu 22.04 with Qt 6.8 from qt.io (glibc 2.35: runs on Mint 21 and newer), linuxdeploy +
   linuxdeploy-plugin-qt (pinned, SHA-256 checked). Inside: `usr/bin/` = program and
   `tools/smartctl` (config is outside, in `<root>/config/`) (static smartmontools 7.5 built in CI: Mint has no smartmontools).
@@ -292,7 +293,11 @@ ACPI temperature never reacted on any PC (Lenovo `THM0_0` fixed 50-84 C, HP `CPU
 speed is the real check (Dell 266 %, Lenovo 136-149 %, one Lenovo 119-124 %: dust?, HP 135 %). Lenovo driver WARN
 "Synaptics WBDI - SGX" = fingerprint reader needing SGX in the BIOS. The reports hold real smartctl JSON of 6 NVMe
 models (Intel SSDPEKKF256G8L, Samsung PM9A1/MZVLW256, WD SN810/SN730, SK Hynix): golden-sample candidates.
-Next: test the AppImage on Mint (START with password prompt, audio, camera, delivery sheet), then tag v1.0.
+**Field 2026-10-28 to 11-03** (172 run reports, 161 Windows, 11 Mint; Surface Pro 2017 and 7, ThinkPad 13/L380/L390/
+T490, EliteBook 845 G7; FR and NL used): fixed "Remember these choices" (Access denied on Windows: main() kept
+tests.json open), a licence ERROR `SLOpen` 0xC004F075 (service stopping: retried), audio "swapped" for one wrong side.
+One Wi-Fi watchdog timeout (60 s, Surface Pro 7, OK on rerun 12 s later): cause unknown.
+Next: tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 Qt Multimedia is started at launch (`QMediaDevices::audioOutputs()` 300 ms after `window.show()` in `main.cpp`): its
 first use loads the FFmpeg backend, ~5 s from a USB stick on the shop's Windows laptops, which froze the UI between
@@ -430,7 +435,7 @@ Known limitations:
   so System info shows "serial unknown" and stays Pass.
 - Linux RAM shown is what the OS can use (a bit below the installed amount); exact installed RAM needs root/dmidecode.
 - Placeholder serials ("To Be Filled By O.E.M.", "Default string") are shown as-is, not detected.
-- DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (not yet run on real hardware).
+- DiskTest verified on Windows (admin). On Linux the AppImage bundles a static smartctl (verified on Mint, 2026-10-29).
 - The old PowerShell `license_win.cpp` verified on real Windows.
 - Drivers on Linux ignores the kernel log (`journalctl -k -p err`): too noisy (ACPI BIOS errors on most laptops).
 - DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 8 NVMe models + the tester's USB stick (Windows,
