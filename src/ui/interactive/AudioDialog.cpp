@@ -224,13 +224,13 @@ void AudioDialog::readMic()
 {
     if (m_done || !m_micIo)
         return;
-    const QByteArray data = m_micIo->readAll();
+    const QByteArray chunk = m_micIo->readAll();
     const int bytesPerSecond = m_micFormat.bytesForDuration(1'000'000);
-    if (data.isEmpty() || bytesPerSecond <= 0)
+    if (chunk.isEmpty() || bytesPerSecond <= 0)
         return;
-    const double peak = peakLevel(data, m_micFormat.sampleFormat() == QAudioFormat::Float ? SampleType::Float
+    const double peak = peakLevel(chunk, m_micFormat.sampleFormat() == QAudioFormat::Float ? SampleType::Float
                                                                                           : SampleType::Int16);
-    m_tracker.add(peak, int(qint64(data.size()) * 1000 / bytesPerSecond));
+    m_tracker.add(peak, int(qint64(chunk.size()) * 1000 / bytesPerSecond));
     m_level->setValue(int(60 + toDbfs(peak)));   // -60 dBFS or less = empty bar
     if (m_tracker.heard())
         micDone(MicOutcome::Heard);
