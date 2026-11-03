@@ -246,7 +246,7 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   PC and the shop; a PC with a defect never goes to a shop, so the sheet is used only when all is well); before, WARN
   wrote the summary and FAIL was not written. Row 21 "Touchscreen" ticked when `QInputDevice::devices()` has a
   `TouchScreen` (MainWindow, `DeliveryInput::touchScreen`; no touch test yet: "later"), else left as is. Row 20
-  "Chargeur / Oplader" exists but ChargeTest is not mapped to it (not asked). Manual rows/header are never touched.
+  "Chargeur / Oplader" = a charger is supplied with the PC (developer, 2026-11-03): manual, never mapped to ChargeTest. Manual rows/header are never touched.
 - Desktop: both file names looked for, the system language's first (`fileNamesFor()`). None: copied from
   `<root>/delivery-sheets/` in the system language (en: the technician picks Francais/Nederlands if both exist; one
   missing: the other). None anywhere: warning naming both folders.
