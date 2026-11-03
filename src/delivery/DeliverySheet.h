@@ -61,10 +61,12 @@ QString currentOxfamNumber(const XlsxEditor& sheet);
 // Writes the operator's date (always), the sheet's date (only if empty: it
 // may be the order date), the model, the shop and the Oxfam number (each if
 // not empty; the number as text, so a leading 0 stays) and the box
-// + comment of each row that has a result. PASS/WARN tick the box, SKIPPED leaves it empty
-// with the reason. FAIL and ERROR are not written (developer's choice: such
-// a PC is not delivered as is), so the row keeps what the sheet had.
+// + comment of each row that has a result. PASS, WARN and FAIL tick the box
+// with the key value only (TestResult::note: battery "85 %"); SKIPPED leaves
+// it empty with the reason; ERROR is not written, so the row keeps what the
+// sheet had. touchScreen = the "Touchscreen" row is ticked (else left as is).
 bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QString& shop,
-          const QString& oxfamNumber, const std::map<SheetRow, TestResult>& results, QString* error);
+          const QString& oxfamNumber, const std::map<SheetRow, TestResult>& results, bool touchScreen,
+          QString* error);
 
 } // namespace DeliverySheet

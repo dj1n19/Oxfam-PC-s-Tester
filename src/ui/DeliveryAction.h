@@ -18,6 +18,7 @@ struct DeliveryLinks {
 struct DeliveryInput {
     QString systemModel;                            // as the PC reports it
     std::map<SheetRow, TestResult> results;
+    bool touchScreen = false;                       // the system sees a touch screen
 };
 
 // The "Fill the delivery sheet" button: finds the sheet on the Desktop (or

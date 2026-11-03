@@ -1628,8 +1628,9 @@ private slots:
         results[SheetRow::Disk] = {Status::Error, "Could not list the disks (see details)", "", ""};
         QVERIFY(DeliverySheet::currentShop(sheet).isEmpty());
         QVERIFY(DeliverySheet::currentOxfamNumber(sheet).isEmpty());
+        QCOMPARE(sheet.cell(checkTab(), "C21"), QStringLiteral("\u2610"));   // touch screen: unticked in the blank sheet
         QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", "Ixelles", "012345", results,
-                                     &error),
+                                     true, &error),
                  qPrintable(error));
 
         XlsxEditor reread;
@@ -1646,15 +1647,25 @@ private slots:
         QCOMPARE(at("D12"), QStringLiteral("85 %"));
         QCOMPARE(at("C13"), QStringLiteral("\u2611"));   // ERROR: not written either
         QVERIFY(at("D13").isEmpty());
-        QCOMPARE(at("C14"), QStringLiteral("\u2611"));   // FAIL: not written, the sheet's own box stays
+        // FAIL and WARN: ticked, key value only (none for these rows), never the summary.
+        QCOMPARE(at("C14"), QStringLiteral("\u2611"));
         QVERIFY(at("D14").isEmpty());
-        QCOMPARE(at("C15"), QStringLiteral("\u2611"));   // WARN: ticked, with the reason
-        QCOMPARE(at("D15"), QStringLiteral("no stereo separation"));
+        QCOMPARE(at("C15"), QStringLiteral("\u2611"));
+        QVERIFY(at("D15").isEmpty());
         QCOMPARE(at("C16"), QStringLiteral("\u2610"));
         QCOMPARE(at("D16"), QStringLiteral("No camera found"));
+        QCOMPARE(at("C21"), QStringLiteral("\u2611"));   // touch screen seen
+
+        // A worn battery (FAIL or WARN): ticked, the percentage alone.
+        std::map<SheetRow, TestResult> worn;
+        worn[SheetRow::Battery] = {Status::Fail, "Health 45% of design capacity (FAIL)", "", "45 %"};
+        QVERIFY2(DeliverySheet::fill(reread, QDate(2026, 10, 11), "", "", "", worn, false, &error), qPrintable(error));
+        QCOMPARE(at("C12"), QStringLiteral("\u2611"));
+        QCOMPARE(at("D12"), QStringLiteral("45 %"));
+        QCOMPARE(at("C21"), QStringLiteral("\u2611"));   // no touch screen seen: left as it was
 
         // Filled again another day: the header date stays, the operator's date follows.
-        QVERIFY2(DeliverySheet::fill(reread, QDate(2026, 10, 12), "", "", "", {}, &error), qPrintable(error));
+        QVERIFY2(DeliverySheet::fill(reread, QDate(2026, 10, 12), "", "", "", {}, false, &error), qPrintable(error));
         QCOMPARE(at("C7"), QStringLiteral("10/10/2026"));
         QCOMPARE(at("C25"), QStringLiteral("12/10/2026"));
         QCOMPARE(at("C4"), QStringLiteral("Ixelles"));   // no shop given: left as it was

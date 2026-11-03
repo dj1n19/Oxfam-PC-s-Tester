@@ -240,8 +240,13 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   preselected; no "Shops" list = not asked), C6 (Oxfam number, asked after the shop, developer's request 2026-10-28:
   exactly 6 digits `^[0-9]{6}$`, `DeliverySheet::isOxfamNumber()`, anchored on the whole text; digits-only field,
   wrong length = message and asked again; empty = not written; the sheet's valid number preset; written as text so a
-  leading 0 stays), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS = box ticked + `note`
-  (battery "85 %"), WARN = ticked + summary, SKIPPED = unticked + summary, FAIL/ERROR = not written (developer's choice). Manual rows/header are never touched.
+  leading 0 stays), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS, WARN and FAIL = box ticked
+  + `note` only (battery "85 %" / "45 %", the other rows have none: comment empty), SKIPPED = unticked + summary,
+  ERROR = not written. Developer's decision 2026-11-03: FAIL/WARN only inform the technician (criteria depend on the
+  PC and the shop; a PC with a defect never goes to a shop, so the sheet is used only when all is well); before, WARN
+  wrote the summary and FAIL was not written. Row 21 "Touchscreen" ticked when `QInputDevice::devices()` has a
+  `TouchScreen` (MainWindow, `DeliveryInput::touchScreen`; no touch test yet: "later"), else left as is. Row 20
+  "Chargeur / Oplader" exists but ChargeTest is not mapped to it (not asked). Manual rows/header are never touched.
 - Desktop: both file names looked for, the system language's first (`fileNamesFor()`). None: copied from
   `<root>/delivery-sheets/` in the system language (en: the technician picks Francais/Nederlands if both exist; one
   missing: the other). None anywhere: warning naming both folders.

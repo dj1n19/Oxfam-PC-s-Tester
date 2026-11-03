@@ -16,6 +16,7 @@ const QString kModelCell = QStringLiteral("C5");
 const QString kOxfamNumberCell = QStringLiteral("C6");   // "Oxfam number"
 const QString kDateCell = QStringLiteral("C7");           // "Date / Datum" of the header
 const QString kOperatorDateCell = QStringLiteral("C25");  // date of the first operator line
+constexpr int kTouchScreenRow = 21;   // "Ecran Tactile / Touchscreen": unticked in the blank sheet
 
 const QString kTicked = QStringLiteral("☑");     // the sheet's own checkbox characters
 const QString kUnticked = QStringLiteral("☐");
@@ -180,7 +181,8 @@ QString currentOxfamNumber(const XlsxEditor& sheet)
 }
 
 bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QString& shop,
-          const QString& oxfamNumber, const std::map<SheetRow, TestResult>& results, QString* error)
+          const QString& oxfamNumber, const std::map<SheetRow, TestResult>& results, bool touchScreen,
+          QString* error)
 {
     // Text, not an Excel date number: shown the same in every office program.
     const QString day = date.toString(QStringLiteral("dd/MM/yyyy"));
@@ -197,12 +199,23 @@ bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QStr
     if (!oxfamNumber.isEmpty() && !sheet.setCell(kCheckSheet, kOxfamNumberCell, oxfamNumber, error))
         return false;
 
+    // No test yet: a touch screen the system sees is ticked (developer's
+    // choice 2026-11-03). None seen: the row keeps what the sheet has.
+    if (touchScreen && !sheet.setCell(kCheckSheet, QStringLiteral("C%1").arg(kTouchScreenRow), kTicked, error))
+        return false;
+
     for (const auto& [row, result] : results) {
-        if (result.status == Status::Fail || result.status == Status::Error)
+        // ERROR: the test did not run, nothing to write.
+        if (result.status == Status::Error)
             continue;
-        const bool ok = result.status == Status::Pass || result.status == Status::Warn;
-        // PASS: the key value only (battery "85 %"). Otherwise the reason.
-        const QString comment = result.status == Status::Pass ? result.note : result.summary;
+        // PASS, WARN and FAIL tick the box: they only inform the technician,
+        // who decides (developer's decision 2026-11-03: the criteria depend on
+        // the PC and the shop, and a PC with a defect never goes to a shop, so
+        // the sheet is only used when all is well). The comment is the key
+        // value only (battery "85 %"), whatever the status.
+        // SKIPPED: the check was not made, so unticked, with the reason.
+        const bool ok = result.status != Status::Skipped;
+        const QString comment = ok ? result.note : result.summary;
         const int r = sheetRow(row);
         if (!sheet.setCell(kCheckSheet, QStringLiteral("C%1").arg(r), ok ? kTicked : kUnticked, error)
             || !sheet.setCell(kCheckSheet, QStringLiteral("D%1").arg(r), comment, error))

@@ -319,7 +319,8 @@ void DeliveryAction::run(QWidget* parent, const DeliveryInput& input)
 
     // 7. Fill and write.
     QByteArray filled;
-    if (DeliverySheet::fill(sheet, QDate::currentDate(), model, shop, oxfamNumber, input.results, &error))
+    if (DeliverySheet::fill(sheet, QDate::currentDate(), model, shop, oxfamNumber, input.results,
+                            input.touchScreen, &error))
         filled = sheet.save(&error);
     if (filled.isEmpty() || !writeFile(path, filled, &error)) {
         QMessageBox::warning(parent, title,

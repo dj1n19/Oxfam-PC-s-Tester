@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QInputDevice>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
@@ -396,6 +397,11 @@ void MainWindow::saveReport(const Verdict& verdict)
 void MainWindow::onDeliveryClicked()
 {
     DeliveryInput input;
+    // A touch screen the system sees (Qt Gui, so asked here and not in oxcore).
+    // Seen = present, not proven to work: there is no touch test yet.
+    for (const QInputDevice* d : QInputDevice::devices())
+        if (d->type() == QInputDevice::DeviceType::TouchScreen)
+            input.touchScreen = true;
     if (m_pcRead)
         input.systemModel = SystemInfoTest::evaluate(m_pc).note;
     for (int i = 0; i < m_runner.count(); ++i) {
