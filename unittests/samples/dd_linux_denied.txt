@@ -1,0 +1,1 @@
+dd: failed to open '/dev/nvme0n1': Permission denied

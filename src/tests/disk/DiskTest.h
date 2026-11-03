@@ -4,14 +4,14 @@
 #include "core/Thresholds.h"
 #include "tests/disk/DiskInfo.h"
 
-// SMART health of every disk, via the bundled smartctl. One row in the
-// table; its status is the worst of all disks.
+// SMART health and read speed of every disk, via the bundled smartctl and a
+// raw read (never a write). One row in the table; its status is the worst of all disks.
 class DiskTest : public ITest {
     Q_OBJECT
 public:
     explicit DiskTest(Thresholds thresholds, QObject* parent = nullptr);
 
-    QString name() const override { return tr("Disks (SMART)"); }
+    QString name() const override { return tr("Disks (SMART + speed)"); }
     QString id() const override { return QStringLiteral("disk"); }
     void run() override;
 

@@ -17,7 +17,7 @@ struct ScannedDevice {
     QString type;   // "sat", "nvme", ... passed back with -d
 };
 
-// One "smartctl --json -a" call.
+// One disk: its "smartctl --json -a" call and its read speed.
 struct SmartctlRun {
     QString device;
     QString type;
@@ -25,7 +25,19 @@ struct SmartctlRun {
     QByteArray json;
     QString error;       // non-empty = smartctl could not be run at all
     SmartctlFailure failure = SmartctlFailure::None;
+    // Sequential read speed of the start of the disk, past the OS cache, in
+    // MB/s (decimal, as disk makers give it). -1 = not measured (speedRaw says why).
+    double readMBps = -1;
+    QString speedRaw;
 };
+
+// Read speed: kSpeedBytes from the start of the disk (never written), stopped
+// after kSpeedMaxSeconds (a dying disk can read at 1 MB/s; the runner's
+// watchdog is 60 s for every disk and the Linux password together). Less
+// than kSpeedMinBytes read = too little to trust: not measured.
+inline constexpr int kSpeedMiB = 512;
+inline constexpr int kSpeedMaxSeconds = 8;
+inline constexpr int kSpeedMinMiB = 64;
 
 struct DiskScan {
     QString error;       // non-empty = smartctl missing, or --scan failed
@@ -62,9 +74,22 @@ std::vector<SmartctlRun> readDevices(const QString& smartctlPath, const std::vec
 SmartctlRun runSmartctl(const QString& smartctlPath, const ScannedDevice& dev);
 QStringList smartctlArgs(const ScannedDevice& dev);
 
-// pkexec batch: ONE elevated shell runs smartctl for every disk, so the
-// technician types the password once. Pure helpers, unit tested.
+// pkexec batch: ONE elevated shell runs smartctl and the speed read (dd) for
+// every disk, so the technician types the password once. Pure helpers, unit tested.
 inline constexpr char kBatchMarker[] = "OXFAM_SMARTCTL_EXIT=";
+inline constexpr char kDdPrefix[] = "OXFAM_DD:";   // dd's lines in the batch output
 bool isSafeShellWord(const QString& s);
 QString buildBatchScript(const QString& smartctlPath, const std::vector<ScannedDevice>& devices);   // empty if a word is unsafe
 std::vector<SmartctlRun> parseBatchOutput(const QByteArray& out, const std::vector<ScannedDevice>& devices);
+
+// Linux: smartctl names an NVMe disk by its controller (/dev/nvme0, not
+// readable as a disk); the data is on its first namespace, /dev/nvme0n1.
+// Other names are returned unchanged. Pure, unit tested.
+QString linuxBlockDevice(const QString& smartctlName);
+// Linux speed read: "timeout -s USR1 -k 1 8 dd if=<dev> ... iflag=direct"
+// (iflag=direct: past the page cache). After 8 s dd prints what it read so far.
+// Run with LC_ALL=C: dd's report is translated otherwise.
+QStringList ddArgs(const QString& blockDevice);   // arguments of "timeout"
+// dd's last line, "536870912 bytes (537 MB, 512 MiB) copied, 0.262 s, 2.0 GB/s"
+// -> MB/s (bytes / seconds, not dd's rounded figure). -1 if absent or too short.
+double parseDdSpeed(const QString& ddOutput);

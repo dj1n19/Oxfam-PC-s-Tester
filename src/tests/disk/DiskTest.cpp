@@ -63,7 +63,9 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
     TestResult r;
     const QString header = QStringLiteral("=== %1 (-d %2), smartctl exit code %3 ===")
                                .arg(run.device, run.type).arg(run.exitCode);
-    r.details = header + QLatin1Char('\n') + QString::fromUtf8(run.json);
+    r.details = header + QLatin1Char('\n')
+                + (run.speedRaw.isEmpty() ? QString() : QStringLiteral("Read speed: %1\n").arg(run.speedRaw))
+                + QString::fromUtf8(run.json);
 
     if (!run.error.isEmpty()) {
         r.status = Status::Error;
@@ -128,11 +130,14 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
     const std::optional<double> pending = ataRaw(root, 197);
     const std::optional<double> used = number(nvme["percentage_used"]);
     const std::optional<double> temp = number(root["temperature"].toObject()["current"]);
+    const std::optional<double> speed = run.readMBps >= 0 ? std::optional<double>(run.readMBps) : std::nullopt;
     const Check checks[] = {
         {"disk_reallocated_sectors", realloc, tr("%1 reallocated").arg(whole(realloc.value_or(0)))},
         {"disk_pending_sectors",     pending, tr("%1 pending").arg(whole(pending.value_or(0)))},
         {"nvme_percentage_used",     used,    tr("%1% worn").arg(whole(used.value_or(0)))},
         {"disk_temperature_c",       temp,    QStringLiteral("%1 C").arg(whole(temp.value_or(0)))},
+        // A slow disk: dying HDD, worn or cheap SSD, or a SATA link stuck at a low speed.
+        {"disk_read_mb_s",           speed,   QStringLiteral("%1 MB/s").arg(whole(speed.value_or(0)))},
     };
     for (const Check& c : checks) {
         if (!c.value)
@@ -148,6 +153,10 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
         status = worse(status, s);
         parts << (s == Status::Pass ? c.text : QStringLiteral("%1 (%2)").arg(c.text, statusLabel(s)));
     }
+
+    // Not judged, but never silent: the details say why (run.speedRaw).
+    if (!speed)
+        parts << tr("speed not measured");
 
     // Power-on hours: information only, no threshold yet (to agree with colleagues, M5).
     if (const auto hours = number(root["power_on_time"].toObject()["hours"]))

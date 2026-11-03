@@ -156,10 +156,16 @@ QString buildBatchScript(const QString& smartctlPath, const std::vector<ScannedD
     for (const ScannedDevice& dev : devices) {
         if (!isSafeShellWord(dev.name) || (!dev.type.isEmpty() && !isSafeShellWord(dev.type)))
             return {};
+        // Speed first, each dd line prefixed: its report goes to stderr, so it is
+        // moved to stdout (2>&1) and marked, never mixed with smartctl's JSON.
+        QStringList dd{QStringLiteral("LC_ALL=C timeout")};
+        for (const QString& a : ddArgs(linuxBlockDevice(dev.name)))
+            dd << shellQuote(a);
         QStringList words{shellQuote(smartctlPath)};
         for (const QString& a : smartctlArgs(dev))
             words << shellQuote(a);
-        lines << words.join(' ') + QStringLiteral("; echo \"%1$?\"").arg(QLatin1String(kBatchMarker));
+        lines << dd.join(' ') + QStringLiteral(" 2>&1 | sed 's/^/%1/'; ").arg(QLatin1String(kDdPrefix))
+                     + words.join(' ') + QStringLiteral("; echo \"%1$?\"").arg(QLatin1String(kBatchMarker));
     }
     return lines.join('\n');
 }
@@ -167,10 +173,12 @@ QString buildBatchScript(const QString& smartctlPath, const std::vector<ScannedD
 std::vector<SmartctlRun> parseBatchOutput(const QByteArray& out, const std::vector<ScannedDevice>& devices)
 {
     std::vector<SmartctlRun> runs;
-    QByteArray current;
+    QByteArray current, dd;
     size_t next = 0;
     for (const QByteArray& line : out.split('\n')) {
-        if (line.startsWith(kBatchMarker)) {
+        if (line.startsWith(kDdPrefix)) {
+            dd += line.mid(int(qstrlen(kDdPrefix))) + '\n';
+        } else if (line.startsWith(kBatchMarker)) {
             if (next >= devices.size())
                 break;
             SmartctlRun r;
@@ -181,8 +189,12 @@ std::vector<SmartctlRun> parseBatchOutput(const QByteArray& out, const std::vect
             if (!ok)
                 r.error = QStringLiteral("Unreadable exit code line: %1").arg(QString::fromUtf8(line));
             r.json = current;
+            r.speedRaw = QStringLiteral("timeout %1 (as root, pkexec batch):\n%2")
+                             .arg(ddArgs(linuxBlockDevice(r.device)).join(' '), QString::fromUtf8(dd).trimmed());
+            r.readMBps = parseDdSpeed(QString::fromUtf8(dd));
             runs.push_back(std::move(r));
             current.clear();
+            dd.clear();
             ++next;
         } else {
             current += line + '\n';
@@ -197,4 +209,36 @@ std::vector<SmartctlRun> parseBatchOutput(const QByteArray& out, const std::vect
         runs.push_back(std::move(r));
     }
     return runs;
+}
+
+QString linuxBlockDevice(const QString& smartctlName)
+{
+    static const QRegularExpression re(QStringLiteral("^/dev/nvme[0-9]+$"));
+    return re.match(smartctlName).hasMatch() ? smartctlName + QStringLiteral("n1") : smartctlName;
+}
+
+QStringList ddArgs(const QString& blockDevice)
+{
+    // SIGUSR1: dd prints its report and goes on; SIGKILL (-k) 1 s later stops
+    // it. SIGINT would be simpler but dd ignores it under timeout (checked:
+    // no report at all).
+    return {QStringLiteral("-s"), QStringLiteral("USR1"), QStringLiteral("-k"), QStringLiteral("1"),
+            QString::number(kSpeedMaxSeconds),
+            QStringLiteral("dd"), QStringLiteral("if=") + blockDevice, QStringLiteral("of=/dev/null"),
+            QStringLiteral("bs=1M"), QStringLiteral("count=%1").arg(kSpeedMiB), QStringLiteral("iflag=direct")};
+}
+
+double parseDdSpeed(const QString& ddOutput)
+{
+    // The last match: a stopped dd prints its report twice (seen on Arch).
+    static const QRegularExpression re(QStringLiteral("^(\\d+) bytes .*copied, ([0-9.]+) s"),
+                                       QRegularExpression::MultilineOption);
+    double mbps = -1;
+    for (auto it = re.globalMatch(ddOutput); it.hasNext();) {
+        const QRegularExpressionMatch m = it.next();
+        const double bytes = m.captured(1).toDouble();
+        const double seconds = m.captured(2).toDouble();
+        mbps = (bytes >= kSpeedMinMiB * 1024.0 * 1024.0 && seconds > 0) ? bytes / 1e6 / seconds : -1;
+    }
+    return mbps;
 }

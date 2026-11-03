@@ -2,6 +2,9 @@
 
 #include <cstddef>
 #include <memory>
+#include <string>
+
+#include <QElapsedTimer>
 
 #include <windows.h>
 #include <winioctl.h>
@@ -54,14 +57,72 @@ int busType(int driveNumber, QString* why)
     return int(descriptor->BusType);
 }
 
+// Reads the start of the disk, never writes. FILE_FLAG_NO_BUFFERING goes past
+// Windows' cache (else a second run would measure memory): the buffer must
+// then be sector-aligned (VirtualAlloc gives a page) and each read a multiple
+// of the sector size (1 MiB is, for 512 and 4096-byte sectors).
+void measureSpeed(SmartctlRun& run)
+{
+    const int number = physicalDriveNumber(run.device);
+    if (number < 0) {
+        run.speedRaw = QStringLiteral("%1: no PhysicalDrive number for this name, speed not measured").arg(run.device);
+        return;
+    }
+    const QString name = QStringLiteral("\\\\.\\PhysicalDrive%1").arg(number);
+    const std::wstring path = name.toStdWString();
+    const HANDLE disk = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                    OPEN_EXISTING, FILE_FLAG_NO_BUFFERING | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+    if (disk == INVALID_HANDLE_VALUE) {
+        run.speedRaw = QStringLiteral("%1: CreateFile error %2").arg(name).arg(GetLastError());
+        return;
+    }
+    const std::unique_ptr<void, decltype(&CloseHandle)> guard(disk, &CloseHandle);
+
+    constexpr DWORD kChunk = 1024 * 1024;
+    const auto release = [](void* p) { VirtualFree(p, 0, MEM_RELEASE); };
+    const std::unique_ptr<void, decltype(release)> buffer(
+        VirtualAlloc(nullptr, kChunk, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE), release);
+    if (!buffer) {
+        run.speedRaw = QStringLiteral("VirtualAlloc error %1").arg(GetLastError());
+        return;
+    }
+
+    constexpr qint64 kWanted = qint64(kSpeedMiB) * 1024 * 1024;
+    qint64 total = 0;
+    DWORD readError = 0;
+    QElapsedTimer timer;
+    timer.start();
+    while (total < kWanted && timer.elapsed() < kSpeedMaxSeconds * 1000) {
+        DWORD got = 0;
+        if (!ReadFile(disk, buffer.get(), kChunk, &got, nullptr)) {
+            readError = GetLastError();
+            break;
+        }
+        if (got == 0)
+            break;   // end of the disk (a tiny one)
+        total += got;
+    }
+    const double seconds = double(timer.nsecsElapsed()) / 1e9;
+
+    run.speedRaw = QStringLiteral("%1: %2 MiB read in %3 s (unbuffered, sequential)")
+                       .arg(name).arg(total / (1024 * 1024)).arg(seconds, 0, 'f', 3);
+    if (readError != 0)
+        run.speedRaw += QStringLiteral(", ReadFile error %1").arg(readError);
+    if (total >= qint64(kSpeedMinMiB) * 1024 * 1024 && seconds > 0)
+        run.readMBps = double(total) / 1e6 / seconds;
+}
+
 } // namespace
 
 // The program already runs as administrator (manifest): call smartctl directly.
 std::vector<SmartctlRun> readDevices(const QString& smartctlPath, const std::vector<ScannedDevice>& devices)
 {
     std::vector<SmartctlRun> runs;
-    for (const ScannedDevice& dev : devices)
-        runs.push_back(runSmartctl(smartctlPath, dev));
+    for (const ScannedDevice& dev : devices) {
+        SmartctlRun run = runSmartctl(smartctlPath, dev);
+        measureSpeed(run);
+        runs.push_back(std::move(run));
+    }
     return runs;
 }
 

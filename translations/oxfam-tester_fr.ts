@@ -538,94 +538,99 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
 <context>
     <name>DiskTest</name>
     <message>
-        <location filename="../src/tests/disk/DiskTest.h" line="14"/>
-        <source>Disks (SMART)</source>
-        <translation>Disques (SMART)</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="115"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="117"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation>%1 : pas de SMART (clé USB ou lecteur de cartes ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="70"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="72"/>
         <source>%1: smartctl failed (see details)</source>
         <translation>%1 : échec de smartctl (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="79"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="81"/>
         <source>%1: unreadable smartctl output (see details)</source>
         <translation>%1 : sortie de smartctl illisible (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="91"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
         <source>%1: cannot open the disk, administrator rights needed (see details)</source>
         <translation>%1 : impossible d&apos;ouvrir le disque, droits administrateur nécessaires (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="116"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="118"/>
         <source>%1: no SMART health status (see details)</source>
         <translation>%1 : pas d&apos;état de santé SMART (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="122"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="124"/>
         <source>SMART OK</source>
         <translation>SMART OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="122"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="124"/>
         <source>SMART FAILED</source>
         <translation>SMART EN ÉCHEC</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="132"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="135"/>
         <source>%1 reallocated</source>
         <translation>%1 réalloués</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="133"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
         <source>%1 pending</source>
         <translation>%1 en attente</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="134"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="137"/>
         <source>%1% worn</source>
         <translation>usure %1 %</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="144"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="149"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation>pas de seuil %1 dans thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="178"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="159"/>
+        <source>speed not measured</source>
+        <translation>vitesse non mesurée</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation>smartctl introuvable : gardez le dossier tools à côté du programme (Linux : installez smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="180"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
         <source>Could not list the disks (see details)</source>
         <translation>Impossible de lister les disques (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="195"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation>Aucun disque trouvé : vérifiez le BIOS (les modes Intel RST, VMD ou RAID peuvent cacher les disques)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="198"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="207"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation>Mot de passe administrateur annulé ou incorrect : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="199"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="208"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation>Mot de passe administrateur pas tapé à temps : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="230"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="239"/>
         <source>No disk with SMART data</source>
         <translation>Aucun disque avec des données SMART</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.h" line="14"/>
+        <source>Disks (SMART + speed)</source>
+        <translation>Disques (SMART + vitesse)</translation>
     </message>
 </context>
 <context>

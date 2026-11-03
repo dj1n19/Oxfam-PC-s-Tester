@@ -393,6 +393,15 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   `/sys/block/<dev>` under `/usb`; Windows: `IOCTL_STORAGE_QUERY_PROPERTY` BusType on `\\.\PhysicalDriveN`, disk N =
   `/dev/sd`+letter N (smartctl names NVMe that way too on Windows), `physicalDriveNumber()` unit tested; verified 2026-10-27 on 7 Surface Pro 7, Win11: the tester's stick left out); listed in the details; if the OS cannot tell, every disk is checked. smartctl is found in `<app>/tools/`, then `PATH`;
   Windows CI takes smartctl.exe 7.5 from the official installer (7-Zip, SHA-256 checked; Chocolatey failed with 406) into `dist/tools/`.
+  **Read speed** in the same row (developer's decisions 2026-11-03: one row for the disk; raw read of every internal
+  disk, never a write): 512 MiB from the start of the disk past the OS cache, stopped after 8 s, < 64 MiB read = not
+  measured. Judged like the SMART values (`disk_read_mb_s`, lower is worse, warn < 100, fail < 20: first guesses, M5);
+  not measured = "speed not measured" in the summary, status unchanged, why in the details (`SmartctlRun::speedRaw`).
+  Windows: `\\.\PhysicalDriveN` with `FILE_FLAG_NO_BUFFERING` (admin already), only for `/dev/sdX` names.
+  Linux: `LC_ALL=C timeout -s USR1 -k 1 8 dd ... iflag=direct` (SIGINT: dd printed nothing under timeout, checked) in
+  the same pkexec batch (dd's lines prefixed `OXFAM_DD:` by sed; `/dev/nvme0` read as `/dev/nvme0n1`,
+  `linuxBlockDevice()`), `parseDdSpeed()` on real dd reports (`dd_linux_*.txt`). Not yet run on a real disk (Linux:
+  needs the password; Windows: not built locally, CI to check).
 - Test: `DriversTest`: Windows (2026-10-26, no PowerShell; verified 2026-10-27 on 7 Surface Pro 7, Win11, ~206 devices): SetupAPI lists the present devices
   (`DIGCF_PRESENT`: the previous owner's unplugged USB devices, WMI code 45, never come), `CM_Get_DevNode_Status`
   gives the problem code (= WMI `ConfigManagerErrorCode`); name = friendly name, else description, else device ID. Linux reads

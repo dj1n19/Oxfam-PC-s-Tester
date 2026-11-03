@@ -12,11 +12,39 @@ namespace {
 // The runner's watchdog stops an automatic test after 60 s: leave it room.
 constexpr int kPasswordTimeoutMs = 50'000;
 
+// Same dd as in the pkexec batch, without elevation (works only as root:
+// a normal user cannot open /dev/sda; then dd says "Permission denied").
+void measureSpeed(SmartctlRun& run)
+{
+    const QStringList args = ddArgs(linuxBlockDevice(run.device));
+    QProcess p;
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert(QStringLiteral("LC_ALL"), QStringLiteral("C"));
+    p.setProcessEnvironment(env);
+    p.setProcessChannelMode(QProcess::MergedChannels);   // dd reports on stderr
+    p.start(QStringLiteral("timeout"), args);
+    QString out;
+    if (!p.waitForStarted(5000)) {
+        out = QStringLiteral("Could not start timeout/dd");
+    } else if (!p.waitForFinished((kSpeedMaxSeconds + 6) * 1000)) {
+        p.kill();
+        p.waitForFinished();
+        out = QStringLiteral("dd did not stop in time");
+    } else {
+        out = QString::fromLocal8Bit(p.readAll()).trimmed();
+        run.readMBps = parseDdSpeed(out);
+    }
+    run.speedRaw = QStringLiteral("timeout %1 (direct, uid %2):\n%3").arg(args.join(' ')).arg(geteuid()).arg(out);
+}
+
 std::vector<SmartctlRun> direct(const QString& smartctl, const std::vector<ScannedDevice>& devices)
 {
     std::vector<SmartctlRun> runs;
-    for (const ScannedDevice& dev : devices)
-        runs.push_back(runSmartctl(smartctl, dev));
+    for (const ScannedDevice& dev : devices) {
+        SmartctlRun run = runSmartctl(smartctl, dev);
+        measureSpeed(run);
+        runs.push_back(std::move(run));
+    }
     return runs;
 }
 
@@ -71,7 +99,7 @@ QStringList usbDevices(const std::vector<ScannedDevice>& devices, QString* raw)
     return usb;
 }
 
-// Reading SMART needs root. Running the whole app as root breaks audio and
+// Reading SMART (and the raw disk, for its speed) needs root. Running the whole app as root breaks audio and
 // camera (they live in the user session), so only smartctl is elevated, with
 // pkexec, in ONE call for all disks: one password prompt.
 std::vector<SmartctlRun> readDevices(const QString& smartctl, const std::vector<ScannedDevice>& devices)

@@ -1,0 +1,7 @@
+47544+0 records in
+47544+0 records out
+49853497344 bytes (50 GB, 46 GiB) copied, 0.999413 s, 49.9 GB/s
+47544+0 records in
+47544+0 records out
+49853497344 bytes (50 GB, 46 GiB) copied, 0.999424 s, 49.9 GB/s
+dd: warning: partial read (696320 bytes); suggest iflag=fullblock

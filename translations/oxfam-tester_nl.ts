@@ -538,94 +538,99 @@ Open ze om de andere controles aan te vullen.</translation>
 <context>
     <name>DiskTest</name>
     <message>
-        <location filename="../src/tests/disk/DiskTest.h" line="14"/>
-        <source>Disks (SMART)</source>
-        <translation type="unfinished">Schijven (SMART)</translation>
-    </message>
-    <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="115"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="117"/>
         <source>%1: no SMART (USB stick or card reader?)</source>
         <translation type="unfinished">%1: geen SMART (USB-stick of kaartlezer?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="70"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="72"/>
         <source>%1: smartctl failed (see details)</source>
         <translation type="unfinished">%1: smartctl mislukt (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="79"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="81"/>
         <source>%1: unreadable smartctl output (see details)</source>
         <translation type="unfinished">%1: onleesbare uitvoer van smartctl (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="91"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="93"/>
         <source>%1: cannot open the disk, administrator rights needed (see details)</source>
         <translation type="unfinished">%1: kan de schijf niet openen, beheerdersrechten nodig (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="116"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="118"/>
         <source>%1: no SMART health status (see details)</source>
         <translation type="unfinished">%1: geen SMART-gezondheidsstatus (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="122"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="124"/>
         <source>SMART OK</source>
         <translation type="unfinished">SMART OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="122"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="124"/>
         <source>SMART FAILED</source>
         <translation type="unfinished">SMART MISLUKT</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="132"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="135"/>
         <source>%1 reallocated</source>
         <translation type="unfinished">%1 opnieuw toegewezen</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="133"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="136"/>
         <source>%1 pending</source>
         <translation type="unfinished">%1 in afwachting</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="134"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="137"/>
         <source>%1% worn</source>
         <translation type="unfinished">%1% versleten</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="144"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="149"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation type="unfinished">geen drempel %1 in thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="178"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="159"/>
+        <source>speed not measured</source>
+        <translation type="unfinished">snelheid niet gemeten</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation type="unfinished">smartctl niet gevonden: laat de map tools naast het programma staan (Linux: installeer smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="180"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
         <source>Could not list the disks (see details)</source>
         <translation type="unfinished">Kan de schijven niet oplijsten (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="186"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="195"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation type="unfinished">Geen schijf gevonden: controleer het BIOS (Intel RST-, VMD- of RAID-modus kan schijven verbergen)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="198"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="207"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord geannuleerd of fout: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="199"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="208"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord niet op tijd getypt: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="230"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="239"/>
         <source>No disk with SMART data</source>
         <translation type="unfinished">Geen schijf met SMART-gegevens</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/disk/DiskTest.h" line="14"/>
+        <source>Disks (SMART + speed)</source>
+        <translation type="unfinished">Schijven (SMART + snelheid)</translation>
     </message>
 </context>
 <context>

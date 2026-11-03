@@ -68,6 +68,7 @@ class TestCore : public QObject {
             "disk_pending_sectors":     {"warn": 1,  "fail": 10},
             "nvme_percentage_used":     {"warn": 80, "fail": 100},
             "disk_temperature_c":       {"warn": 55, "fail": 65},
+            "disk_read_mb_s":           {"warn": 100, "fail": 20},
             "cpu_temp_peak_c":          {"warn": 90, "fail": 97},
             "cpu_speed_min_pct":        {"warn": 100, "fail": 70}
         })");
@@ -323,36 +324,36 @@ private slots:
         QTest::addColumn<QString>("file");
         QTest::addColumn<QString>("summary");
         QTest::newRow("Dell 7420 Samsung PM9A1") << "smartctl_real_samsung_pm9a1.json"
-            << "/dev/test PM9A1 NVMe Samsung 256GB 256 GB: SMART OK, 6% worn, 31 C, 1480 h";
+            << "/dev/test PM9A1 NVMe Samsung 256GB 256 GB: SMART OK, 6% worn, 31 C, speed not measured, 1480 h";
         QTest::newRow("Dell 7430 WD SN810") << "smartctl_real_wd_sn810.json"
-            << "/dev/test PC SN810 NVMe WDC 512GB 512 GB: SMART OK, 21% worn, 26 C, 2868 h";
+            << "/dev/test PC SN810 NVMe WDC 512GB 512 GB: SMART OK, 21% worn, 26 C, speed not measured, 2868 h";
         QTest::newRow("Lenovo 20M6 Intel") << "smartctl_real_intel_ssdpekkf256g8l.json"
-            << "/dev/test INTEL SSDPEKKF256G8L 256 GB: SMART OK, 6% worn, 42 C, 14621 h";
+            << "/dev/test INTEL SSDPEKKF256G8L 256 GB: SMART OK, 6% worn, 42 C, speed not measured, 14621 h";
         QTest::newRow("Lenovo 20M6 Samsung MZVLW") << "smartctl_real_samsung_mzvlw256.json"
-            << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 5% worn, 37 C, 3860 h";
+            << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 5% worn, 37 C, speed not measured, 3860 h";
         QTest::newRow("Surface Pro 7 SK Hynix") << "smartctl_real_skhynix_hfb1m8.json"
-            << "/dev/test HFB1M8MO331C0MR 256 GB: SMART OK, 25% worn, 46 C, 2585 h";
+            << "/dev/test HFB1M8MO331C0MR 256 GB: SMART OK, 25% worn, 46 C, speed not measured, 2585 h";
         QTest::newRow("Surface Pro 7 Toshiba (2026-10-27)") << "smartctl_real_toshiba_kbg40zpz256g.json"
-            << "/dev/test KBG40ZPZ256G TOSHIBA MEMORY 256 GB: SMART OK, 13% worn, 46 C, 12674 h";
+            << "/dev/test KBG40ZPZ256G TOSHIBA MEMORY 256 GB: SMART OK, 13% worn, 46 C, speed not measured, 12674 h";
         QTest::newRow("HP ZBook WD SN730") << "smartctl_real_wd_sn730.json"
-            << "/dev/test WDC PC SN730 SDBPNTY-1T00-1006 1024 GB: SMART OK, 1% worn, 29 C, 3307 h";
+            << "/dev/test WDC PC SN730 SDBPNTY-1T00-1006 1024 GB: SMART OK, 1% worn, 29 C, speed not measured, 3307 h";
         QTest::newRow("HP ZBook Micron") << "smartctl_real_micron_mtfdkba1t0tfh.json"
-            << "/dev/test MTFDKBA1T0TFH-1BC1AABHA 1024 GB: SMART OK, 3% worn, 22 C, 2454 h";
+            << "/dev/test MTFDKBA1T0TFH-1BC1AABHA 1024 GB: SMART OK, 3% worn, 22 C, speed not measured, 2454 h";
         // Field 2026-10-28 to 11-03 (Windows 10/11, and the AppImage's static smartctl on Mint).
         QTest::newRow("Surface Pro 2017 Samsung KUS") << "smartctl_real_samsung_kus030202m.json"
-            << "/dev/test SAMSUNG KUS030202M-B000 256 GB: SMART OK, 3% worn, 45 C, 2565 h";
+            << "/dev/test SAMSUNG KUS030202M-B000 256 GB: SMART OK, 3% worn, 45 C, speed not measured, 2565 h";
         QTest::newRow("Surface Pro 2017 Intel") << "smartctl_real_intel_ssdpebkf256g7.json"
-            << "/dev/test INTEL SSDPEBKF256G7 256 GB: SMART OK, 5% worn, 35 C, 7863 h";
+            << "/dev/test INTEL SSDPEBKF256G7 256 GB: SMART OK, 5% worn, 35 C, speed not measured, 7863 h";
         QTest::newRow("Surface Pro 2017 SK Hynix BC501") << "smartctl_real_skhynix_bc501.json"
-            << "/dev/test Skhynix BC501 NVMe 256GB 256 GB: SMART OK, 1% worn, 36 C, 1101 h";
+            << "/dev/test Skhynix BC501 NVMe 256GB 256 GB: SMART OK, 1% worn, 36 C, speed not measured, 1101 h";
         QTest::newRow("Lenovo 20NS Samsung MZVLB HAHQ") << "smartctl_real_samsung_mzvlb256hahq.json"
-            << "/dev/test SAMSUNG MZVLB256HAHQ-000L7 256 GB: SMART OK, 4% worn, 32 C, 6541 h";
+            << "/dev/test SAMSUNG MZVLB256HAHQ-000L7 256 GB: SMART OK, 4% worn, 32 C, speed not measured, 6541 h";
         QTest::newRow("Lenovo 20NS Samsung MZVLB HBHQ") << "smartctl_real_samsung_mzvlb256hbhq_l7.json"
-            << "/dev/test SAMSUNG MZVLB256HBHQ-000L7 256 GB: SMART OK, 4% worn, 33 C, 3865 h";
+            << "/dev/test SAMSUNG MZVLB256HBHQ-000L7 256 GB: SMART OK, 4% worn, 33 C, speed not measured, 3865 h";
         QTest::newRow("HP EliteBook 845 Samsung MZVLB") << "smartctl_real_samsung_mzvlb256hbhq_h1.json"
-            << "/dev/test SAMSUNG MZVLB256HBHQ-000H1 256 GB: SMART OK, 6% worn, 34 C, 3787 h";
+            << "/dev/test SAMSUNG MZVLB256HBHQ-000H1 256 GB: SMART OK, 6% worn, 34 C, speed not measured, 3787 h";
         QTest::newRow("Lenovo 20J2 Samsung MZVLW, Mint") << "smartctl_real_samsung_mzvlw256_linux.json"
-            << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 2% worn, 28 C, 4175 h";
+            << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 2% worn, 28 C, speed not measured, 4175 h";
     }
 
     void smartctlRealSamples()
@@ -370,7 +371,7 @@ private slots:
     void smartctlUsbLeftOut()
     {
         QCOMPARE(DiskTest::evaluateDisk(smart("smartctl_real_usb_sandisk_cruzer.json", 4), loaded()).summary,
-                 QString("/dev/test SanDisk Cruzer 16 GB: SMART OK, 0 C"));
+                 QString("/dev/test SanDisk Cruzer 16 GB: SMART OK, 0 C, speed not measured"));
 
         // Windows: /dev/sd + letter N = \\.\PhysicalDriveN, asked for its bus.
         QCOMPARE(physicalDriveNumber("/dev/sda"), 0);
@@ -1017,6 +1018,10 @@ private slots:
         QCOMPARE(script.count('\n'), 1);   // one line per disk
         QVERIFY(script.contains("'/opt/my tools/smartctl' '--json' '-a' '-d' 'sat' '/dev/sda'"));
         QVERIFY(script.contains(QString(kBatchMarker) + "$?"));
+        // Speed read before smartctl, dd's lines marked; the NVMe controller read as its namespace.
+        QVERIFY(script.contains("LC_ALL=C timeout '-s' 'USR1' '-k' '1' '8' 'dd' 'if=/dev/sda' 'of=/dev/null'"));
+        QVERIFY(script.contains("'if=/dev/nvme0n1'"));
+        QVERIFY(script.contains(QString("2>&1 | sed 's/^/%1/'; ").arg(kDdPrefix)));
 
         QVERIFY(isSafeShellWord("/dev/nvme0"));
         QVERIFY(isSafeShellWord("sntasmedia/sat"));
@@ -1031,7 +1036,10 @@ private slots:
     {
         const std::vector<ScannedDevice> devs{{"/dev/sda", "sat"}, {"/dev/nvme0", "nvme"}};
         QByteArray out = sample("smartctl_ata_worn.json");
-        out += QByteArray(kBatchMarker) + "0\n";
+        out += QByteArray(kBatchMarker) + "0\n";   // sda: no dd line (dd missing?) = not measured
+        for (const QByteArray& line : sample("dd_linux_nvme.txt").split('\n'))
+            if (!line.isEmpty())
+                out += QByteArray(kDdPrefix) + line + '\n';
         out += sample("smartctl_nvme_ok.json");
         out += QByteArray(kBatchMarker) + "4\n";
         const auto runs = parseBatchOutput(out, devs);
@@ -1041,6 +1049,10 @@ private slots:
         QCOMPARE(runs[1].exitCode, 4);
         QCOMPARE(DiskTest::evaluateDisk(runs[0], loaded()).status, Status::Fail);   // the worn disk
         QCOMPARE(DiskTest::evaluateDisk(runs[1], loaded()).status, Status::Pass);
+        QCOMPARE(runs[0].readMBps, -1.0);
+        QCOMPARE(qRound(runs[1].readMBps), 1394);
+        QVERIFY(runs[1].json.startsWith('{'));   // dd's lines kept out of the JSON
+        QVERIFY(runs[1].speedRaw.contains("copied, 0.385132 s"));
 
         // Batch stopped after the first disk: the second one is an Error, not lost.
         const QByteArray cut = sample("smartctl_ata_worn.json") + QByteArray(kBatchMarker) + "0\n";
@@ -1048,6 +1060,47 @@ private slots:
         QCOMPARE(partial.size(), size_t(2));
         QVERIFY(!partial[1].error.isEmpty());
         QCOMPARE(DiskTest::evaluateDisk(partial[1], loaded()).status, Status::Error);
+    }
+
+    void ddSpeed()
+    {
+        // Real dd reports (Arch, 2026-11-03): read with iflag=direct, stopped
+        // by timeout's SIGUSR1 (report printed twice), no root.
+        QCOMPARE(qRound(parseDdSpeed(sample("dd_linux_nvme.txt"))), 1394);   // 536870912 B / 0.385132 s
+        QCOMPARE(qRound(parseDdSpeed(sample("dd_linux_stopped.txt"))), 49882);
+        QCOMPARE(parseDdSpeed(sample("dd_linux_denied.txt")), -1.0);
+        QCOMPARE(parseDdSpeed("1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.01 s, 105 MB/s"), -1.0);   // too little
+        QCOMPARE(parseDdSpeed(""), -1.0);
+
+        QCOMPARE(linuxBlockDevice("/dev/nvme0"), QString("/dev/nvme0n1"));
+        QCOMPARE(linuxBlockDevice("/dev/nvme12"), QString("/dev/nvme12n1"));
+        QCOMPARE(linuxBlockDevice("/dev/nvme0n1"), QString("/dev/nvme0n1"));
+        QCOMPARE(linuxBlockDevice("/dev/sda"), QString("/dev/sda"));
+    }
+
+    void diskSpeedJudged()
+    {
+        SmartctlRun run = smart("smartctl_nvme_ok.json", 0);
+        run.readMBps = 1393.98;
+        run.speedRaw = "\\\\.\\PhysicalDrive0: 512 MiB read in 0.385 s (unbuffered, sequential)";
+        TestResult r = DiskTest::evaluateDisk(run, loaded());
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.contains(", 1394 MB/s"));
+        QVERIFY(r.details.contains("Read speed: \\\\.\\PhysicalDrive0"));
+
+        run.readMBps = 60;   // old HDD or a SATA link at 1.5 Gb/s
+        r = DiskTest::evaluateDisk(run, loaded());
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.contains("60 MB/s (WARN)"));
+
+        run.readMBps = 12;   // dying disk
+        QCOMPARE(DiskTest::evaluateDisk(run, loaded()).status, Status::Fail);
+
+        // Not measured: said, not judged (SMART still decides).
+        run.readMBps = -1;
+        r = DiskTest::evaluateDisk(run, loaded());
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.contains("speed not measured"));
     }
 
     void cameraFrames()
