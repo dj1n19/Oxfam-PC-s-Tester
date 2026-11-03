@@ -199,31 +199,48 @@ Où l&apos;avez-vous entendu ?</translation>
     <name>CameraDialog</name>
     <message>
         <location filename="../src/ui/interactive/CameraDialog.cpp" line="23"/>
+        <source>Camera test (%1 of %2): %3</source>
+        <translation>Test de la caméra (%1 sur %2) : %3</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="24"/>
         <source>Camera test</source>
         <translation>Test caméra</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="27"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="28"/>
         <source>Look at the camera. The test ends by itself when a picture is seen.</source>
         <translation>Regardez la caméra. Le test se termine seul dès qu&apos;une image est vue.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="35"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="30"/>
+        <source>Camera %1 of %2: %3.
+</source>
+        <translation>Caméra %1 sur %2 : %3.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="31"/>
+        <source>Point it at something (rear camera: turn the tablet). The test ends by itself when a picture is seen.</source>
+        <translation>Dirigez-la vers quelque chose (caméra arrière : retournez la tablette). Le test se termine tout seul quand une image est vue.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="40"/>
         <source>Starting camera...</source>
         <translation>Démarrage de la caméra...</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="44"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="49"/>
         <source>Camera is broken</source>
         <translation>La caméra est en panne</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="45"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="50"/>
         <source>Skip</source>
         <translation>Passer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="123"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="128"/>
         <source>The picture stays black or uniform. Open the privacy shutter or uncover the lens. If it does not change, click &quot;Camera is broken&quot;.</source>
         <translation>L&apos;image reste noire ou uniforme. Ouvrez le cache de la caméra ou dégagez l&apos;objectif. Si rien ne change, cliquez sur « La caméra est en panne ».</translation>
     </message>
@@ -231,37 +248,37 @@ Où l&apos;avez-vous entendu ?</translation>
 <context>
     <name>CameraTest</name>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="57"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="59"/>
         <source>Camera gives a picture</source>
         <translation>La caméra donne une image</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="61"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="63"/>
         <source>Camera picture black or wrong (confirmed by technician)</source>
         <translation>Image noire ou anormale (confirmé par le technicien)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="65"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="67"/>
         <source>Skipped by the technician</source>
         <translation>Passé par le technicien</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="70"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="72"/>
         <source>No camera found (desktop? camera disabled in BIOS?)</source>
         <translation>Aucune caméra (ordinateur fixe ? caméra désactivée dans le BIOS ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="74"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="76"/>
         <source>Camera gives no picture: close other apps using it and check the camera privacy setting</source>
         <translation>La caméra ne donne pas d&apos;image : fermez les autres applications qui l&apos;utilisent et vérifiez le réglage de confidentialité de la caméra</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="78"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="80"/>
         <source>Camera error: %1</source>
         <translation>Erreur caméra : %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraTest.h" line="11"/>
+        <location filename="../src/ui/interactive/CameraTest.h" line="16"/>
         <source>Camera</source>
         <translation>Caméra</translation>
     </message>

@@ -1,5 +1,7 @@
 #include "tests/camera/FrameCheck.h"
 
+#include <QStringList>
+
 #include <algorithm>
 #include <cmath>
 #include <QCoreApplication>
@@ -78,5 +80,21 @@ TestResult cameraResult(CameraOutcome outcome, const QString& device,
         r.summary = QCoreApplication::translate("CameraTest", "Camera error: %1").arg(error);
         break;
     }
+    return r;
+}
+
+TestResult combineCameraResults(const std::vector<CameraRun>& runs)
+{
+    if (runs.size() == 1)
+        return runs.front().result;
+    TestResult r;
+    QStringList summaries, details;
+    for (const CameraRun& c : runs) {
+        r.status = summaries.isEmpty() ? c.result.status : worse(r.status, c.result.status);
+        summaries << QStringLiteral("%1: %2").arg(c.name, c.result.summary);
+        details << QStringLiteral("=== %1 ===\n%2").arg(c.name, c.result.details);
+    }
+    r.summary = summaries.join(QStringLiteral(" | "));
+    r.details = details.join(QStringLiteral("\n\n"));
     return r;
 }

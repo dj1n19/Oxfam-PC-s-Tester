@@ -1104,7 +1104,31 @@ private slots:
         QVERIFY(r.summary.contains("speed not measured"));
     }
 
-    void screenAnswers()
+    void cameraSeveral()
+    {
+        const FrameStats s{120, 40};
+        const TestResult good = cameraResult(CameraOutcome::Good, "Front", s);
+        const TestResult broken = cameraResult(CameraOutcome::Broken, "Rear", s);
+        const TestResult skipped = cameraResult(CameraOutcome::Skipped, "IR", s);
+
+        // One camera: unchanged (laptops).
+        const TestResult one = combineCameraResults({{"Integrated Camera", good}});
+        QCOMPARE(one.summary, good.summary);
+        QCOMPARE(one.status, Status::Pass);
+
+        // Tablet: front OK, rear broken -> Fail, both named.
+        const TestResult two = combineCameraResults({{"Microsoft Camera Front", good}, {"Microsoft Camera Rear", broken}});
+        QCOMPARE(two.status, Status::Fail);
+        QVERIFY(two.summary.startsWith("Microsoft Camera Front: Camera gives a picture | Microsoft Camera Rear: "));
+        QVERIFY(two.details.contains("=== Microsoft Camera Rear ==="));
+
+        // A skipped camera (IR?) never hides a pass or a fault.
+        QCOMPARE(combineCameraResults({{"Front", good}, {"IR", skipped}}).status, Status::Pass);
+        QCOMPARE(combineCameraResults({{"IR", skipped}, {"Rear", broken}}).status, Status::Fail);
+        QCOMPARE(combineCameraResults({{"A", skipped}, {"B", skipped}}).status, Status::Skipped);
+    }
+
+        void screenAnswers()
     {
         QCOMPARE(int(screenPatterns().size()), 4);   // developer's choice: black, white, grey, red
         QCOMPARE(screenPatterns().front().name, QString("black"));

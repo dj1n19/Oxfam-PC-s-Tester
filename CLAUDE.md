@@ -320,6 +320,10 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   `lumaStats()`/`classifyFrame()` (oxcore) give brightness and detail. ~1 s of real picture = automatic Pass.
   Black/uniform for 3 s = prompt (shutter? lens?) and the technician may click "Camera is broken" (Fail).
   No camera = Skipped (desktops); camera error or no frame in 6 s = Error.
+  **Every camera** is tested (2026-11-03, developer's request: tablets have front + rear): the default one first, then
+  the other `videoInputs()`, one dialog each (title "Camera test (2 of 2): <name>"), next one opened queued after the
+  previous closed. One row: `combineCameraResults()` (one camera = unchanged; several = "<name>: <summary> | ...",
+  worse wins, a Skipped camera never hides another). Each has its own Skip (in case Windows lists an IR camera). Not yet run.
 - Test: `ScreenTest`, row "Screen" (interactive, first of them; 2026-11-03, developer's choices): a dialog explains,
   "Show the colours" (Enter/Space) opens `PatternWindow`, a frameless full-screen child window of the dialog (an
   application-modal dialog does not block its children) on the main window's screen, no cursor, no text. 4 colours

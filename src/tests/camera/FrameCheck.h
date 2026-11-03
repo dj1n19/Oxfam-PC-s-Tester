@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <QString>
 #include "core/TestResult.h"
 
@@ -32,3 +33,13 @@ enum class CameraOutcome {
 };
 TestResult cameraResult(CameraOutcome outcome, const QString& device,
                         const FrameStats& last, const QString& error = {});
+
+// Tablets have two cameras (front and rear): each is tested, in one row. With
+// one camera its result is returned unchanged; with several, each summary is
+// prefixed by its camera's name and the worse status wins (a skipped camera
+// never hides another one's fault). Pure, unit tested.
+struct CameraRun {
+    QString name;        // QCameraDevice::description(): "Microsoft Camera Rear"
+    TestResult result;
+};
+TestResult combineCameraResults(const std::vector<CameraRun>& runs);

@@ -17,14 +17,19 @@ constexpr int kBadPromptMs = 3000;     // webcams start dark while adjusting exp
 constexpr int kNoFrameMs = 6000;
 }
 
-CameraDialog::CameraDialog(const QCameraDevice& device, QWidget* parent)
+CameraDialog::CameraDialog(const QCameraDevice& device, int number, int total, QWidget* parent)
     : QDialog(parent), m_device(device), m_camera(device)
 {
-    setWindowTitle(tr("Camera test"));
+    setWindowTitle(total > 1 ? tr("Camera test (%1 of %2): %3").arg(number).arg(total).arg(device.description())
+                             : tr("Camera test"));
     setAttribute(Qt::WA_DeleteOnClose);   // Qt frees the dialog when it closes
 
     auto* top = new QVBoxLayout(this);
-    auto* help = new QLabel(tr("Look at the camera. The test ends by itself when a picture is seen."), this);
+    QString text = tr("Look at the camera. The test ends by itself when a picture is seen.");
+    if (total > 1)   // the title alone is easy to miss
+        text = tr("Camera %1 of %2: %3.\n").arg(number).arg(total).arg(device.description())
+               + tr("Point it at something (rear camera: turn the tablet). The test ends by itself when a picture is seen.");
+    auto* help = new QLabel(text, this);
     help->setWordWrap(true);
     top->addWidget(help);
 

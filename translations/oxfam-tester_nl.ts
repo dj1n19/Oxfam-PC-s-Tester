@@ -199,31 +199,48 @@ Waar hoorde u hem?</translation>
     <name>CameraDialog</name>
     <message>
         <location filename="../src/ui/interactive/CameraDialog.cpp" line="23"/>
+        <source>Camera test (%1 of %2): %3</source>
+        <translation type="unfinished">Cameratest (%1 van %2): %3</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="24"/>
         <source>Camera test</source>
         <translation type="unfinished">Cameratest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="27"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="28"/>
         <source>Look at the camera. The test ends by itself when a picture is seen.</source>
         <translation type="unfinished">Kijk naar de camera. De test stopt vanzelf zodra er een beeld is.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="35"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="30"/>
+        <source>Camera %1 of %2: %3.
+</source>
+        <translation type="unfinished">Camera %1 van %2: %3.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="31"/>
+        <source>Point it at something (rear camera: turn the tablet). The test ends by itself when a picture is seen.</source>
+        <translation type="unfinished">Richt ze op iets (achtercamera: draai de tablet om). De test stopt vanzelf zodra er een beeld is.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="40"/>
         <source>Starting camera...</source>
         <translation type="unfinished">Camera wordt gestart...</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="44"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="49"/>
         <source>Camera is broken</source>
         <translation type="unfinished">Camera is defect</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="45"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="50"/>
         <source>Skip</source>
         <translation type="unfinished">Overslaan</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="123"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="128"/>
         <source>The picture stays black or uniform. Open the privacy shutter or uncover the lens. If it does not change, click &quot;Camera is broken&quot;.</source>
         <translation type="unfinished">Het beeld blijft zwart of egaal. Open het privacyschuifje of maak de lens vrij. Verandert er niets, klik dan op &quot;Camera is defect&quot;.</translation>
     </message>
@@ -231,37 +248,37 @@ Waar hoorde u hem?</translation>
 <context>
     <name>CameraTest</name>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="57"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="59"/>
         <source>Camera gives a picture</source>
         <translation type="unfinished">Camera geeft een beeld</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="61"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="63"/>
         <source>Camera picture black or wrong (confirmed by technician)</source>
         <translation type="unfinished">Beeld zwart of fout (bevestigd door de technicus)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="65"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="67"/>
         <source>Skipped by the technician</source>
         <translation type="unfinished">Overgeslagen door de technicus</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="70"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="72"/>
         <source>No camera found (desktop? camera disabled in BIOS?)</source>
         <translation type="unfinished">Geen camera gevonden (desktop? camera uitgeschakeld in het BIOS?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="74"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="76"/>
         <source>Camera gives no picture: close other apps using it and check the camera privacy setting</source>
         <translation type="unfinished">Camera geeft geen beeld: sluit andere apps die hem gebruiken en controleer de privacy-instelling van de camera</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="78"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="80"/>
         <source>Camera error: %1</source>
         <translation type="unfinished">Camerafout: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraTest.h" line="11"/>
+        <location filename="../src/ui/interactive/CameraTest.h" line="16"/>
         <source>Camera</source>
         <translation type="unfinished">Camera</translation>
     </message>

@@ -16,7 +16,8 @@ class QVideoFrame;
 class CameraDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit CameraDialog(const QCameraDevice& device, QWidget* parent = nullptr);
+    // number/total: which camera this is (tablets have two), shown in the title.
+    CameraDialog(const QCameraDevice& device, int number = 1, int total = 1, QWidget* parent = nullptr);
     ~CameraDialog() override;
 
 signals:
