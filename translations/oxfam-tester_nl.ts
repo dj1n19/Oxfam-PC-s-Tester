@@ -74,22 +74,32 @@ Waar hoorde u hem?</translation>
         <translation type="unfinished">rechts stil</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="74"/>
         <source>left/right swapped</source>
         <translation type="unfinished">links/rechts omgewisseld</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="76"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="77"/>
+        <source>left tone heard on the right</source>
+        <translation type="unfinished">linkertoon rechts gehoord</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="79"/>
+        <source>right tone heard on the left</source>
+        <translation type="unfinished">rechtertoon links gehoord</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="84"/>
         <source>no stereo separation (mono speaker?)</source>
         <translation type="unfinished">geen stereoscheiding (monoluidspreker?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="86"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="94"/>
         <source>Left and right speakers work</source>
         <translation type="unfinished">Linker- en rechterluidspreker werken</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="95"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="103"/>
         <source>Skipped by the technician (no speakers?)</source>
         <translation type="unfinished">Overgeslagen door de technicus (geen luidsprekers?)</translation>
     </message>
@@ -1009,7 +1019,7 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
     <name>QObject</name>
     <message>
         <location filename="../src/main.cpp" line="48"/>
-        <location filename="../src/main.cpp" line="104"/>
+        <location filename="../src/main.cpp" line="109"/>
         <source>Configuration</source>
         <translation type="unfinished">Configuratie</translation>
     </message>
@@ -1025,12 +1035,12 @@ Tests needing thresholds will report ERROR. Copy the whole &quot;Lazy Djin&apos;
 Tests die drempels nodig hebben, geven ERROR. Kopieer de hele map &quot;Lazy Djin&apos;s Tester&quot; opnieuw: thresholds.json moet in de map config staan.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="101"/>
+        <location filename="../src/main.cpp" line="106"/>
         <source>unknown test &quot;%1&quot; (ignored)</source>
         <translation type="unfinished">onbekende test &quot;%1&quot; (genegeerd)</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="105"/>
+        <location filename="../src/main.cpp" line="110"/>
         <source>tests.json: %1
 
 The tests it does not set right are ticked. Known tests: %2.</source>

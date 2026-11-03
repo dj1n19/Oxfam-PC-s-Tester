@@ -74,22 +74,32 @@ Où l&apos;avez-vous entendu ?</translation>
         <translation>droite muet</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="72"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="74"/>
         <source>left/right swapped</source>
         <translation>gauche/droite inversés</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="76"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="77"/>
+        <source>left tone heard on the right</source>
+        <translation>son gauche entendu à droite</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="79"/>
+        <source>right tone heard on the left</source>
+        <translation>son droit entendu à gauche</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="84"/>
         <source>no stereo separation (mono speaker?)</source>
         <translation>pas de stéréo (haut-parleur mono ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="86"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="94"/>
         <source>Left and right speakers work</source>
         <translation>Haut-parleurs gauche et droit OK</translation>
     </message>
     <message>
-        <location filename="../src/tests/audio/AudioCheck.cpp" line="95"/>
+        <location filename="../src/tests/audio/AudioCheck.cpp" line="103"/>
         <source>Skipped by the technician (no speakers?)</source>
         <translation>Passé par le technicien (pas de haut-parleurs ?)</translation>
     </message>
@@ -1009,7 +1019,7 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
     <name>QObject</name>
     <message>
         <location filename="../src/main.cpp" line="48"/>
-        <location filename="../src/main.cpp" line="104"/>
+        <location filename="../src/main.cpp" line="109"/>
         <source>Configuration</source>
         <translation>Configuration</translation>
     </message>
@@ -1025,12 +1035,12 @@ Tests needing thresholds will report ERROR. Copy the whole &quot;Lazy Djin&apos;
 Les tests qui ont besoin de seuils seront en ERREUR. Recopiez tout le dossier « Lazy Djin&apos;s Tester » : thresholds.json doit être dans son dossier config.</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="101"/>
+        <location filename="../src/main.cpp" line="106"/>
         <source>unknown test &quot;%1&quot; (ignored)</source>
         <translation>test inconnu « %1 » (ignoré)</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="105"/>
+        <location filename="../src/main.cpp" line="110"/>
         <source>tests.json: %1
 
 The tests it does not set right are ticked. Known tests: %2.</source>

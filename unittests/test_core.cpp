@@ -941,6 +941,9 @@ private slots:
         QCOMPARE(audioResult(Heard::Left, Heard::Nothing).status, Status::Fail);  // right dead
         QCOMPARE(audioResult(Heard::Nothing, Heard::Both).status, Status::Fail);  // fail beats warn
         QVERIFY(audioResult(Heard::Right, Heard::Left).summary.contains("swapped"));
+        QCOMPARE(audioResult(Heard::Left, Heard::Left).status, Status::Fail);     // one wrong side
+        QCOMPARE(audioResult(Heard::Left, Heard::Left).summary, QString("right tone heard on the left"));
+        QCOMPARE(audioResult(Heard::Right, Heard::Right).summary, QString("left tone heard on the right"));
         QCOMPARE(audioSkipped().status, Status::Skipped);
     }
 

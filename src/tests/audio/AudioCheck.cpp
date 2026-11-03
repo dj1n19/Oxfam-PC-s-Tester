@@ -68,8 +68,16 @@ TestResult audioResult(Heard leftTone, Heard rightTone)
     QStringList fails, warns;
     if (leftTone == Heard::Nothing)  fails << QCoreApplication::translate("AudioTest", "left silent");
     if (rightTone == Heard::Nothing) fails << QCoreApplication::translate("AudioTest", "right silent");
-    if (leftTone == Heard::Right || rightTone == Heard::Left)
+    // "Swapped" only when both tones came from the wrong side: the field reports
+    // (2026-10-28, 2026-11-02) had "heard left" twice, which is one wrong side.
+    if (leftTone == Heard::Right && rightTone == Heard::Left) {
         fails << QCoreApplication::translate("AudioTest", "left/right swapped");
+    } else {
+        if (leftTone == Heard::Right)
+            fails << QCoreApplication::translate("AudioTest", "left tone heard on the right");
+        if (rightTone == Heard::Left)
+            fails << QCoreApplication::translate("AudioTest", "right tone heard on the left");
+    }
     // Sound on both sides for a one-channel tone: mono speaker or wrong
     // mixing. It still works, so a note rather than a repair.
     if (leftTone == Heard::Both || rightTone == Heard::Both)
