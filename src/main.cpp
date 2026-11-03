@@ -86,10 +86,15 @@ int main(int argc, char* argv[])
     // Tests ticked at start, chosen by the technician in config/tests.json.
     // No file: all ticked, no pop-up. A file they edited wrong: they are told.
     TestChoice choice;
-    QFile choiceFile(configFile(QStringLiteral("tests.json")));
     QStringList problems;
-    if (choiceFile.open(QIODevice::ReadOnly) && !choice.loadFromJson(choiceFile.readAll(), &error))
-        problems << error;
+    {
+        // In its own block so the file is closed right after reading: left open
+        // until the end of main(), Windows refused to replace it ("Access is
+        // denied") when "Remember these choices" saved it (Linux allows it).
+        QFile choiceFile(configFile(QStringLiteral("tests.json")));
+        if (choiceFile.open(QIODevice::ReadOnly) && !choice.loadFromJson(choiceFile.readAll(), &error))
+            problems << error;
+    }
     std::vector<bool> ticked;
     QStringList ids;
     for (int i = 0; i < runner.count(); ++i) {
