@@ -338,6 +338,21 @@ private slots:
             << "/dev/test WDC PC SN730 SDBPNTY-1T00-1006 1024 GB: SMART OK, 1% worn, 29 C, 3307 h";
         QTest::newRow("HP ZBook Micron") << "smartctl_real_micron_mtfdkba1t0tfh.json"
             << "/dev/test MTFDKBA1T0TFH-1BC1AABHA 1024 GB: SMART OK, 3% worn, 22 C, 2454 h";
+        // Field 2026-10-28 to 11-03 (Windows 10/11, and the AppImage's static smartctl on Mint).
+        QTest::newRow("Surface Pro 2017 Samsung KUS") << "smartctl_real_samsung_kus030202m.json"
+            << "/dev/test SAMSUNG KUS030202M-B000 256 GB: SMART OK, 3% worn, 45 C, 2565 h";
+        QTest::newRow("Surface Pro 2017 Intel") << "smartctl_real_intel_ssdpebkf256g7.json"
+            << "/dev/test INTEL SSDPEBKF256G7 256 GB: SMART OK, 5% worn, 35 C, 7863 h";
+        QTest::newRow("Surface Pro 2017 SK Hynix BC501") << "smartctl_real_skhynix_bc501.json"
+            << "/dev/test Skhynix BC501 NVMe 256GB 256 GB: SMART OK, 1% worn, 36 C, 1101 h";
+        QTest::newRow("Lenovo 20NS Samsung MZVLB HAHQ") << "smartctl_real_samsung_mzvlb256hahq.json"
+            << "/dev/test SAMSUNG MZVLB256HAHQ-000L7 256 GB: SMART OK, 4% worn, 32 C, 6541 h";
+        QTest::newRow("Lenovo 20NS Samsung MZVLB HBHQ") << "smartctl_real_samsung_mzvlb256hbhq_l7.json"
+            << "/dev/test SAMSUNG MZVLB256HBHQ-000L7 256 GB: SMART OK, 4% worn, 33 C, 3865 h";
+        QTest::newRow("HP EliteBook 845 Samsung MZVLB") << "smartctl_real_samsung_mzvlb256hbhq_h1.json"
+            << "/dev/test SAMSUNG MZVLB256HBHQ-000H1 256 GB: SMART OK, 6% worn, 34 C, 3787 h";
+        QTest::newRow("Lenovo 20J2 Samsung MZVLW, Mint") << "smartctl_real_samsung_mzvlw256_linux.json"
+            << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 2% worn, 28 C, 4175 h";
     }
 
     void smartctlRealSamples()
