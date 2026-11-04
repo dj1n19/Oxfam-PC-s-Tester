@@ -9,9 +9,12 @@
 namespace {
 constexpr int kStep = 4;
 // Below this much variation the picture is considered uniform. A real scene,
-// even a plain wall, has noise and shading well above it.
-constexpr double kFlatStddev = 6.0;
-constexpr double kDarkMean = 20.0;
+// even a plain wall, has noise and shading well above it. An IR camera
+// (Windows Hello) gives a dim grey picture with little contrast: 6 was too
+// strict for it (developer's report 2026-11-04), 3 still rejects a uniform
+// picture. First guess, tune with the "Last frame" line of the run reports.
+constexpr double kFlatStddev = 3.0;
+constexpr double kDarkMean = 10.0;   // only names the kind (Black or Flat)
 }
 
 FrameStats lumaStats(const unsigned char* pixels, int width, int height, int bytesPerLine)

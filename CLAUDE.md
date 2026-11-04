@@ -241,8 +241,9 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   exactly 6 digits `^[0-9]{6}$`, `DeliverySheet::isOxfamNumber()`, anchored on the whole text; digits-only field,
   wrong length = message and asked again; empty = not written; the sheet's valid number preset; written as text so a
   leading 0 stays), and C/D of rows 12-16 (battery, disk, keyboard, audio, camera): PASS, WARN and FAIL = box ticked
-  + `note` only (battery "85 %" / "45 %", the other rows have none: comment empty), SKIPPED = unticked + summary,
-  ERROR = not written. Developer's decision 2026-11-03: FAIL/WARN only inform the technician (criteria depend on the
+  + `note` only (battery "85 %" / "45 %", the other rows have none: comment empty), SKIPPED and
+  ERROR = not written (row kept as the sheet has it; SKIPPED was "unticked + summary" until 2026-11-04, developer:
+  the technician checks a skipped row, and the only comment is the battery %). Developer's decision 2026-11-03: FAIL/WARN only inform the technician (criteria depend on the
   PC and the shop; a PC with a defect never goes to a shop, so the sheet is used only when all is well); before, WARN
   wrote the summary and FAIL was not written. Row 21 "Touchscreen" ticked when `QInputDevice::devices()` has a
   `TouchScreen` (MainWindow, `DeliveryInput::touchScreen`; no touch test yet: "later"), else left as is. Row 20
@@ -323,7 +324,7 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   **Microphone** in the same row (2026-11-03, developer's choices: in the Audio row, speak/clap with a live meter): after
   the second tone answer (or "Skip (no speakers)") the dialog shows a level bar (-60..0 dBFS) fed by `QAudioSource` on
   the default input (48 kHz mono, 16-bit, else float, else the preferred format if one of those). `MicTracker`
-  (oxcore): peak >= `kMicLoudPeak` 0.05 (-26 dBFS) for 300 ms in total = automatic Pass (any real sound proves the mic;
+  (oxcore): peak >= `kMicLoudPeak` 0.02 (-34 dBFS; 0.05 was too strict, 2026-11-04) for 300 ms in total = automatic Pass (any real sound proves the mic;
   a dead one gives zeros or hiss; first guesses, M5). After 8 s a hint (muted? Windows privacy setting gives silence).
   "Microphone does not work" = Fail, Skip = Skipped, no input device = Skipped, format/open failure = Error.
   `audioWithMic()`: "speakers | microphone", worse wins. No speaker output at all = Error before the dialog (mic not
@@ -483,7 +484,8 @@ Known limitations:
   disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
-- Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
+- Camera frame thresholds (detail < 3, dark < 10; were 6 and 20 until 2026-11-04: the IR camera failed) are first
+  guesses: tune on real webcams with the run reports' "Last frame" line (M5).
 - CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base).  Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). Windows: see above,
   speed only.
 - CPU speed: the counters were read by hand on the Latitude 7420 (WMI then). Under full load: 266 % falling to 241 % (charger) / 211 %

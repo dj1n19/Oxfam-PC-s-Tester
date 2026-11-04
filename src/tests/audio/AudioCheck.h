@@ -31,7 +31,7 @@ double peakLevel(const QByteArray& samples, SampleType type);
 // A dead microphone gives zeros or a faint hiss. Any real sound (a voice, a
 // clap, the shop around) is louder than kMicLoudPeak; heard for kMicHeardMs
 // in total = the microphone works. First guesses, to tune in the field (M5).
-inline constexpr double kMicLoudPeak = 0.05;   // about -26 dBFS
+inline constexpr double kMicLoudPeak = 0.02;   // about -34 dBFS (was 0.05 = -26: too strict, 2026-11-04)
 inline constexpr int kMicHeardMs = 300;
 
 // Adds up how long the microphone heard a clear sound, block by block.

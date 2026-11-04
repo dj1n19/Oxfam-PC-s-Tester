@@ -1629,6 +1629,8 @@ private slots:
         QVERIFY(DeliverySheet::currentShop(sheet).isEmpty());
         QVERIFY(DeliverySheet::currentOxfamNumber(sheet).isEmpty());
         QCOMPARE(sheet.cell(checkTab(), "C21"), QStringLiteral("\u2610"));   // touch screen: unticked in the blank sheet
+        const QString blankC16 = sheet.cell(checkTab(), "C16");
+        const QString blankD16 = sheet.cell(checkTab(), "D16");
         QVERIFY2(DeliverySheet::fill(sheet, QDate(2026, 10, 10), "Dell Latitude 7420", "Ixelles", "012345", results,
                                      true, &error),
                  qPrintable(error));
@@ -1652,8 +1654,8 @@ private slots:
         QVERIFY(at("D14").isEmpty());
         QCOMPARE(at("C15"), QStringLiteral("\u2611"));
         QVERIFY(at("D15").isEmpty());
-        QCOMPARE(at("C16"), QStringLiteral("\u2610"));
-        QCOMPARE(at("D16"), QStringLiteral("No camera found"));
+        QCOMPARE(at("C16"), blankC16);   // SKIPPED: not written, never unticked
+        QCOMPARE(at("D16"), blankD16);   // and never the summary
         QCOMPARE(at("C21"), QStringLiteral("\u2611"));   // touch screen seen
 
         // A worn battery (FAIL or WARN): ticked, the percentage alone.

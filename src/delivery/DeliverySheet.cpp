@@ -205,20 +205,20 @@ bool fill(XlsxEditor& sheet, const QDate& date, const QString& model, const QStr
         return false;
 
     for (const auto& [row, result] : results) {
-        // ERROR: the test did not run, nothing to write.
-        if (result.status == Status::Error)
+        // ERROR (the test did not run) and SKIPPED (the technician skipped
+        // it): nothing to write, the row keeps what the sheet has (developer's
+        // decision 2026-11-04: a skipped test is checked by the technician,
+        // and the only comment on the sheet is the battery %).
+        if (result.status == Status::Error || result.status == Status::Skipped)
             continue;
         // PASS, WARN and FAIL tick the box: they only inform the technician,
         // who decides (developer's decision 2026-11-03: the criteria depend on
         // the PC and the shop, and a PC with a defect never goes to a shop, so
         // the sheet is only used when all is well). The comment is the key
         // value only (battery "85 %"), whatever the status.
-        // SKIPPED: the check was not made, so unticked, with the reason.
-        const bool ok = result.status != Status::Skipped;
-        const QString comment = ok ? result.note : result.summary;
         const int r = sheetRow(row);
-        if (!sheet.setCell(kCheckSheet, QStringLiteral("C%1").arg(r), ok ? kTicked : kUnticked, error)
-            || !sheet.setCell(kCheckSheet, QStringLiteral("D%1").arg(r), comment, error))
+        if (!sheet.setCell(kCheckSheet, QStringLiteral("C%1").arg(r), kTicked, error)
+            || !sheet.setCell(kCheckSheet, QStringLiteral("D%1").arg(r), result.note, error))
             return false;
     }
     return true;
