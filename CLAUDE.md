@@ -337,7 +337,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   **Every camera** is tested (2026-11-03, developer's request: tablets have front + rear): the default one first, then
   the other `videoInputs()`, one dialog each (title "Camera test (2 of 2): <name>"), next one opened queued after the
   previous closed. One row: `combineCameraResults()` (one camera = unchanged; several = "<name>: <summary> | ...",
-  worse wins, a Skipped camera never hides another). Each has its own Skip (in case Windows lists an IR camera). Not yet run.
+  worse wins, a Skipped camera never hides another). Each has its own Skip.
+  Seen on Surface Pro / Pro 4 (2026-11-04): rear + front pass. **Infrared cameras are not tested** (developer's
+  decision 2026-11-04): `isInfraredCamera()` (name has the word "IR" or "infrared/infrarouge/infrarood"); Windows lights
+  them only for Hello, so "Microsoft IR Camera Front" gave black frames (0.0 / 0.0-0.2) in 3 runs of 4. Named in the
+  details ("Not tested (infrared, Windows Hello)"); only IR cameras = "no camera" (Skipped).
 - Test: `ScreenTest`, row "Screen" (interactive, first of them; 2026-11-03, developer's choices): a dialog explains,
   "Show the colours" (Enter/Space) opens `PatternWindow`, a frameless full-screen child window of the dialog (an
   application-modal dialog does not block its children) on the main window's screen, no cursor, no text. 4 colours
@@ -484,8 +488,7 @@ Known limitations:
   disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
-- Camera frame thresholds (detail < 3, dark < 10; were 6 and 20 until 2026-11-04: the IR camera failed) are first
-  guesses: tune on real webcams with the run reports' "Last frame" line (M5).
+- Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
 - CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base).  Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). Windows: see above,
   speed only.
 - CPU speed: the counters were read by hand on the Latitude 7420 (WMI then). Under full load: 266 % falling to 241 % (charger) / 211 %

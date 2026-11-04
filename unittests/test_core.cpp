@@ -1212,6 +1212,17 @@ private slots:
         QCOMPARE(lumaStats(nullptr, w, h, stride).mean, 0.0);   // no crash
     }
 
+    void cameraInfrared()
+    {
+        QVERIFY(isInfraredCamera("Microsoft IR Camera Front"));   // Surface Pro, real name
+        QVERIFY(isInfraredCamera("Integrated IR Camera"));
+        QVERIFY(isInfraredCamera("Infrared Camera"));
+        QVERIFY(!isInfraredCamera("Microsoft Camera Front"));
+        QVERIFY(!isInfraredCamera("Microsoft Camera Rear"));
+        QVERIFY(!isInfraredCamera("Integrated Camera"));
+        QVERIFY(!isInfraredCamera("Mirror Cam"));   // "ir" inside a word
+    }
+
     void cameraOutcomes()
     {
         const FrameStats s{120, 40};

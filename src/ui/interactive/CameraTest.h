@@ -7,7 +7,7 @@
 
 // Interactive test, but it asks the technician only when the picture is
 // ambiguous. Every camera is tested, one dialog after the other (tablets:
-// front and rear). Logic in tests/camera/FrameCheck (oxcore), dialog in CameraDialog.
+// front and rear), except infrared ones. Logic in tests/camera/FrameCheck (oxcore), dialog in CameraDialog.
 class CameraTest : public ITest {
     Q_OBJECT
 public:
@@ -20,8 +20,10 @@ public:
 
 private:
     void testNext();
+    TestResult withLeftOut(TestResult r) const;   // names the IR cameras in the details
 
     QList<QCameraDevice> m_cameras;   // still to test
     std::vector<CameraRun> m_runs;    // done
+    QStringList m_leftOut;            // infrared cameras, not tested
     int m_total = 0;
 };

@@ -43,3 +43,10 @@ struct CameraRun {
     TestResult result;
 };
 TestResult combineCameraResults(const std::vector<CameraRun>& runs);
+
+// Infrared cameras (Windows Hello face login) are left out of the test
+// (developer's decision 2026-11-04): Windows turns their IR light on only for
+// Hello, so an app gets black frames (brightness 0.0, detail 0.0-0.2 on
+// Surface Pro, 3 runs of 4) and cannot tell a working one from a dead one.
+// Recognised by name. Pure, unit tested.
+bool isInfraredCamera(const QString& name);
