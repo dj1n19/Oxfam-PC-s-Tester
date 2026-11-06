@@ -128,8 +128,12 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   hand), rebuild (lrelease, `.qm` embedded as `:/i18n/`). Unit tests run without a translator: they see English.
   The language is picked in `src/ui/Language.cpp` (system fr/nl, else en) and changed live by the selector in
   `MainWindow` (disabled during a run; `retranslateUi()` on `QEvent::LanguageChange`).
-- **Look:** dark "old terminal" theme (developer's choice): Fusion style + fixed palette + monospace font list
-  (Consolas / DejaVu Sans Mono..., nothing shipped), set by `Theme::apply()` in `main.cpp`. **Every UI colour comes from
+- **Look:** "Djinn" theme, the logo's colours (night-blue background, ice-blue text, royal-blue frames, gold START =
+  the lamp), the djinn at 64 px left of the "This PC" panel (no smoothing). Developer's choice 2026-11-06 (variant C of
+  an offscreen mockup: no watermark), replacing the green "old terminal" theme (a colleague disliked it; not kept as an
+  option). Fusion style + fixed palette + UI font list (Segoe UI / Noto Sans / DejaVu Sans..., nothing shipped), set by
+  `Theme::apply()` in `main.cpp`; the details pane uses `Theme::monoFont()` (Consolas / DejaVu Sans Mono / Liberation
+  Mono...): a style sheet takes only one font family. **Every UI colour comes from
   `src/ui/Theme.h`**: no colour literals in other UI files. Status = coloured text + a code-drawn icon whose shape also
   differs (check, !, cross, ?, dash) for colour-blind technicians. Don't put a style sheet on QComboBox itself (Qt then
   draws its arrow natively: a white box).
@@ -266,7 +270,7 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   entry raw. The FR file is saved by OnlyOffice (dropdowns in x14 extLst), the NL one by LibreOffice (standard
   `dataValidations`): both are unit-test samples (`delivery_sheet_{fr,nl}.xlsx`, operator names anonymised).
 - `TestResult::note` = the key value alone (battery %, "vendor model" from SystemInfo).
-Dark terminal theme + status icons done (checked by rendering the window offscreen; not yet seen on Windows).
+Djinn theme + status icons done (checked by rendering the window offscreen on Arch, 2026-11-06; not yet seen on Windows).
 App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no Oxfam logo): window/taskbar icon via
 `QApplication::setWindowIcon` (`:/icons/`), .exe icon via `app.rc` (to verify on Windows), `djinn-256.png` ready for the AppImage.
 **AppImage** done in CI (job `appimage`, artifact `lazy-djin-tester-linux`; verified 2026-10-29 on Mint 22.3,

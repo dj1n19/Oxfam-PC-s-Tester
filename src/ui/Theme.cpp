@@ -74,24 +74,26 @@ QIcon drawIcon(Status s)
 
 namespace Theme {
 
-QColor background() { return QColor(0x0a, 0x0f, 0x0a); }
-QColor surface()    { return QColor(0x05, 0x08, 0x05); }
-QColor text()       { return QColor(0x33, 0xff, 0x66); }
-QColor dimText()    { return QColor(0x2e, 0x7d, 0x45); }
+// Colours of the logo (djinn.png): night blue = its outline, royal and sky
+// blue = its body, ice = its highlights, gold = the lamp (START only).
+QColor background() { return QColor(0x0b, 0x1a, 0x33); }
+QColor surface()    { return QColor(0x07, 0x12, 0x26); }
+QColor text()       { return QColor(0xd6, 0xf0, 0xff); }   // ice, a bit lighter than the logo's: long text
+QColor dimText()    { return QColor(0x6f, 0x9c, 0xc8); }
 
 QColor statusColor(Status s)
 {
     switch (s) {
-    case Status::Pass:    return text();
-    case Status::Warn:    return QColor(0xff, 0xc4, 0x00);   // amber
-    case Status::Fail:    return QColor(0xff, 0x4d, 0x4d);   // red
-    case Status::Error:   return QColor(0xe0, 0x70, 0xff);   // magenta: "could not test", not "bad"
-    case Status::Skipped: return QColor(0x80, 0x90, 0x80);   // grey
+    case Status::Pass:    return QColor(0x5e, 0xe0, 0x8a);   // green
+    case Status::Warn:    return QColor(0xff, 0xb3, 0x47);   // amber: not the lamp's gold of START
+    case Status::Fail:    return QColor(0xff, 0x6b, 0x6b);   // coral red
+    case Status::Error:   return QColor(0xd5, 0x9b, 0xff);   // violet: "could not test", not "bad"
+    case Status::Skipped: return QColor(0x8f, 0xa3, 0xbf);   // blue grey
     }
     return text();
 }
 
-QColor runningColor() { return QColor(0x4d, 0xd0, 0xe1); }   // cyan
+QColor runningColor() { return QColor(0x7f, 0xf3, 0xff); }   // cyan, the djinn's magic
 QColor waitingColor() { return dimText(); }
 
 QIcon statusIcon(Status s)
@@ -118,6 +120,19 @@ QIcon runningIcon()
     return icon;
 }
 
+QFont monoFont()
+{
+    // Fonts that already exist on the PCs (no font file to ship): Windows has
+    // Consolas, Linux Mint DejaVu, Arch often only Liberation.
+    QFont font;
+    font.setFamilies({QStringLiteral("Consolas"), QStringLiteral("DejaVu Sans Mono"),
+                      QStringLiteral("Liberation Mono"), QStringLiteral("Ubuntu Mono"),
+                      QStringLiteral("Noto Sans Mono"), QStringLiteral("Courier New")});
+    font.setStyleHint(QFont::Monospace);
+    font.setPointSize(10);
+    return font;
+}
+
 void apply(QApplication& app)
 {
     // Fusion draws every widget from the palette below, the same way on
@@ -125,11 +140,11 @@ void apply(QApplication& app)
     app.setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
 
     QPalette pal;
-    const QColor button(0x0f, 0x1f, 0x12);
+    const QColor button(0x12, 0x30, 0x5a);
     pal.setColor(QPalette::Window, background());
     pal.setColor(QPalette::WindowText, text());
     pal.setColor(QPalette::Base, surface());
-    pal.setColor(QPalette::AlternateBase, QColor(0x0c, 0x14, 0x0c));
+    pal.setColor(QPalette::AlternateBase, QColor(0x0d, 0x20, 0x3d));
     pal.setColor(QPalette::Text, text());
     pal.setColor(QPalette::Button, button);
     pal.setColor(QPalette::ButtonText, text());
@@ -137,44 +152,50 @@ void apply(QApplication& app)
     pal.setColor(QPalette::ToolTipBase, button);
     pal.setColor(QPalette::ToolTipText, text());
     // Dark selection: the coloured status text must stay readable on it.
-    pal.setColor(QPalette::Highlight, QColor(0x13, 0x3d, 0x1e));
-    pal.setColor(QPalette::HighlightedText, QColor(0xc8, 0xff, 0xd4));
+    pal.setColor(QPalette::Highlight, QColor(0x1e, 0x4a, 0x85));
+    pal.setColor(QPalette::HighlightedText, Qt::white);
     pal.setColor(QPalette::PlaceholderText, dimText());
     pal.setColor(QPalette::Link, runningColor());
     for (auto role : {QPalette::WindowText, QPalette::Text, QPalette::ButtonText})
         pal.setColor(QPalette::Disabled, role, dimText());
     app.setPalette(pal);
 
-    // Monospace like a terminal. A list of fonts that already exist on the
-    // PCs (no font file to ship): Windows has Consolas, Linux Mint DejaVu.
+    // A normal UI font, easier to read than monospace for labels and
+    // summaries; raw output keeps monoFont() (MainWindow's details pane).
     QFont font;
-    font.setFamilies({QStringLiteral("Consolas"), QStringLiteral("DejaVu Sans Mono"),
-                      QStringLiteral("Liberation Mono"), QStringLiteral("Ubuntu Mono"),
-                      QStringLiteral("Noto Sans Mono"), QStringLiteral("Courier New")});
-    font.setStyleHint(QFont::Monospace);
+    font.setFamilies({QStringLiteral("Segoe UI"), QStringLiteral("Noto Sans"), QStringLiteral("DejaVu Sans"),
+                      QStringLiteral("Liberation Sans")});
+    font.setStyleHint(QFont::SansSerif);
     font.setPointSize(10);
     app.setFont(font);
 
-    // What the palette cannot say: green borders, hover, a bigger START, tick boxes.
+    // What the palette cannot say: borders, hover, the gold START, tick boxes.
     app.setStyleSheet(QStringLiteral(
-        "QPushButton { border: 1px solid %1; border-radius: 2px; padding: 6px 14px; }"
-        "QPushButton:hover { background: #163a1d; }"
-        "QPushButton:pressed { background: %1; color: #000000; }"
+        "QPushButton { border: 1px solid %1; border-radius: 6px; padding: 6px 14px; }"
+        "QPushButton:hover { background: #1e4a85; }"
+        "QPushButton:pressed { background: %1; color: #ffffff; }"
         "QPushButton:disabled { border-color: %2; }"
-        "QPushButton#startButton { font-size: 16pt; font-weight: bold; }"
-        "QLabel#pcInfo { border: 1px solid %2; padding: 6px; font-size: 11pt; }"
+        // START = the djinn's lamp: gold, the one button to press.
+        "QPushButton#startButton { font-size: 16pt; font-weight: bold; background: %3; color: %4;"
+        "  border: 2px solid #d9770f; }"
+        "QPushButton#startButton:hover { background: #f0b93a; }"
+        "QPushButton#startButton:disabled { background: #5a4a22; color: #2a2a2a; border-color: #5a4a22; }"
+        "QLabel#pcInfo { border: 1px solid %1; border-radius: 6px; padding: 6px; font-size: 11pt;"
+        "  background: #10264a; }"
         "QComboBox QAbstractItemView { border: 1px solid %1; }"
-        "QTableWidget, QPlainTextEdit { border: 1px solid %2; gridline-color: #13301a; }"
-        "QHeaderView::section { background: #0f1a10; color: %1; border: none;"
-        "  border-bottom: 1px solid %2; padding: 4px; font-weight: bold; }"
-        // Tick boxes of the test list: the palette drew an empty box invisible
-        // on the dark table. A green frame; ticked = filled, like a lit block.
-        "QTableWidget::indicator { width: 12px; height: 12px; border: 1px solid %1; background: #000000; }"
-        "QTableWidget::indicator:checked { background: %1; }"
-        // Microphone level bar: the palette's Highlight is too dark on black.
-        "QProgressBar { border: 1px solid %2; background: #000000; }"
-        "QProgressBar::chunk { background: %1; }")
-                          .arg(text().name(), dimText().name()));
+        "QTableWidget, QPlainTextEdit { border: 1px solid %2; border-radius: 4px; gridline-color: #17305a; }"
+        "QHeaderView::section { background: #10264a; color: #a9e4ff; border: none;"
+        "  border-bottom: 1px solid %1; padding: 4px; font-weight: bold; }"
+        // Tick boxes of the test list: the palette's empty box was invisible
+        // on the dark table. Ticked = filled.
+        "QTableWidget::indicator { width: 12px; height: 12px; border: 1px solid #5fb8ff; border-radius: 2px;"
+        "  background: %5; }"
+        "QTableWidget::indicator:checked { background: #5fb8ff; }"
+        // Microphone level bar: the palette's Highlight is too dark here.
+        "QProgressBar { border: 1px solid %2; background: %5; }"
+        "QProgressBar::chunk { background: #5fb8ff; }")
+                          .arg(QStringLiteral("#1e6fd9"), QStringLiteral("#24406a"), QStringLiteral("#e0a526"),
+                               background().name(), surface().name()));
 }
 
 } // namespace Theme

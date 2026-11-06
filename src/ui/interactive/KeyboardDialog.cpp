@@ -48,7 +48,7 @@ protected:
                 const double w = k.width * kUnit;
                 if (k.code > 0) {
                     const QRectF r(x, y, w - kSpacing, kUnit - kSpacing);
-                    // Pressed: lit green with dark text, like a terminal cursor.
+                    // Pressed: filled with the text colour, dark label on it.
                     const bool pressed = m_tracker.isPressed(k.code);
                     p.setPen(QPen(k.required ? Theme::text() : Theme::dimText(), 1,
                                   k.required ? Qt::SolidLine : Qt::DashLine));

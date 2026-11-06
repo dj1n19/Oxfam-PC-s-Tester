@@ -12,6 +12,7 @@
 #include <QHeaderView>
 #include <QInputDevice>
 #include <QLabel>
+#include <QPixmap>
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSaveFile>
@@ -40,7 +41,7 @@ constexpr int kWaiting = -1;
 constexpr int kRunning = -2;
 constexpr int kNotChosen = -3;   // unticked before START: not part of this run
 
-// Terminal look: coloured text on the dark table, not coloured cells.
+// Coloured text on the dark table, not coloured cells.
 void setCell(QTableWidget* table, int row, int col, const QString& text, const QColor& color,
              const QIcon& icon = {})
 {
@@ -109,7 +110,16 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
     m_pcInfo->setObjectName(QStringLiteral("pcInfo"));   // framed, see Theme.cpp
     m_pcInfo->setWordWrap(true);
     m_pcInfo->setTextInteractionFlags(Qt::TextSelectableByMouse);   // the serial can be copied
-    layout->addWidget(m_pcInfo);
+
+    // The djinn, left of the panel: the 32 px pixel-art master doubled without
+    // smoothing, so its pixels stay sharp (the title bar icon is too small to notice).
+    auto* logo = new QLabel(central);
+    logo->setPixmap(QPixmap(QStringLiteral(":/icons/djinn.png"))
+                        .scaled(64, 64, Qt::KeepAspectRatio, Qt::FastTransformation));
+    auto* header = new QHBoxLayout;
+    header->addWidget(logo);
+    header->addWidget(m_pcInfo, 1);
+    layout->addLayout(header);
 
     m_table = new QTableWidget(m_runner.count(), ColCount, central);
     m_table->verticalHeader()->hide();
@@ -121,6 +131,7 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
 
     m_details = new QPlainTextEdit(central);
     m_details->setReadOnly(true);
+    m_details->setFont(Theme::monoFont());   // raw tool output: columns line up
     layout->addWidget(m_details, 1);
 
     m_verdict = new QLabel(central);
