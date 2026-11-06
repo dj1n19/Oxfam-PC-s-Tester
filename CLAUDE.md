@@ -491,7 +491,8 @@ Known limitations:
 - DiskTest: `smartctl_real_*.json` are real smartctl 7.5 outputs from 14 NVMe models + the tester's USB stick (Windows,
   2026-10-15; Toshiba KBG40ZPZ256G from a Surface Pro 7 run report, 2026-10-27; 2026-11-03 from the field reports: Samsung KUS030202M,
   Intel SSDPEBKF256G7, SK Hynix BC501 (Surface Pro 2017), Samsung MZVLB256 x3 (ThinkPad 20NS, EliteBook 845 G7) and
-  MZVLW256 read by the AppImage's static smartctl on Mint (`_linux`); `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
+  MZVLW256 read by the AppImage's static smartctl on Mint (`_linux`); 2026-11-06: Toshiba THNSN5256GPU7 (Surface Pro 4), SK Hynix HFB1M8MH 512 GB at 61 % worn (Surface
+  Pro 7), Samsung KUS030202M at 59 C (`_59c`, the case behind `nvme_temperature_c`); `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
   disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Battery health read nearly empty (< 20 % charge) may be too high: the gauge corrects the full capacity after a

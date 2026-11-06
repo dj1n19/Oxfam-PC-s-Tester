@@ -381,6 +381,15 @@ private slots:
             << "/dev/test SAMSUNG MZVLB256HBHQ-000H1 256 GB: SMART OK, 6% worn, 34 C, speed not measured, 3787 h";
         QTest::newRow("Lenovo 20J2 Samsung MZVLW, Mint") << "smartctl_real_samsung_mzvlw256_linux.json"
             << "/dev/test SAMSUNG MZVLW256HEHP-000L7 256 GB: SMART OK, 2% worn, 28 C, speed not measured, 4175 h";
+        // Field 2026-11-04/06 (Windows 10/11).
+        QTest::newRow("Surface Pro 4 Toshiba") << "smartctl_real_toshiba_thnsn5256gpu7.json"
+            << "/dev/test THNSN5256GPU7 TOSHIBA 256 GB: SMART OK, 4% worn, 33 C, speed not measured, 3909 h";
+        // Worn a lot, still under the 80 % warning.
+        QTest::newRow("Surface Pro 7 SK Hynix 512 GB") << "smartctl_real_skhynix_hfb1m8mh_512.json"
+            << "/dev/test HFB1M8MH331C0MR 512 GB: SMART OK, 61% worn, 31 C, speed not measured, 3358 h";
+        // Was a WARN with the old common limit (55 C); NVMe limit is 70 C since 2026-11-06.
+        QTest::newRow("Surface Pro 2017 Samsung KUS at 59 C") << "smartctl_real_samsung_kus030202m_59c.json"
+            << "/dev/test SAMSUNG KUS030202M-B000 256 GB: SMART OK, 2% worn, 59 C, speed not measured, 2359 h";
     }
 
     void smartctlRealSamples()
