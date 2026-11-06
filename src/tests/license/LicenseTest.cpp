@@ -106,6 +106,18 @@ TestResult LicenseTest::bitlockerPart(const LicenseInfo& info)
         r.status = Status::Pass;
         r.summary = tr("BitLocker off");
         return r;
+    case 8:
+        // Windows' automatic device encryption after a clean install: the disk
+        // is encrypted with a clear key and NO key protector, so nobody holds a
+        // recovery key; the buyer's Microsoft account gets one at sign-in.
+        // Confirmed with manage-bde -status on a reinstalled Surface Pro
+        // (2026-11-06): "Protection off", "Key protectors: none found".
+        r.status = Status::Pass;
+        r.summary = tr("Encryption waiting for activation (no key): nothing to do");
+        r.details += QStringLiteral("\nDevice encryption waiting for activation: clear key, no key protector"
+                                    " (manage-bde -status C: shows \"Protection Off\", no key protectors)."
+                                    " To turn it off anyway: manage-bde -off C: (administrator).");
+        return r;
     case 1:
     case 3:
     case 5:

@@ -174,32 +174,32 @@ Le test se termine tout seul quand un son est entendu.</translation>
         <translation>Batterie</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="31"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="38"/>
         <source>No battery (desktop?)</source>
         <translation>Pas de batterie (ordinateur fixe ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="25"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="32"/>
         <source>Could not read the battery (see details)</source>
         <translation>Impossible de lire la batterie (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="36"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="43"/>
         <source>Battery gives no design capacity: health cannot be judged (see details)</source>
         <translation>La batterie n&apos;indique pas sa capacité d&apos;origine : santé impossible à juger (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="42"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="49"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="49"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="56"/>
         <source>Health %1% of design capacity</source>
         <translation>Santé %1 % de la capacité d&apos;origine</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="51"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="58"/>
         <source>, %1 cycles</source>
         <translation>, %1 cycles</translation>
     </message>
@@ -295,32 +295,32 @@ Le test se termine tout seul quand un son est entendu.</translation>
 <context>
     <name>CameraTest</name>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="59"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="60"/>
         <source>Camera gives a picture</source>
         <translation>La caméra donne une image</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="63"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="64"/>
         <source>Camera picture black or wrong (confirmed by technician)</source>
         <translation>Image noire ou anormale (confirmé par le technicien)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="67"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="68"/>
         <source>Skipped by the technician</source>
         <translation>Passé par le technicien</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="72"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="73"/>
         <source>No camera found (desktop? camera disabled in BIOS?)</source>
         <translation>Aucune caméra (ordinateur fixe ? caméra désactivée dans le BIOS ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="76"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="77"/>
         <source>Camera gives no picture: close other apps using it and check the camera privacy setting</source>
         <translation>La caméra ne donne pas d&apos;image : fermez les autres applications qui l&apos;utilisent et vérifiez le réglage de confidentialité de la caméra</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="80"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="81"/>
         <source>Camera error: %1</source>
         <translation>Erreur caméra : %1</translation>
     </message>
@@ -338,57 +338,62 @@ Le test se termine tout seul quand un son est entendu.</translation>
         <translation>Chargeur</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="34"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="40"/>
         <source>Could not read the battery (see details)</source>
         <translation>Impossible de lire la batterie (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="40"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="46"/>
         <source>No battery (desktop?)</source>
         <translation>Pas de batterie (ordinateur fixe ?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="45"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="51"/>
         <source>The system does not say whether a charger is connected (see details)</source>
         <translation>Le système n&apos;indique pas si un chargeur est branché (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="53"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="59"/>
         <source>No charger detected: plug it in and run this test again. If it is plugged in: socket, cable or charger faulty</source>
         <translation>Aucun chargeur détecté : branchez-le et relancez ce test. S&apos;il est branché : prise, câble ou chargeur défectueux</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="58"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="64"/>
         <source>level unknown</source>
         <translation>niveau inconnu</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="64"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="73"/>
+        <source>Charging very slowly at %1 W (%2): run this test again in a minute; if it stays this low, the charger is too weak or the cable is faulty</source>
+        <translation>Charge très lente à %1 W (%2) : relancer ce test dans une minute ; si ça reste aussi bas, chargeur trop faible ou câble défectueux</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="79"/>
         <source>Charging at %1 W (%2)</source>
         <translation>En charge à %1 W (%2)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="65"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="80"/>
         <source>Charging (%1)</source>
         <translation>En charge (%1)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="70"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="85"/>
         <source>Charger detected but the battery is discharging (%1): charger too weak for this PC?</source>
         <translation>Chargeur détecté mais la batterie se décharge (%1) : chargeur trop faible pour ce PC ?</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="79"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="94"/>
         <source>Charger detected, battery full (%1)</source>
         <translation>Chargeur détecté, batterie pleine (%1)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="82"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="97"/>
         <source>Charger detected, empty battery not charging yet (%1): normal for a few minutes, run this test again in 10 minutes</source>
         <translation>Chargeur détecté, batterie vide pas encore en charge (%1) : normal quelques minutes, relancez ce test dans 10 minutes</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="87"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="102"/>
         <source>Charger detected, battery not charging (%1): charge limit set in the BIOS or vendor app?</source>
         <translation>Chargeur détecté, batterie pas en charge (%1) : limite de charge réglée dans le BIOS ou le logiciel du fabricant ?</translation>
     </message>
@@ -560,14 +565,14 @@ Laissez vide pour l&apos;écrire plus tard sur la fiche :</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="334"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="335"/>
         <source>It was copied to the Desktop from:
 %1</source>
         <translation>Elle a été copiée sur le Bureau depuis :
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="340"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="341"/>
         <source>Sheets with the new names, for the other technicians:
 %1</source>
         <translation>Fiches avec les nouveaux noms, pour les autres techniciens :
@@ -581,14 +586,14 @@ Laissez vide pour l&apos;écrire plus tard sur la fiche :</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="326"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="327"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation>Impossible d&apos;écrire la fiche de pré-livraison. Est-elle ouverte dans un programme bureautique ?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="330"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="331"/>
         <source>Delivery sheet filled:
 %1
 
@@ -652,42 +657,42 @@ Ouvrez-la pour compléter les autres vérifications.</translation>
         <translation>usure %1 %</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="149"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="153"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation>pas de seuil %1 dans thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="159"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="163"/>
         <source>speed not measured</source>
         <translation>vitesse non mesurée</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="191"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation>smartctl introuvable : gardez le dossier tools à côté du programme (Linux : installez smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="193"/>
         <source>Could not list the disks (see details)</source>
         <translation>Impossible de lister les disques (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="195"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="199"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation>Aucun disque trouvé : vérifiez le BIOS (les modes Intel RST, VMD ou RAID peuvent cacher les disques)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="207"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="211"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation>Mot de passe administrateur annulé ou incorrect : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="208"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="212"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation>Mot de passe administrateur pas tapé à temps : appuyez à nouveau sur DÉMARRER et tapez-le</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="239"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="243"/>
         <source>No disk with SMART data</source>
         <translation>Aucun disque avec des données SMART</translation>
     </message>
@@ -956,12 +961,17 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
         <translation>BitLocker désactivé</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="115"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="116"/>
+        <source>Encryption waiting for activation (no key): nothing to do</source>
+        <translation>Chiffrement en attente d&apos;activation (aucune clé) : rien à faire</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="127"/>
         <source>BitLocker ON: turn it off before sale, then run this test again</source>
         <translation>BitLocker ACTIVÉ : le désactiver avant la vente, puis relancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="122"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="134"/>
         <source>BitLocker state unknown (code %1): check it in the Control Panel</source>
         <translation>État de BitLocker inconnu (code %1) : le vérifier dans le Panneau de configuration</translation>
     </message>
@@ -999,107 +1009,107 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="190"/>
+        <location filename="../src/ui/MainWindow.cpp" line="191"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="261"/>
+        <location filename="../src/ui/MainWindow.cpp" line="262"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="191"/>
+        <location filename="../src/ui/MainWindow.cpp" line="192"/>
         <source>Run this test</source>
         <translation>Lancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="192"/>
+        <location filename="../src/ui/MainWindow.cpp" line="193"/>
         <source>Remember these choices</source>
         <translation>Retenir ces choix</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="193"/>
+        <location filename="../src/ui/MainWindow.cpp" line="194"/>
         <source>The ticked tests will be ticked at the next starts</source>
         <translation>Les tests cochés seront cochés aux prochains démarrages</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="194"/>
+        <location filename="../src/ui/MainWindow.cpp" line="195"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="197"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="210"/>
+        <location filename="../src/ui/MainWindow.cpp" line="211"/>
         <source>This PC: reading...</source>
         <translation>Ce PC : lecture...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="214"/>
+        <location filename="../src/ui/MainWindow.cpp" line="215"/>
         <source>This PC: %1</source>
         <translation>Ce PC : %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="225"/>
+        <location filename="../src/ui/MainWindow.cpp" line="226"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="227"/>
+        <location filename="../src/ui/MainWindow.cpp" line="228"/>
         <source>NOT CHOSEN</source>
         <translation>NON CHOISI</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="229"/>
+        <location filename="../src/ui/MainWindow.cpp" line="230"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="261"/>
+        <location filename="../src/ui/MainWindow.cpp" line="262"/>
         <source>START (%1 of %2)</source>
         <translation>START (%1 sur %2)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="336"/>
+        <location filename="../src/ui/MainWindow.cpp" line="337"/>
         <source>Ticked tests remembered for the next starts (%1)</source>
         <translation>Tests cochés retenus pour les prochains démarrages (%1)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="338"/>
+        <location filename="../src/ui/MainWindow.cpp" line="339"/>
         <source>Could not remember the ticked tests (%1): %2</source>
         <translation>Impossible de retenir les tests cochés (%1) : %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="381"/>
+        <location filename="../src/ui/MainWindow.cpp" line="382"/>
         <source>This PC</source>
         <translation>Ce PC</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="390"/>
+        <location filename="../src/ui/MainWindow.cpp" line="391"/>
         <source>Details saved to %1</source>
         <translation>Détails enregistrés dans %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="392"/>
+        <location filename="../src/ui/MainWindow.cpp" line="393"/>
         <source>Could not save the details (%1): %2</source>
         <translation>Impossible d&apos;enregistrer les détails (%1) : %2</translation>
     </message>

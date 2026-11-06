@@ -174,32 +174,32 @@ De test stopt vanzelf zodra er geluid is.</translation>
         <translation type="unfinished">Batterij</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="31"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="38"/>
         <source>No battery (desktop?)</source>
         <translation type="unfinished">Geen batterij (desktop?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="25"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="32"/>
         <source>Could not read the battery (see details)</source>
         <translation type="unfinished">Kan de batterij niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="36"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="43"/>
         <source>Battery gives no design capacity: health cannot be judged (see details)</source>
         <translation type="unfinished">Batterij geeft geen ontwerpcapaciteit: gezondheid niet te beoordelen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="42"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="49"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="49"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="56"/>
         <source>Health %1% of design capacity</source>
         <translation type="unfinished">Gezondheid %1% van de ontwerpcapaciteit</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/BatteryTest.cpp" line="51"/>
+        <location filename="../src/tests/battery/BatteryTest.cpp" line="58"/>
         <source>, %1 cycles</source>
         <translation type="unfinished">, %1 cycli</translation>
     </message>
@@ -295,32 +295,32 @@ De test stopt vanzelf zodra er geluid is.</translation>
 <context>
     <name>CameraTest</name>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="59"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="60"/>
         <source>Camera gives a picture</source>
         <translation type="unfinished">Camera geeft een beeld</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="63"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="64"/>
         <source>Camera picture black or wrong (confirmed by technician)</source>
         <translation type="unfinished">Beeld zwart of fout (bevestigd door de technicus)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="67"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="68"/>
         <source>Skipped by the technician</source>
         <translation type="unfinished">Overgeslagen door de technicus</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="72"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="73"/>
         <source>No camera found (desktop? camera disabled in BIOS?)</source>
         <translation type="unfinished">Geen camera gevonden (desktop? camera uitgeschakeld in het BIOS?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="76"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="77"/>
         <source>Camera gives no picture: close other apps using it and check the camera privacy setting</source>
         <translation type="unfinished">Camera geeft geen beeld: sluit andere apps die hem gebruiken en controleer de privacy-instelling van de camera</translation>
     </message>
     <message>
-        <location filename="../src/tests/camera/FrameCheck.cpp" line="80"/>
+        <location filename="../src/tests/camera/FrameCheck.cpp" line="81"/>
         <source>Camera error: %1</source>
         <translation type="unfinished">Camerafout: %1</translation>
     </message>
@@ -338,57 +338,62 @@ De test stopt vanzelf zodra er geluid is.</translation>
         <translation type="unfinished">Lader</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="34"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="40"/>
         <source>Could not read the battery (see details)</source>
         <translation type="unfinished">Kan de batterij niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="40"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="46"/>
         <source>No battery (desktop?)</source>
         <translation type="unfinished">Geen batterij (desktop?)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="45"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="51"/>
         <source>The system does not say whether a charger is connected (see details)</source>
         <translation type="unfinished">Het systeem meldt niet of er een lader aangesloten is (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="53"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="59"/>
         <source>No charger detected: plug it in and run this test again. If it is plugged in: socket, cable or charger faulty</source>
         <translation type="unfinished">Geen lader gedetecteerd: sluit hem aan en voer deze test opnieuw uit. Als hij aangesloten is: aansluiting, kabel of lader defect</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="58"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="64"/>
         <source>level unknown</source>
         <translation type="unfinished">niveau onbekend</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="64"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="73"/>
+        <source>Charging very slowly at %1 W (%2): run this test again in a minute; if it stays this low, the charger is too weak or the cable is faulty</source>
+        <translation type="unfinished">Laadt zeer traag op met %1 W (%2): voer deze test over een minuut opnieuw uit; blijft het zo laag, dan is de lader te zwak of de kabel defect</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="79"/>
         <source>Charging at %1 W (%2)</source>
         <translation type="unfinished">Laadt op met %1 W (%2)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="65"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="80"/>
         <source>Charging (%1)</source>
         <translation type="unfinished">Laadt op (%1)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="70"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="85"/>
         <source>Charger detected but the battery is discharging (%1): charger too weak for this PC?</source>
         <translation type="unfinished">Lader gedetecteerd maar de batterij ontlaadt (%1): lader te zwak voor deze pc?</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="79"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="94"/>
         <source>Charger detected, battery full (%1)</source>
         <translation type="unfinished">Lader gedetecteerd, batterij vol (%1)</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="82"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="97"/>
         <source>Charger detected, empty battery not charging yet (%1): normal for a few minutes, run this test again in 10 minutes</source>
         <translation type="unfinished">Lader gedetecteerd, lege batterij laadt nog niet op (%1): normaal gedurende enkele minuten, voer deze test over 10 minuten opnieuw uit</translation>
     </message>
     <message>
-        <location filename="../src/tests/battery/ChargeTest.cpp" line="87"/>
+        <location filename="../src/tests/battery/ChargeTest.cpp" line="102"/>
         <source>Charger detected, battery not charging (%1): charge limit set in the BIOS or vendor app?</source>
         <translation type="unfinished">Lader gedetecteerd, batterij laadt niet op (%1): laadlimiet ingesteld in het BIOS of de app van de fabrikant?</translation>
     </message>
@@ -560,14 +565,14 @@ Laat leeg om het later op de fiche te schrijven:</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="334"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="335"/>
         <source>It was copied to the Desktop from:
 %1</source>
         <translation type="unfinished">Ze werd naar het bureaublad gekopieerd vanuit:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="340"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="341"/>
         <source>Sheets with the new names, for the other technicians:
 %1</source>
         <translation type="unfinished">Fiches met de nieuwe namen, voor de andere technici:
@@ -581,14 +586,14 @@ Laat leeg om het later op de fiche te schrijven:</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="326"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="327"/>
         <source>The delivery sheet could not be written. Is it open in an office program?
 %1</source>
         <translation type="unfinished">Kan de pre-leveringsfiche niet schrijven. Staat ze open in een kantoorprogramma?
 %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DeliveryAction.cpp" line="330"/>
+        <location filename="../src/ui/DeliveryAction.cpp" line="331"/>
         <source>Delivery sheet filled:
 %1
 
@@ -652,42 +657,42 @@ Open ze om de andere controles aan te vullen.</translation>
         <translation type="unfinished">%1% versleten</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="149"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="153"/>
         <source>no threshold %1 in thresholds.json</source>
         <translation type="unfinished">geen drempel %1 in thresholds.json</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="159"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="163"/>
         <source>speed not measured</source>
         <translation type="unfinished">snelheid niet gemeten</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="187"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="191"/>
         <source>smartctl not found: keep the tools folder next to the program (Linux: install smartmontools)</source>
         <translation type="unfinished">smartctl niet gevonden: laat de map tools naast het programma staan (Linux: installeer smartmontools)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="189"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="193"/>
         <source>Could not list the disks (see details)</source>
         <translation type="unfinished">Kan de schijven niet oplijsten (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="195"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="199"/>
         <source>No disk found: check the BIOS (Intel RST, VMD or RAID mode can hide disks)</source>
         <translation type="unfinished">Geen schijf gevonden: controleer het BIOS (Intel RST-, VMD- of RAID-modus kan schijven verbergen)</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="207"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="211"/>
         <source>Administrator password cancelled or wrong: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord geannuleerd of fout: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="208"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="212"/>
         <source>Administrator password not typed in time: press START again and type it</source>
         <translation type="unfinished">Beheerderswachtwoord niet op tijd getypt: druk opnieuw op STARTEN en typ het in</translation>
     </message>
     <message>
-        <location filename="../src/tests/disk/DiskTest.cpp" line="239"/>
+        <location filename="../src/tests/disk/DiskTest.cpp" line="243"/>
         <source>No disk with SMART data</source>
         <translation type="unfinished">Geen schijf met SMART-gegevens</translation>
     </message>
@@ -956,12 +961,17 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
         <translation type="unfinished">BitLocker uit</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="115"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="116"/>
+        <source>Encryption waiting for activation (no key): nothing to do</source>
+        <translation type="unfinished">Versleuteling wacht op activering (geen sleutel): niets te doen</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="127"/>
         <source>BitLocker ON: turn it off before sale, then run this test again</source>
         <translation type="unfinished">BitLocker AAN: zet het uit vóór de verkoop en voer deze test opnieuw uit</translation>
     </message>
     <message>
-        <location filename="../src/tests/license/LicenseTest.cpp" line="122"/>
+        <location filename="../src/tests/license/LicenseTest.cpp" line="134"/>
         <source>BitLocker state unknown (code %1): check it in the Control Panel</source>
         <translation type="unfinished">BitLocker-status onbekend (code %1): controleer het in het Configuratiescherm</translation>
     </message>
@@ -999,107 +1009,107 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="190"/>
+        <location filename="../src/ui/MainWindow.cpp" line="191"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="261"/>
+        <location filename="../src/ui/MainWindow.cpp" line="262"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="191"/>
+        <location filename="../src/ui/MainWindow.cpp" line="192"/>
         <source>Run this test</source>
         <translation type="unfinished">Deze test uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="192"/>
+        <location filename="../src/ui/MainWindow.cpp" line="193"/>
         <source>Remember these choices</source>
         <translation type="unfinished">Deze keuzes onthouden</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="193"/>
+        <location filename="../src/ui/MainWindow.cpp" line="194"/>
         <source>The ticked tests will be ticked at the next starts</source>
         <translation type="unfinished">De aangevinkte tests zijn bij de volgende starts aangevinkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="194"/>
+        <location filename="../src/ui/MainWindow.cpp" line="195"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="196"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="197"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="210"/>
+        <location filename="../src/ui/MainWindow.cpp" line="211"/>
         <source>This PC: reading...</source>
         <translation type="unfinished">Deze pc: wordt gelezen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="214"/>
+        <location filename="../src/ui/MainWindow.cpp" line="215"/>
         <source>This PC: %1</source>
         <translation type="unfinished">Deze pc: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="225"/>
+        <location filename="../src/ui/MainWindow.cpp" line="226"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="227"/>
+        <location filename="../src/ui/MainWindow.cpp" line="228"/>
         <source>NOT CHOSEN</source>
         <translation type="unfinished">NIET GEKOZEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="229"/>
+        <location filename="../src/ui/MainWindow.cpp" line="230"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="261"/>
+        <location filename="../src/ui/MainWindow.cpp" line="262"/>
         <source>START (%1 of %2)</source>
         <translation type="unfinished">START (%1 van %2)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="336"/>
+        <location filename="../src/ui/MainWindow.cpp" line="337"/>
         <source>Ticked tests remembered for the next starts (%1)</source>
         <translation type="unfinished">Aangevinkte tests onthouden voor de volgende starts (%1)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="338"/>
+        <location filename="../src/ui/MainWindow.cpp" line="339"/>
         <source>Could not remember the ticked tests (%1): %2</source>
         <translation type="unfinished">Kan de aangevinkte tests niet onthouden (%1): %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="381"/>
+        <location filename="../src/ui/MainWindow.cpp" line="382"/>
         <source>This PC</source>
         <translation type="unfinished">Deze pc</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="390"/>
+        <location filename="../src/ui/MainWindow.cpp" line="391"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="392"/>
+        <location filename="../src/ui/MainWindow.cpp" line="393"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>

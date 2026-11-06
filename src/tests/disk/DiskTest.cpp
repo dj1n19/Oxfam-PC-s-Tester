@@ -135,7 +135,11 @@ TestResult DiskTest::evaluateDisk(const SmartctlRun& run, const Thresholds& thre
         {"disk_reallocated_sectors", realloc, tr("%1 reallocated").arg(whole(realloc.value_or(0)))},
         {"disk_pending_sectors",     pending, tr("%1 pending").arg(whole(pending.value_or(0)))},
         {"nvme_percentage_used",     used,    tr("%1% worn").arg(whole(used.value_or(0)))},
-        {"disk_temperature_c",       temp,    QStringLiteral("%1 C").arg(whole(temp.value_or(0)))},
+        // NVMe SSDs run much hotter than hard disks: 45-51 C at rest in a
+        // fanless Surface Pro, one at 59 C (32 C ten minutes later), their own
+        // limit 87 C (field 2026-11-04/06). A laptop HDD is rated ~55-60 C.
+        {nvme.isEmpty() ? "disk_temperature_c" : "nvme_temperature_c",
+                                     temp,    QStringLiteral("%1 C").arg(whole(temp.value_or(0)))},
         // A slow disk: dying HDD, worn or cheap SSD, or a SATA link stuck at a low speed.
         {"disk_read_mb_s",           speed,   QStringLiteral("%1 MB/s").arg(whole(speed.value_or(0)))},
     };

@@ -328,7 +328,7 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   a dead one gives zeros or hiss; first guesses, M5). After 8 s a hint (muted? Windows privacy setting gives silence).
   "Microphone does not work" = Fail, Skip = Skipped, no input device = Skipped, format/open failure = Error.
   `audioWithMic()`: "speakers | microphone", worse wins. No speaker output at all = Error before the dialog (mic not
-  tested). Not yet run.
+  tested). Seen on 25 Surface Pro runs (2026-11-04/06): all Pass, peaks -18 to -0.1 dBFS, passed in 1.8-4 s.
 - Test: `CameraTest` (interactive, asks only when ambiguous): `QCamera` + `QMediaCaptureSession` -> `QVideoSink`
   (no MultimediaWidgets). Live preview in a QLabel; every 250 ms the frame is converted to Grayscale8 and
   `lumaStats()`/`classifyFrame()` (oxcore) give brightness and detail. ~1 s of real picture = automatic Pass.
@@ -347,7 +347,7 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   application-modal dialog does not block its children) on the main window's screen, no cursor, no text. 4 colours
   (`screenPatterns()`: black, white, grey, red); next = click/tap/Space/Right/Enter, back = Left/right click, Esc or
   Alt+F4 = stop. The answers unlock once every colour was seen: "No defect" = Pass, "Small defect" = Warn "sell with a
-  note", "Broken" = Fail; Skip or closing = Skipped. Not on the delivery sheet. Built and unit tested only: not yet run.
+  note", "Broken" = Fail; Skip or closing = Skipped. Not on the delivery sheet. Seen on 24 Surface Pro runs (2026-11-04/06), one Warn.
 - CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, "Run this test" (selected row, any time: since 2026-10-27 a test can run alone
@@ -394,7 +394,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
 - Test: `ChargeTest`, row "Charger" (2026-10-27; field 2026-10-28: ~30 ThinkPads charging 10-35 W on Windows and
   Mint, Surface Pro 7s unplugged = PowerState 0x2 discharging = Fail as designed): same `readBattery()` probe,
   now also charger online, state, charge % and rate (Windows `IOCTL_BATTERY_QUERY_STATUS`; Linux battery `status`,
-  `capacity`, `power_now`, and any `Mains`/online `USB` supply). Charging = Pass ("at X W"); charger not seen = Fail
+  `capacity`, `power_now`, and any `Mains`/online `USB` supply). Charging = Pass ("at X W"), but < 5 W below 80 % charge = Warn "charging very slowly, run again in a
+  minute" (Surface Pro 0.3 W at 41 %, 2026-11-06; 12-65 W is normal there, 0.8-5 W only near full); charger not seen = Fail
   (text: plug it in and run again); OS cannot tell = Error. Charger seen but not charging: full (>= 95 %) or a charge
   limit (ex-company laptops stop at 60-80 %) = Pass with that note; empty (<= 5 %) = Warn "run again in 10 minutes"
   (ThinkPad 13 at 0 % pre-charges ~10 min, developer's report); discharging on the charger = Warn (charger too weak).
@@ -429,8 +430,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   Windows: `\\.\PhysicalDriveN` with `FILE_FLAG_NO_BUFFERING` (admin already), only for `/dev/sdX` names.
   Linux: `LC_ALL=C timeout -s USR1 -k 1 8 dd ... iflag=direct` (SIGINT: dd printed nothing under timeout, checked) in
   the same pkexec batch (dd's lines prefixed `OXFAM_DD:` by sed; `/dev/nvme0` read as `/dev/nvme0n1`,
-  `linuxBlockDevice()`), `parseDdSpeed()` on real dd reports (`dd_linux_*.txt`). Not yet run on a real disk (Linux:
-  needs the password; Windows: not built locally, CI to check).
+  `linuxBlockDevice()`), `parseDdSpeed()` on real dd reports (`dd_linux_*.txt`). Windows seen on 24 Surface Pro runs
+  (2026-11-04/06: 573-1295 MB/s); Linux not yet run on a real disk (needs the password).
+  **Temperature** limits differ by kind: NVMe `nvme_temperature_c` (warn 70, fail 80: fanless Surface Pro 45-51 C at
+  rest, one 59 C then 32 C ten minutes later, drives' own limit 87 C, 2026-11-06), other disks `disk_temperature_c`
+  (55/65: a laptop HDD is rated ~55-60 C). NVMe = the JSON has `nvme_smart_health_information_log`.
 - Test: `DriversTest`: Windows (2026-10-26, no PowerShell; verified 2026-10-27 on 7 Surface Pro 7, Win11, ~206 devices): SetupAPI lists the present devices
   (`DIGCF_PRESENT`: the previous owner's unplugged USB devices, WMI code 45, never come), `CM_Get_DevNode_Status`
   gives the problem code (= WMI `ConfigManagerErrorCode`); name = friendly name, else description, else device ID. Linux reads
@@ -444,8 +448,11 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   **BitLocker** of the system drive in the same row (developer's decision 2026-11-03: fewer rows; worse status wins):
   shell property `System.Volume.BitLockerProtection` of `C:\` (what Explorer's padlock shows; COM on the worker thread,
   key looked up by name, no admin, no WMI). Codes are undocumented: 0/2 = off (Pass), 1/3/5 = on = **Warn** "turn it off
-  before sale" (the recovery key may be the previous owner's), other = Warn "unknown code", unreadable = Error.
-  Not yet built or run on Windows (CI to check); field to confirm the codes (Win11 "waiting for activation"?).
+  before sale" (the recovery key may be the previous owner's), 8 = device encryption waiting for activation = **Pass**
+  with a note (no key protector: nobody holds a key; seen on 3 Surface Pro reinstalled with Win10 build 19045.6456,
+  2026-11-06, `manage-bde -status C:` showed "Protection off, key protectors: none", encrypting 94 %), other = Warn
+  "unknown code", unreadable = Error. Codes 2 and 8 seen in the field (36 runs, 2026-11-04/06). Disabling it from the
+  app (manage-bde -off) was discussed and not built: it would be the app's first write to the PC.
 - Test: `CpuTempTest`, row "CPU under load" (`runsLast()`, ~30 s, after the interactive tests: the technician waits for it): one idle reading, then every core busy (`QThread`s at low
   priority, so the readings still get CPU time) while sampling every ~1 s; judged on the peak (`cpu_temp_peak_c`).
   Linux: hwmon `coretemp`/`k10temp`/`zenpower` (label `Package id 0`, then `Tdie`, then `Tctl`, else hottest), then
@@ -487,6 +494,9 @@ Known limitations:
   MZVLW256 read by the AppImage's static smartctl on Mint (`_linux`); `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
   disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
+- Battery health read nearly empty (< 20 % charge) may be too high: the gauge corrects the full capacity after a
+  full charge (Surface Pro 79 % at 13 %, 57 % the same afternoon, 2026-11-04). The details then say to run it again
+  after a full charge; the status is unchanged.
 - Disk thresholds (`thresholds.json`) are first guesses, to tune with colleagues (M5).
 - Camera frame thresholds (detail < 6, dark < 20) are first guesses: tune on real webcams (M5).
 - CPU temperature: verified on Arch (coretemp, 52 -> 72 C in 30 s, speed 220 % of base).  Thresholds (warn 90, fail 97) are first guesses: thin laptops run hot by design (M5). Windows: see above,

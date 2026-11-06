@@ -57,6 +57,7 @@ QString chipMaker(USHORT manufacturer)
     case 0x000F: return QStringLiteral("Broadcom");
     case 0x001D: return QStringLiteral("Qualcomm");
     case 0x0046: return QStringLiteral("MediaTek");
+    case 0x0048: return QStringLiteral("Marvell");   // Surface Pro 2017 (field 2026-11-04)
     case 0x005D: return QStringLiteral("Realtek");
     case 0x0131: return QStringLiteral("Cypress");
     default: return {};

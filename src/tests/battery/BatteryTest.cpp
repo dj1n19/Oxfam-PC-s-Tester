@@ -2,6 +2,13 @@
 
 #include <QtConcurrent>
 
+namespace {
+
+// Below this charge the health reading is flagged as maybe too high (see evaluate()).
+constexpr double kLowChargePct = 20;
+
+} // namespace
+
 BatteryTest::BatteryTest(Thresholds thresholds, QObject* parent)
     : ITest(parent), m_thresholds(std::move(thresholds))
 {
@@ -49,5 +56,13 @@ TestResult BatteryTest::evaluate(const BatteryInfo& info, const Thresholds& thre
     r.summary = tr("Health %1% of design capacity").arg(health, 0, 'f', 0);
     if (info.cycles > 0)
         r.summary += tr(", %1 cycles").arg(info.cycles);
+    // The battery's own gauge corrects its full capacity after a full charge:
+    // a Surface Pro read 79 % at 13 % charge, then 57 % the same afternoon once
+    // charged (same battery, same 159 cycles, 2026-11-04). Details only: the
+    // technician looks there when the health is close to a limit.
+    if (info.chargePct >= 0 && info.chargePct < kLowChargePct)
+        r.details.prepend(QStringLiteral("Note: battery nearly empty (%1 %): its health may be overestimated."
+                                         " Run this test again after a full charge.\n\n")
+                              .arg(info.chargePct, 0, 'f', 0));
     return r;
 }

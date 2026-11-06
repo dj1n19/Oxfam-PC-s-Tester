@@ -70,6 +70,7 @@ class TestCore : public QObject {
             "disk_pending_sectors":     {"warn": 1,  "fail": 10},
             "nvme_percentage_used":     {"warn": 80, "fail": 100},
             "disk_temperature_c":       {"warn": 55, "fail": 65},
+            "nvme_temperature_c":       {"warn": 70, "fail": 80},
             "disk_read_mb_s":           {"warn": 100, "fail": 20},
             "cpu_temp_peak_c":          {"warn": 90, "fail": 97},
             "cpu_speed_min_pct":        {"warn": 100, "fail": 70}
@@ -207,6 +208,20 @@ private slots:
         QCOMPARE(BatteryTest::evaluate(battery(20000), t).status, Status::Fail);  // 40 %
     }
 
+    void batteryNearlyEmptyIsNoted()
+    {
+        // Surface Pro 2026-11-04: 79 % read at 13 % charge, 57 % once charged.
+        BatteryInfo b = battery(40000);
+        b.chargePct = 13;
+        TestResult r = BatteryTest::evaluate(b, loaded());
+        QCOMPARE(r.status, Status::Pass);   // the status is unchanged: only a note
+        QVERIFY(r.details.startsWith("Note: battery nearly empty (13 %)"));
+        b.chargePct = 50;
+        QVERIFY(!BatteryTest::evaluate(b, loaded()).details.contains("nearly empty"));
+        b.chargePct = -1;   // unknown charge: no note
+        QVERIFY(!BatteryTest::evaluate(b, loaded()).details.contains("nearly empty"));
+    }
+
     void batteryAbsentIsSkipped()
     {
         QCOMPARE(BatteryTest::evaluate(BatteryInfo{}, loaded()).status, Status::Skipped);
@@ -257,6 +272,16 @@ private slots:
         QVERIFY(r.summary.contains("10 minutes"));
         r = ChargeTest::evaluate(charger(1, ChargeState::Discharging, 50));   // charger too weak
         QCOMPARE(r.status, Status::Warn);
+
+        // Charging, but almost nothing goes in (Surface Pro 0.3 W at 41 %, 2026-11-06).
+        r = ChargeTest::evaluate(charger(1, ChargeState::Charging, 41, 0.3));
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY(r.summary.startsWith("Charging very slowly at 0.3 W (41 %)"));
+        // Nearly full: the charge slows down on purpose (0.8 W at 98 % seen).
+        QCOMPARE(ChargeTest::evaluate(charger(1, ChargeState::Charging, 98, 0.8)).status, Status::Pass);
+        QCOMPARE(ChargeTest::evaluate(charger(1, ChargeState::Charging, 85, 1.8)).status, Status::Pass);
+        // Lowest real rates under 80 % stay a Pass.
+        QCOMPARE(ChargeTest::evaluate(charger(1, ChargeState::Charging, 62, 13.7)).status, Status::Pass);
 
         BatteryInfo desktop;
         QCOMPARE(ChargeTest::evaluate(desktop).status, Status::Skipped);
@@ -414,6 +439,24 @@ private slots:
         QVERIFY2(r.summary.contains("512 GB"), qPrintable(r.summary));
         QVERIFY2(r.summary.contains("2% worn"), qPrintable(r.summary));
         QVERIFY2(r.summary.contains("1234 h"), qPrintable(r.summary));
+    }
+
+    void diskTemperatureLimitsDependOnTheKind()
+    {
+        // NVMe: 59 C seen on a Surface Pro at rest (2026-11-06) is fine, 72 C is not.
+        SmartctlRun nvme = smart("smartctl_nvme_ok.json", 0);
+        nvme.json.replace("\"current\": 36", "\"current\": 59");
+        QCOMPARE(DiskTest::evaluateDisk(nvme, loaded()).status, Status::Pass);
+        nvme.json.replace("\"current\": 59", "\"current\": 72");
+        TestResult r = DiskTest::evaluateDisk(nvme, loaded());
+        QCOMPARE(r.status, Status::Warn);
+        QVERIFY2(r.summary.contains("72 C (WARN)"), qPrintable(r.summary));
+
+        // A hard disk keeps the lower limits: 59 C is already a warning.
+        SmartctlRun ata = smart("smartctl_ata_worn.json", 0);
+        ata.json.replace("\"current\": 41", "\"current\": 59");
+        r = DiskTest::evaluateDisk(ata, loaded());
+        QVERIFY2(r.summary.contains("59 C (WARN)"), qPrintable(r.summary));
     }
 
     void diskAtaWornIsFail()
@@ -624,6 +667,17 @@ private slots:
             QVERIFY(r.summary.contains("BitLocker ON: turn it off"));
             QVERIFY(r.summary.startsWith("Activated"));   // the licence part is still shown
         }
+    }
+
+    void bitlockerWaitingForActivationIsPass()
+    {
+        // Code 8 on 3 reinstalled Surface Pro (2026-11-06): no key protector.
+        LicenseInfo info = windowsLicense(1, true);
+        info.bitlocker = 8;
+        const TestResult r = LicenseTest::evaluate(info);
+        QCOMPARE(r.status, Status::Pass);
+        QVERIFY(r.summary.contains("waiting for activation"));
+        QVERIFY(r.details.contains("manage-bde -off"));
     }
 
     void bitlockerUnknownCodeIsWarnNotPass()

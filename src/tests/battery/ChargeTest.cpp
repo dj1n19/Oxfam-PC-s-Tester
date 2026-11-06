@@ -9,6 +9,12 @@ namespace {
 // report 2026-10-27), one this full may stop charging on purpose.
 constexpr double kEmptyPct = 5;
 constexpr double kFullPct = 95;
+// Below this charge a battery takes its full power: Surface Pro / ThinkPads
+// took 12-65 W there (field 2026-11-04/06). Above it the charge slows down on
+// purpose (0.8-5 W seen at 85-98 %), so a low rate is normal.
+constexpr double kSlowCheckBelowPct = 80;
+// One Surface Pro charged at 0.3 W at 41 % (2026-11-06): that is not charging.
+constexpr double kSlowW = 5;
 
 } // namespace
 
@@ -60,6 +66,15 @@ TestResult ChargeTest::evaluate(const BatteryInfo& info)
     // left to know is whether the battery takes the charge.
     switch (info.state) {
     case ChargeState::Charging:
+        // rateW 0 = unknown: not judged. A rate just after plugging in may
+        // still be ramping up, hence "run again" before blaming the charger.
+        if (info.rateW > 0 && info.rateW < kSlowW && info.chargePct >= 0 && info.chargePct < kSlowCheckBelowPct) {
+            r.status = Status::Warn;
+            r.summary = tr("Charging very slowly at %1 W (%2): run this test again in a minute; "
+                           "if it stays this low, the charger is too weak or the cable is faulty")
+                            .arg(info.rateW, 0, 'f', 1).arg(pct);
+            return r;
+        }
         r.status = Status::Pass;
         r.summary = info.rateW > 0 ? tr("Charging at %1 W (%2)").arg(info.rateW, 0, 'f', 1).arg(pct)
                                    : tr("Charging (%1)").arg(pct);
