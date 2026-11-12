@@ -7,5 +7,5 @@
   "nvme_temperature_c":       { "warn": 70, "fail": 80 },
   "disk_read_mb_s":           { "warn": 100, "fail": 20 },
   "cpu_temp_peak_c":          { "warn": 90, "fail": 97 },
-  "cpu_speed_min_pct":        { "warn": 100, "fail": 70 }
+  "cpu_speed_min_pct":        { "warn": 95,  "fail": 70 }
 }

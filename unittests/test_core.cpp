@@ -73,7 +73,7 @@ class TestCore : public QObject {
             "nvme_temperature_c":       {"warn": 70, "fail": 80},
             "disk_read_mb_s":           {"warn": 100, "fail": 20},
             "cpu_temp_peak_c":          {"warn": 90, "fail": 97},
-            "cpu_speed_min_pct":        {"warn": 100, "fail": 70}
+            "cpu_speed_min_pct":        {"warn": 95,  "fail": 70}
         })");
         Q_ASSERT(ok);
         Q_UNUSED(ok);
@@ -390,6 +390,12 @@ private slots:
         // Was a WARN with the old common limit (55 C); NVMe limit is 70 C since 2026-11-06.
         QTest::newRow("Surface Pro 2017 Samsung KUS at 59 C") << "smartctl_real_samsung_kus030202m_59c.json"
             << "/dev/test SAMSUNG KUS030202M-B000 256 GB: SMART OK, 2% worn, 59 C, speed not measured, 2359 h";
+        // Field 2026-11-06/10 (Windows 10/11).
+        QTest::newRow("Lenovo 21DK SK Hynix HFS256") << "smartctl_real_skhynix_hfs256gej4x112n.json"
+            << "/dev/test SKHynix_HFS256GEJ4X112N 256 GB: SMART OK, 0% worn, 26 C, speed not measured, 762 h";
+        // First real SATA disk (ATA attributes, no NVMe log): a no-name SSD in a Fujitsu E736.
+        QTest::newRow("Fujitsu E736 SATA SSD") << "smartctl_real_ata_ssd256gb.json"
+            << "/dev/test SSD 256GB 256 GB: SMART OK, 0 reallocated, 40 C, speed not measured, 286 h";
     }
 
     void smartctlRealSamples()
@@ -801,7 +807,7 @@ private slots:
         // One dip is a snapshot, not throttling; a lasting drop is.
         QCOMPARE(CpuTempTest::evaluate(speedRun({220, 220, 220, 90, 220, 220}), t).status, Status::Pass);
         QCOMPARE(CpuTempTest::evaluate(speedRun({220, 220, 90, 90, 90}), t).status, Status::Warn);
-        QCOMPARE(CpuTempTest::evaluate(speedRun({180, 95}), t).status, Status::Warn);   // under base speed
+        QCOMPARE(CpuTempTest::evaluate(speedRun({180, 90}), t).status, Status::Warn);   // under base speed
         QCOMPARE(CpuTempTest::evaluate(speedRun({180, 60}), t).status, Status::Fail);   // far under
         QCOMPARE(CpuTempTest::evaluate(speedRun({100}), t).status, Status::Pass);       // exactly base
         // On battery the OS slows the CPU on purpose: a hint, never a Fail.
@@ -968,6 +974,11 @@ private slots:
         QCOMPARE(tp.status, Status::Pass);
         QVERIFY(!tp.summary.contains("C under load"));
         QVERIFY(tp.details.contains("TZ00 = 347.05 K"));   // still in the details
+
+        // Fujitsu E736 (2026-11-10): i3-6100U, no turbo, so flat at its base
+        // speed; the counter jitters 99-100 %. Was a WARN with "warn < 100".
+        CpuLoadRun noTurbo = speedRun({100, 99.6, 99.5, 100, 99.4, 99.5, 100, 99.5, 99.6, 99.5});
+        QCOMPARE(CpuTempTest::evaluate(noTurbo, t).status, Status::Pass);
     }
 
     // The "not the CPU" rule still guards Linux sensors. Values of the

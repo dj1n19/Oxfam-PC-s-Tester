@@ -308,6 +308,11 @@ models (Intel SSDPEKKF256G8L, Samsung PM9A1/MZVLW256, WD SN810/SN730, SK Hynix):
 T490, EliteBook 845 G7; FR and NL used): fixed "Remember these choices" (Access denied on Windows: main() kept
 tests.json open), a licence ERROR `SLOpen` 0xC004F075 (service stopping: retried), audio "swapped" for one wrong side.
 One Wi-Fi watchdog timeout (60 s, Surface Pro 7, OK on rerun 12 s later): cause unknown.
+**Field 2026-11-06 to 11-12** (118 run reports, all Windows: Surface Pro / Pro 7, ThinkPad L380/L390 20M6, 20R4,
+20J2, 21DK, Fujitsu E736; FR, NL, EN): no crash, no watchdog timeout. Fixed: false CPU WARN on a CPU without turbo
+(see `cpu_speed_min_pct`). Seen: a Lenovo 21DK without any Bluetooth radio while two others of that model have one
+(BIOS?); a Surface Pro whose rear camera had driver code 10: the camera row passed on the front camera alone, only
+the Drivers row warned.
 Next: tag v1.0.
 Qt Multimedia is a dependency of the **app only** (`lazy-djin-tester`), never of `oxcore`.
 Qt Multimedia is started at launch (`QMediaDevices::audioOutputs()` 300 ms after `window.show()` in `main.cpp`): its
@@ -347,8 +352,9 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   them only for Hello, so "Microsoft IR Camera Front" gave black frames (0.0 / 0.0-0.2) in 3 runs of 4. Named in the
   details ("Not tested (infrared, Windows Hello)"); only IR cameras = "no camera" (Skipped).
 - Test: `ScreenTest`, row "Screen" (interactive, first of them; 2026-11-03, developer's choices): a dialog explains,
-  "Show the colours" (Enter/Space) opens `PatternWindow`, a frameless full-screen child window of the dialog (an
-  application-modal dialog does not block its children) on the main window's screen, no cursor, no text. 4 colours
+  "Show the colours" (Enter/Space) opens `PatternWindow`, a frameless full-screen top-level window (no Qt parent,
+  owned by the dialog), while the dialog hides itself (that also lifts its modality) and comes back afterwards: as a
+  child window it stayed BEHIND the modal dialog on GNOME Wayland (2026-11-10). On the main window's screen, no cursor, no text. 4 colours
   (`screenPatterns()`: black, white, grey, red); next = click/tap/Space/Right/Enter, back = Left/right click, Esc or
   Alt+F4 = stop. The answers unlock once every colour was seen: "No defect" = Pass, "Small defect" = Warn "sell with a
   note", "Broken" = Fail; Skip or closing = Skipped. Not on the delivery sheet. Seen on 24 Surface Pro runs (2026-11-04/06), one Warn.
@@ -475,7 +481,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   Windows PDH `\Processor Information(_Total)\% Processor Performance` (= WMI's PercentProcessorPerformance; a rate:
   collected once before the reading at rest; `PdhAddEnglishCounter`: names are translated on fr/nl Windows), Linux average `scaling_cur_freq` / `base_frequency`
   (intel_pstate only; AMD/acpi-cpufreq: no speed). Judged on the **median of the second half** of the load (single
-  readings dip: 220 % with dips to 162 % on Arch), first 5 s left out, `cpu_speed_min_pct` (warn < 100, fail < 70).
+  readings dip: 220 % with dips to 162 % on Arch), first 5 s left out, `cpu_speed_min_pct` (warn < 95, fail < 70; was warn < 100 until 2026-11-12: a CPU without turbo,
+  i3-6100U in a Fujitsu E736, sits at its base speed and the counter jitters 99-100 %: false WARN).
   On battery (Windows `GetSystemPowerStatus` ACLineStatus 0; Linux charger input listed but offline) a slow CPU is Warn "plug in the
   charger", never Fail. Temperature and speed are judged apart, the worse wins (`worse()` in `TestResult.h`).
   Neither sensor nor speed = Skipped; then the CPU is not loaded at all.
@@ -496,8 +503,10 @@ Known limitations:
   2026-10-15; Toshiba KBG40ZPZ256G from a Surface Pro 7 run report, 2026-10-27; 2026-11-03 from the field reports: Samsung KUS030202M,
   Intel SSDPEBKF256G7, SK Hynix BC501 (Surface Pro 2017), Samsung MZVLB256 x3 (ThinkPad 20NS, EliteBook 845 G7) and
   MZVLW256 read by the AppImage's static smartctl on Mint (`_linux`); 2026-11-06: Toshiba THNSN5256GPU7 (Surface Pro 4), SK Hynix HFB1M8MH 512 GB at 61 % worn (Surface
-  Pro 7), Samsung KUS030202M at 59 C (`_59c`, the case behind `nvme_temperature_c`); `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
-  disks, permission denied) are still hand-made: replace them when real ones turn up. No real SATA disk sample yet.
+  Pro 7), Samsung KUS030202M at 59 C (`_59c`, the case behind `nvme_temperature_c`); 2026-11-12: SK Hynix HFS256GEJ4X112N
+  (Lenovo 21DK) and the **first real SATA disk** `smartctl_real_ata_ssd256gb.json` (no-name "SSD 256GB", Fujitsu E736:
+  no attribute 197); `serial_number` and `eui64.ext_id` anonymised, CRLF -> LF); the other `smartctl_*.json` (ATA, failing
+  disks, permission denied) are still hand-made: replace them when real ones turn up.
 - Disk test is ERROR without root (Linux) / administrator (Windows) until M4. smartctl is not installed on the dev machine yet.
 - Battery health read nearly empty (< 20 % charge) may be too high: the gauge corrects the full capacity after a
   full charge (Surface Pro 79 % at 13 %, 57 % the same afternoon, 2026-11-04). The details then say to run it again
