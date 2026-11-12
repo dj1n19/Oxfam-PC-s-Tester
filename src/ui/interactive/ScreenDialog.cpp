@@ -12,13 +12,16 @@
 #include <QScreen>
 #include <QVBoxLayout>
 
-// The full-screen colour. A child of the dialog with its own window (Qt::Window):
-// an application-modal dialog blocks every other window, but not its children.
+// The full-screen colour, a top-level window with no Qt parent. It used to be a
+// child window of the dialog, but GNOME (Wayland) keeps a modal dialog above
+// everything of its application, so the dialog stayed in front of the colours.
+// Now the dialog hides itself while the colours are shown (which also lifts its
+// modality, so this window gets the keys) and comes back afterwards.
 // No text and no cursor on it: they would hide the very pixels being checked.
 class PatternWindow : public QWidget {
 public:
-    PatternWindow(QWidget* parent, std::function<void(bool)> closed)
-        : QWidget(parent, Qt::Window | Qt::FramelessWindowHint), m_closed(std::move(closed))
+    explicit PatternWindow(std::function<void(bool)> closed)
+        : QWidget(nullptr, Qt::Window | Qt::FramelessWindowHint), m_closed(std::move(closed))
     {
         setCursor(Qt::BlankCursor);
     }
@@ -148,19 +151,25 @@ ScreenDialog::ScreenDialog(QScreen* screen, QWidget* parent) : QDialog(parent), 
     top->addLayout(row);
     connect(skip, &QPushButton::clicked, this, [this] { finish(screenSkipped()); });
 
-    m_patterns = new PatternWindow(this, [this](bool seenAll) { coloursClosed(seenAll); });
+    m_patterns = std::make_unique<PatternWindow>([this](bool seenAll) { coloursClosed(seenAll); });
 }
+
+ScreenDialog::~ScreenDialog() = default;
 
 void ScreenDialog::showColours()
 {
-    if (!m_done)
-        m_patterns->start(m_screen);
+    if (m_done)
+        return;
+    hide();   // hide, not close: the dialog stays alive and waits for the answer
+    m_patterns->start(m_screen);
 }
 
 void ScreenDialog::coloursClosed(bool seenAll)
 {
     if (m_done)   // the colour window also closes when the dialog does
         return;
+    show();   // back, modal again
+    raise();
     activateWindow();
     if (seenAll) {
         m_prompt->setText(tr("What did you see?"));

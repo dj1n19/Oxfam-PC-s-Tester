@@ -2,6 +2,7 @@
 #include <QDialog>
 #include <QList>
 #include <QPointer>
+#include <memory>
 #include "tests/screen/ScreenCheck.h"
 
 class QLabel;
@@ -11,10 +12,12 @@ class PatternWindow;
 
 // Explains the test, shows the full-screen colours (PatternWindow), then asks
 // what was seen. The answers only unlock once every colour was shown.
+// While the colours are shown the dialog is hidden (see showColours()).
 class ScreenDialog : public QDialog {
     Q_OBJECT
 public:
     explicit ScreenDialog(QScreen* screen, QWidget* parent = nullptr);
+    ~ScreenDialog() override;   // in the .cpp: PatternWindow is complete only there
 
 signals:
     void outcome(const TestResult& result);   // emitted exactly once
@@ -28,7 +31,7 @@ private:
     void finish(TestResult result);
 
     QPointer<QScreen> m_screen;          // a screen can be unplugged meanwhile
-    PatternWindow* m_patterns = nullptr; // child window, owned by this dialog
+    std::unique_ptr<PatternWindow> m_patterns;   // own top-level window, no Qt parent
     QLabel* m_prompt = nullptr;
     QPushButton* m_show = nullptr;
     QList<QPushButton*> m_answers;
