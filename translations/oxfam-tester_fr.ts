@@ -1176,12 +1176,22 @@ Les tests qu&apos;il ne règle pas correctement sont cochés. Tests connus : %2.
 <context>
     <name>ScreenDialog</name>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="104"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="193"/>
+        <source>Do not touch the screen... %1</source>
+        <translation>Ne touchez pas l&apos;écran... %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="211"/>
+        <source>Swipe a finger over every square</source>
+        <translation>Passez le doigt sur chaque case</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="294"/>
         <source>Screen test</source>
         <translation>Test de l&apos;écran</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="109"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="303"/>
         <source>%1 plain colours will fill the whole screen, one after the other.
 Look for dead or bright dots, stains, lines and darker zones.
 
@@ -1192,53 +1202,94 @@ Cherchez les points morts ou trop lumineux, les taches, les lignes et les zones 
 Couleur suivante : clic, toucher ou Espace. Retour : flèche gauche. Arrêter : Échap.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="117"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="311"/>
         <source>Show the colours</source>
         <translation>Afficher les couleurs</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="130"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="324"/>
         <source>No defect</source>
         <translation>Aucun défaut</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="131"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="325"/>
         <source>Small defect
 (dead pixel, light stain)</source>
         <translation>Petit défaut
 (pixel mort, tache légère)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="132"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="326"/>
         <source>Broken
 (lines, dead zone, big stain, flicker)</source>
         <translation>Cassé
 (lignes, zone morte, grosse tache, scintillement)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="146"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="340"/>
         <source>Skip</source>
         <translation type="unfinished">Passer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="148"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="353"/>
+        <source>Touch screen. After Start, do NOT touch the screen for %1 s (check for touches nobody made). Then swipe a finger over every square until all are green.
+
+At the edges, tap the squares: a swipe from outside the screen opens system menus.
+Stop: Esc, or touch no new square for %2 s.</source>
+        <translation>Écran tactile. Après Démarrer, NE touchez PAS l&apos;écran pendant %1 s (recherche de touchers que personne n&apos;a faits). Ensuite, passez le doigt sur chaque case jusqu&apos;à ce que toutes soient vertes.
+
+Aux bords, tapez sur les cases : un glissement depuis l&apos;extérieur de l&apos;écran ouvre des menus du système.
+Arrêter : Échap, ou ne touchez aucune nouvelle case pendant %2 s.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="363"/>
+        <source>Start the touch test</source>
+        <translation>Démarrer le test tactile</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="374"/>
+        <source>Touch does not work properly</source>
+        <translation>Le tactile ne fonctionne pas bien</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="375"/>
+        <source>Skip (touch)</source>
+        <translation>Passer (tactile)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="392"/>
         <source>Stop all tests</source>
         <translation>Arrêter tous les tests</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="183"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="425"/>
         <source>What did you see?</source>
         <translation>Qu&apos;avez-vous vu ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="186"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="428"/>
         <source>See again</source>
         <translation>Revoir</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="190"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="432"/>
         <source>Stopped before the last colour: show them again, or Skip.</source>
         <translation>Arrêté avant la dernière couleur : les afficher à nouveau, ou Passer.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="471"/>
+        <source>Again</source>
+        <translation>Recommencer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="473"/>
+        <source>The screen reported %1 touch(es) while nobody should touch it (ghost touches). If a hand touched it, press Again; if not, the touch screen is faulty.</source>
+        <translation>L&apos;écran a signalé %1 toucher(s) alors que personne ne devait le toucher (touchers fantômes). Si une main l&apos;a touché, appuyez sur Recommencer ; sinon, l&apos;écran tactile est défectueux.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="477"/>
+        <source>%1 of %2 squares touched. A square that never turns green is a dead zone: press Again to retry, or report it.</source>
+        <translation>%1 case(s) sur %2 touchée(s). Une case qui ne devient jamais verte est une zone morte : appuyez sur Recommencer pour réessayer, ou signalez-la.</translation>
     </message>
 </context>
 <context>
@@ -1267,6 +1318,26 @@ Couleur suivante : clic, toucher ou Espace. Retour : flèche gauche. Arrêter : 
         <location filename="../src/ui/interactive/ScreenTest.h" line="11"/>
         <source>Screen</source>
         <translation>Écran</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="70"/>
+        <source>touch OK</source>
+        <translation>tactile OK</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="74"/>
+        <source>touch: a zone does not respond (%1 of %2 squares)</source>
+        <translation>tactile : une zone ne répond pas (%1 cases sur %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="79"/>
+        <source>touch skipped</source>
+        <translation>tactile passé</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="86"/>
+        <source>touch: ghost touches (the screen reacted while nobody touched it)</source>
+        <translation>tactile : touchers fantômes (l&apos;écran a réagi alors que personne ne le touchait)</translation>
     </message>
 </context>
 <context>

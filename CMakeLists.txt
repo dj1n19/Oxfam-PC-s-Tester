@@ -90,6 +90,8 @@ add_library(oxcore STATIC
     src/tests/camera/FrameCheck.cpp       # frame statistics + result: logic of the camera test
     src/tests/screen/ScreenCheck.h
     src/tests/screen/ScreenCheck.cpp      # full-screen colours + result: logic of the screen test
+    src/tests/screen/TouchCheck.h
+    src/tests/screen/TouchCheck.cpp       # touch grid + ghost touches + result: touch part of the screen test
     src/delivery/XlsxEditor.h
     src/delivery/XlsxEditor.cpp           # edits .xlsx cells in place (miniz)
     src/delivery/DeliverySheet.h

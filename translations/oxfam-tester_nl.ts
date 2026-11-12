@@ -1176,12 +1176,22 @@ De tests die het niet juist instelt, zijn aangevinkt. Bekende tests: %2.</transl
 <context>
     <name>ScreenDialog</name>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="104"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="193"/>
+        <source>Do not touch the screen... %1</source>
+        <translation type="unfinished">Raak het scherm niet aan... %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="211"/>
+        <source>Swipe a finger over every square</source>
+        <translation type="unfinished">Veeg met een vinger over elk vakje</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="294"/>
         <source>Screen test</source>
         <translation type="unfinished">Schermtest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="109"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="303"/>
         <source>%1 plain colours will fill the whole screen, one after the other.
 Look for dead or bright dots, stains, lines and darker zones.
 
@@ -1192,53 +1202,94 @@ Zoek naar dode of te heldere puntjes, vlekken, lijnen en donkere zones.
 Volgende kleur: klikken, tikken of spatie. Terug: pijl links. Stoppen: Esc.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="117"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="311"/>
         <source>Show the colours</source>
         <translation type="unfinished">Kleuren tonen</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="130"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="324"/>
         <source>No defect</source>
         <translation type="unfinished">Geen defect</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="131"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="325"/>
         <source>Small defect
 (dead pixel, light stain)</source>
         <translation type="unfinished">Klein defect
 (dode pixel, lichte vlek)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="132"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="326"/>
         <source>Broken
 (lines, dead zone, big stain, flicker)</source>
         <translation type="unfinished">Kapot
 (lijnen, dode zone, grote vlek, flikkeren)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="146"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="340"/>
         <source>Skip</source>
         <translation type="unfinished">Overslaan</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="148"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="353"/>
+        <source>Touch screen. After Start, do NOT touch the screen for %1 s (check for touches nobody made). Then swipe a finger over every square until all are green.
+
+At the edges, tap the squares: a swipe from outside the screen opens system menus.
+Stop: Esc, or touch no new square for %2 s.</source>
+        <translation type="unfinished">Aanraakscherm. Raak na Starten het scherm %1 s NIET aan (controle op aanrakingen die niemand deed). Veeg daarna met een vinger over elk vakje tot ze allemaal groen zijn.
+
+Tik aan de randen op de vakjes: vegen van buiten het scherm opent systeemmenu&apos;s.
+Stoppen: Esc, of raak %2 s geen nieuw vakje aan.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="363"/>
+        <source>Start the touch test</source>
+        <translation type="unfinished">Aanraaktest starten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="374"/>
+        <source>Touch does not work properly</source>
+        <translation type="unfinished">Aanraken werkt niet goed</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="375"/>
+        <source>Skip (touch)</source>
+        <translation type="unfinished">Overslaan (aanraken)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="392"/>
         <source>Stop all tests</source>
         <translation type="unfinished">Alle tests stoppen</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="183"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="425"/>
         <source>What did you see?</source>
         <translation type="unfinished">Wat hebt u gezien?</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="186"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="428"/>
         <source>See again</source>
         <translation type="unfinished">Opnieuw bekijken</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="190"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="432"/>
         <source>Stopped before the last colour: show them again, or Skip.</source>
         <translation type="unfinished">Gestopt voor de laatste kleur: toon ze opnieuw, of Overslaan.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="471"/>
+        <source>Again</source>
+        <translation type="unfinished">Opnieuw</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="473"/>
+        <source>The screen reported %1 touch(es) while nobody should touch it (ghost touches). If a hand touched it, press Again; if not, the touch screen is faulty.</source>
+        <translation type="unfinished">Het scherm meldde %1 aanraking(en) terwijl niemand het mocht aanraken (spookaanrakingen). Raakte een hand het aan, druk dan op Opnieuw; zo niet, dan is het aanraakscherm defect.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="477"/>
+        <source>%1 of %2 squares touched. A square that never turns green is a dead zone: press Again to retry, or report it.</source>
+        <translation type="unfinished">%1 van %2 vakjes aangeraakt. Een vakje dat nooit groen wordt, is een dode zone: druk op Opnieuw om het nog eens te proberen, of meld het.</translation>
     </message>
 </context>
 <context>
@@ -1267,6 +1318,26 @@ Volgende kleur: klikken, tikken of spatie. Terug: pijl links. Stoppen: Esc.</tra
         <location filename="../src/ui/interactive/ScreenTest.h" line="11"/>
         <source>Screen</source>
         <translation type="unfinished">Scherm</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="70"/>
+        <source>touch OK</source>
+        <translation type="unfinished">aanraken OK</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="74"/>
+        <source>touch: a zone does not respond (%1 of %2 squares)</source>
+        <translation type="unfinished">aanraken: een zone reageert niet (%1 van %2 vakjes)</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="79"/>
+        <source>touch skipped</source>
+        <translation type="unfinished">aanraken overgeslagen</translation>
+    </message>
+    <message>
+        <location filename="../src/tests/screen/TouchCheck.cpp" line="86"/>
+        <source>touch: ghost touches (the screen reacted while nobody touched it)</source>
+        <translation type="unfinished">aanraken: spookaanrakingen (het scherm reageerde terwijl niemand het aanraakte)</translation>
     </message>
 </context>
 <context>

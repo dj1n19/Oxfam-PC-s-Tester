@@ -195,6 +195,7 @@ src/
     audio/     AudioCheck.{h,cpp}   (tone generation, microphone level + results, logic only)
     camera/    FrameCheck.{h,cpp}   (frame statistics + result, logic only; grey bytes, no QImage)
     screen/    ScreenCheck.{h,cpp}  (full-screen colours + result, logic only; RGB ints, no QColor)
+               TouchCheck.{h,cpp}   (touch grid, ghost touches, result: touch part of the Screen row)
   delivery/    XlsxEditor.{h,cpp} (in-place .xlsx cell editing, miniz)  DeliverySheet.{h,cpp} (which cell = what)
   report/      RunReport.{h,cpp} (run report text + file name: pure, unit tested; written by MainWindow)
   ui/          MainWindow.{h,cpp} Language.{h,cpp} Theme.{h,cpp} DeliveryAction.{h,cpp} (button flow: dialogs + files)
@@ -257,7 +258,8 @@ Clear error messages done (actionable ERROR summaries, see the TestResult contra
   the technician checks a skipped row, and the only comment is the battery %). Developer's decision 2026-11-03: FAIL/WARN only inform the technician (criteria depend on the
   PC and the shop; a PC with a defect never goes to a shop, so the sheet is used only when all is well); before, WARN
   wrote the summary and FAIL was not written. Row 21 "Touchscreen" ticked when `QInputDevice::devices()` has a
-  `TouchScreen` (MainWindow, `DeliveryInput::touchScreen`; no touch test yet: "later"), else left as is. Row 20
+  `TouchScreen` (MainWindow, `DeliveryInput::touchScreen`; kept on detection even with the touch check, developer's
+  decision 2026-11-12), else left as is. Row 20
   "Chargeur / Oplader" = a charger is supplied with the PC (developer, 2026-11-03): manual, never mapped to ChargeTest. Manual rows/header are never touched.
 - Desktop: both file names looked for, the system language's first (`fileNamesFor()`). None: copied from
   `<root>/delivery-sheets/` in the system language (en: the technician picks Francais/Nederlands if both exist; one
@@ -365,6 +367,16 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   (`screenPatterns()`: black, white, grey, red); next = click/tap/Space/Right/Enter, back = Left/right click, Esc or
   Alt+F4 = stop. The answers unlock once every colour was seen: "No defect" = Pass, "Small defect" = Warn "sell with a
   note", "Broken" = Fail; Skip or closing = Skipped. Not on the delivery sheet. Seen on 24 Surface Pro runs (2026-11-04/06), one Warn.
+  **Touch** in the same row (2026-11-12, developer's choices: Screen row, ghost-touch check, sheet row 21 unchanged):
+  only if `QInputDevice::devices()` has a `TouchScreen`; after the colours' answer the dialog shows a touch page.
+  `TouchWindow` (full screen, like `PatternWindow`): 3 s countdown "do not touch" (any finger = ghost touch), then a
+  grid of ~25 mm squares (`TouchGrid::forScreen()` from `QScreen::physicalSize()`, 4-24 per side, 12 x 8 if unknown;
+  Surface Pro 7 10 x 7) turning green under the finger. Only `QTouchEvent`s from a `TouchScreen` device count (not
+  the mouse or touchpad); only touched points, never the line between two (a fast swipe must not fill a dead
+  stripe). All squares and no ghost = Pass with no question; Esc, Alt+F4 or 10 s without a new square = back to the
+  dialog: "Again", "Touch does not work properly" (Fail), "Skip (touch)". Ghost touches = Fail whatever the grid.
+  Row = `screenWithTouch()` "screen | touch", worse wins. Logic `src/tests/screen/TouchCheck` (unit tested); the grid
+  map (#/.) is in the details. Not yet run on a real touch screen.
 - CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, "Run this test" (selected row, any time: since 2026-10-27 a test can run alone

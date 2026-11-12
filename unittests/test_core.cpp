@@ -22,6 +22,7 @@
 #include "tests/drivers/DriversTest.h"
 #include "tests/license/LicenseTest.h"
 #include "tests/screen/ScreenCheck.h"
+#include "tests/screen/TouchCheck.h"
 #include "tests/keyboard/KeyLayout.h"
 #include "tests/audio/AudioCheck.h"
 #include "tests/camera/FrameCheck.h"
@@ -1262,6 +1263,74 @@ private slots:
         QCOMPARE(screenResult(ScreenAnswer::Broken).status, Status::Fail);
         QVERIFY(screenResult(ScreenAnswer::Broken).details.contains("black, white, grey, red"));
         QCOMPARE(screenSkipped().status, Status::Skipped);
+    }
+
+    // Touch grid: squares of ~25 mm, points from 0 to 1, edges included.
+    void touchGrid()
+    {
+        const TouchGrid sp7 = TouchGrid::forScreen(260, 173);   // Surface Pro 7, 12.3"
+        QCOMPARE(sp7.cols(), 10);
+        QCOMPARE(sp7.rows(), 7);
+        QCOMPARE(TouchGrid::forScreen(0, 0).cellCount(), 12 * 8);         // size unknown
+        QCOMPARE(TouchGrid::forScreen(2000, 20).cols(), 24);              // absurd size: still usable
+        QCOMPARE(TouchGrid::forScreen(2000, 20).rows(), 4);
+
+        TouchGrid g(4, 2);
+        QVERIFY(g.touch(0.0, 0.0));
+        QVERIFY(!g.touch(0.1, 0.1));                 // same square: not new
+        QVERIFY(g.touch(1.0, 1.0));                  // the very edge = last square
+        QVERIFY(g.isTouched(3, 1));
+        QVERIFY(!g.touch(1.5, 0.5));                 // outside: ignored
+        QVERIFY(!g.touch(std::nan(""), 0.5));
+        QCOMPARE(g.touchedCount(), 2);
+        QCOMPARE(g.map(), QString("#...\n...#"));
+        // A fast swipe gives far apart points: the squares between are NOT
+        // filled, or a dead stripe would pass.
+        g.touch(0.1, 0.9);
+        g.touch(0.9, 0.1);
+        QVERIFY(!g.isTouched(1, 0));
+        QVERIFY(!g.complete());
+        for (double x : {0.3, 0.6})
+            for (double y : {0.2, 0.8})
+                g.touch(x, y);
+        QVERIFY(g.complete());
+    }
+
+    void touchResults()
+    {
+        TouchRun run;
+        run.grid = TouchGrid(2, 1);
+        run.grid.touch(0.2, 0.5);
+        run.device = "ELAN Touchscreen";
+        run.maxPoints = 2;
+
+        const TestResult dead = touchResult(TouchOutcome::ZoneDead, run);
+        QCOMPARE(dead.status, Status::Fail);
+        QCOMPARE(dead.summary, QString("touch: a zone does not respond (1 of 2 squares)"));
+        QVERIFY(dead.details.contains("ELAN Touchscreen"));
+        QVERIFY(dead.details.contains("#."));                       // where the dead zone is
+        QVERIFY(dead.details.contains("Most fingers at once: 2"));
+
+        run.grid.touch(0.8, 0.5);
+        QCOMPARE(touchResult(TouchOutcome::AllTouched, run).status, Status::Pass);
+        QCOMPARE(touchResult(TouchOutcome::Skipped, run).status, Status::Skipped);
+
+        run.ghostPoints = 3;   // touches nobody made: faulty, whatever the grid gave
+        const TestResult ghost = touchResult(TouchOutcome::AllTouched, run);
+        QCOMPARE(ghost.status, Status::Fail);
+        QVERIFY(ghost.summary.contains("ghost"));
+        QVERIFY(ghost.details.contains("Ghost touches (3 s without touching): 3"));
+        QCOMPARE(touchResult(TouchOutcome::Skipped, run).status, Status::Skipped);   // skipped: not judged
+
+        // One "Screen" row: "screen | touch", the worse wins; touch skipped never hides the screen.
+        const TestResult row = screenWithTouch(screenResult(ScreenAnswer::SmallDefect), ghost);
+        QCOMPARE(row.status, Status::Fail);
+        QVERIFY(row.summary.startsWith("Small defect seen"));
+        QVERIFY(row.summary.contains(" | touch: ghost touches"));
+        QCOMPARE(screenWithTouch(screenResult(ScreenAnswer::Ok), touchResult(TouchOutcome::Skipped, run)).status,
+                 Status::Pass);
+        QCOMPARE(screenWithTouch(screenResult(ScreenAnswer::SmallDefect), touchResult(TouchOutcome::Skipped, run)).status,
+                 Status::Warn);
     }
 
         void cameraFrames()
