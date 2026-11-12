@@ -68,17 +68,22 @@ De test stopt vanzelf zodra er geluid is.</translation>
         <translation type="unfinished">Overslaan</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="143"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="127"/>
+        <source>Stop all tests</source>
+        <translation type="unfinished">Alle tests stoppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="156"/>
         <source>Tone %1 of 2</source>
         <translation type="unfinished">Toon %1 van 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="156"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="169"/>
         <source>Could not play the sound (see details)</source>
         <translation type="unfinished">Kan het geluid niet afspelen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="217"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="230"/>
         <source>No sound heard yet. Check that the microphone is not muted (key or Settings &gt; Privacy &gt; Microphone). If the bar never moves, click &quot;Microphone does not work&quot;.</source>
         <translation type="unfinished">Nog geen geluid gehoord. Controleer of de microfoon niet gedempt is (toets of Instellingen &gt; Privacy &gt; Microfoon). Beweegt de balk nooit, klik dan op &quot;Microfoon werkt niet&quot;.</translation>
     </message>
@@ -287,7 +292,12 @@ De test stopt vanzelf zodra er geluid is.</translation>
         <translation type="unfinished">Overslaan</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="128"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="51"/>
+        <source>Stop all tests</source>
+        <translation type="unfinished">Alle tests stoppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="135"/>
         <source>The picture stays black or uniform. Open the privacy shutter or uncover the lens. If it does not change, click &quot;Camera is broken&quot;.</source>
         <translation type="unfinished">Het beeld blijft zwart of egaal. Open het privacyschuifje of maak de lens vrij. Verandert er niets, klik dan op &quot;Camera is defect&quot;.</translation>
     </message>
@@ -401,58 +411,58 @@ De test stopt vanzelf zodra er geluid is.</translation>
 <context>
     <name>CpuTempTest</name>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="141"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation type="unfinished">Kan de CPU-temperatuur niet uitlezen (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="136"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="147"/>
         <source>No CPU temperature sensor or speed counter readable on this PC</source>
         <translation type="unfinished">Geen CPU-temperatuursensor of snelheidsteller leesbaar op deze pc</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="186"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="197"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation type="unfinished">Geen temperatuurmeting tijdens de belastingstest (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="192"/>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="220"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="203"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="231"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation type="unfinished">thresholds.json ontbreekt of is onvolledig: kopieer de volledige programmamap opnieuw</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="199"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="210"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation type="unfinished">Piek %1 °C onder belasting (in rust %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="205"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="216"/>
         <source>Sensor barely reacted to load (%1 C): not the CPU, cannot judge</source>
         <translation type="unfinished">Sensor reageerde nauwelijks op de belasting (%1 °C): niet de CPU, geen oordeel mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="226"/>
         <source>No speed reading during the load test (see details)</source>
         <translation type="unfinished">Geen snelheidsmeting tijdens de belastingstest (zie details)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="234"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="245"/>
         <source>speed %1 % of base</source>
         <translation type="unfinished">snelheid %1 % van de basissnelheid</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="238"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="249"/>
         <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
         <translation type="unfinished">vertraagd tot %1 % van de basissnelheid op batterij: sluit de lader aan en druk opnieuw op STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="241"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="252"/>
         <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
         <translation type="unfinished">vertraagd tot %1 % van de basissnelheid onder belasting: oververhit? (ventilator, stof, koelpasta)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.h" line="28"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.h" line="30"/>
         <source>CPU under load</source>
         <translation type="unfinished">CPU onder belasting</translation>
     </message>
@@ -880,7 +890,12 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
         <translation type="unfinished">Overslaan (geen toetsenbord)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="165"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="100"/>
+        <source>Stop all tests</source>
+        <translation type="unfinished">Alle tests stoppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="171"/>
         <source>%1 / %2 keys done</source>
         <translation type="unfinished">%1 / %2 toetsen gedaan</translation>
     </message>
@@ -1009,107 +1024,117 @@ Dempen, volume en PrtSc kunnen door het systeem worden opgevangen en donker blij
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="191"/>
+        <location filename="../src/ui/MainWindow.cpp" line="204"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation type="unfinished">Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="262"/>
+        <location filename="../src/ui/MainWindow.cpp" line="281"/>
         <source>START</source>
         <translation type="unfinished">STARTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="192"/>
+        <location filename="../src/ui/MainWindow.cpp" line="205"/>
         <source>Run this test</source>
         <translation type="unfinished">Deze test uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="193"/>
+        <location filename="../src/ui/MainWindow.cpp" line="206"/>
         <source>Remember these choices</source>
         <translation type="unfinished">Deze keuzes onthouden</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="194"/>
+        <location filename="../src/ui/MainWindow.cpp" line="207"/>
         <source>The ticked tests will be ticked at the next starts</source>
         <translation type="unfinished">De aangevinkte tests zijn bij de volgende starts aangevinkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="208"/>
         <source>Fill the delivery sheet</source>
         <translation type="unfinished">Pre-leveringsfiche invullen</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>Test</source>
         <translation type="unfinished">Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>Summary</source>
         <translation type="unfinished">Samenvatting</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="197"/>
+        <location filename="../src/ui/MainWindow.cpp" line="210"/>
         <source>Select a test to see the raw details.</source>
         <translation type="unfinished">Selecteer een test om de ruwe details te zien.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="211"/>
+        <location filename="../src/ui/MainWindow.cpp" line="224"/>
         <source>This PC: reading...</source>
         <translation type="unfinished">Deze pc: wordt gelezen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="215"/>
+        <location filename="../src/ui/MainWindow.cpp" line="228"/>
         <source>This PC: %1</source>
         <translation type="unfinished">Deze pc: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="226"/>
+        <location filename="../src/ui/MainWindow.cpp" line="239"/>
         <source>WAITING</source>
         <translation type="unfinished">WACHTEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="228"/>
+        <location filename="../src/ui/MainWindow.cpp" line="241"/>
         <source>NOT CHOSEN</source>
         <translation type="unfinished">NIET GEKOZEN</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="230"/>
+        <location filename="../src/ui/MainWindow.cpp" line="243"/>
+        <source>STOPPED</source>
+        <translation type="unfinished">ONDERBROKEN</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="245"/>
         <source>RUNNING</source>
         <translation type="unfinished">BEZIG</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="262"/>
+        <location filename="../src/ui/MainWindow.cpp" line="279"/>
+        <source>STOP</source>
+        <translation type="unfinished">STOP</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="281"/>
         <source>START (%1 of %2)</source>
         <translation type="unfinished">START (%1 van %2)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="337"/>
+        <location filename="../src/ui/MainWindow.cpp" line="360"/>
         <source>Ticked tests remembered for the next starts (%1)</source>
         <translation type="unfinished">Aangevinkte tests onthouden voor de volgende starts (%1)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="339"/>
+        <location filename="../src/ui/MainWindow.cpp" line="362"/>
         <source>Could not remember the ticked tests (%1): %2</source>
         <translation type="unfinished">Kan de aangevinkte tests niet onthouden (%1): %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="382"/>
+        <location filename="../src/ui/MainWindow.cpp" line="418"/>
         <source>This PC</source>
         <translation type="unfinished">Deze pc</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="391"/>
+        <location filename="../src/ui/MainWindow.cpp" line="427"/>
         <source>Details saved to %1</source>
         <translation type="unfinished">Details opgeslagen in %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="393"/>
+        <location filename="../src/ui/MainWindow.cpp" line="429"/>
         <source>Could not save the details (%1): %2</source>
         <translation type="unfinished">Kan de details niet opslaan (%1): %2</translation>
     </message>
@@ -1151,12 +1176,12 @@ De tests die het niet juist instelt, zijn aangevinkt. Bekende tests: %2.</transl
 <context>
     <name>ScreenDialog</name>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="101"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="104"/>
         <source>Screen test</source>
         <translation type="unfinished">Schermtest</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="106"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="109"/>
         <source>%1 plain colours will fill the whole screen, one after the other.
 Look for dead or bright dots, stains, lines and darker zones.
 
@@ -1167,46 +1192,51 @@ Zoek naar dode of te heldere puntjes, vlekken, lijnen en donkere zones.
 Volgende kleur: klikken, tikken of spatie. Terug: pijl links. Stoppen: Esc.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="114"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="117"/>
         <source>Show the colours</source>
         <translation type="unfinished">Kleuren tonen</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="127"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="130"/>
         <source>No defect</source>
         <translation type="unfinished">Geen defect</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="128"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="131"/>
         <source>Small defect
 (dead pixel, light stain)</source>
         <translation type="unfinished">Klein defect
 (dode pixel, lichte vlek)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="129"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="132"/>
         <source>Broken
 (lines, dead zone, big stain, flicker)</source>
         <translation type="unfinished">Kapot
 (lijnen, dode zone, grote vlek, flikkeren)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="143"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="146"/>
         <source>Skip</source>
         <translation type="unfinished">Overslaan</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="166"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="148"/>
+        <source>Stop all tests</source>
+        <translation type="unfinished">Alle tests stoppen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="183"/>
         <source>What did you see?</source>
         <translation type="unfinished">Wat hebt u gezien?</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="169"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="186"/>
         <source>See again</source>
         <translation type="unfinished">Opnieuw bekijken</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="173"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="190"/>
         <source>Stopped before the last colour: show them again, or Skip.</source>
         <translation type="unfinished">Gestopt voor de laatste kleur: toon ze opnieuw, of Overslaan.</translation>
     </message>
@@ -1333,7 +1363,7 @@ Volgende kleur: klikken, tikken of spatie. Terug: pijl links. Stoppen: Esc.</tra
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="87"/>
+        <location filename="../src/core/TestRunner.cpp" line="119"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation type="unfinished">Test antwoordde niet binnen %1 s: druk opnieuw op STARTEN</translation>
     </message>

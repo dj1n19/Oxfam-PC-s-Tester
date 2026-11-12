@@ -122,6 +122,19 @@ AudioDialog::AudioDialog(const QAudioDevice& device, const QAudioFormat& format,
     m_micPage->hide();
     top->addWidget(m_micPage);
 
+    // On both pages. The runner stops first, so the "skipped" answer of
+    // close() is ignored.
+    auto* stop = new QPushButton(tr("Stop all tests"), this);
+    stop->setAutoDefault(false);
+    auto* stopRow = new QHBoxLayout;
+    stopRow->addStretch();
+    stopRow->addWidget(stop);
+    top->addLayout(stopRow);
+    connect(stop, &QPushButton::clicked, this, [this] {
+        emit stopAll();
+        close();
+    });
+
     m_sink = std::make_unique<QAudioSink>(m_device, m_format);
     // Small delay so the window is visible before the first tone.
     QTimer::singleShot(400, this, &AudioDialog::play);

@@ -1,4 +1,6 @@
 #pragma once
+#include <atomic>
+#include <memory>
 #include <vector>
 #include <QFutureWatcher>
 #include "core/ITest.h"
@@ -29,9 +31,12 @@ public:
     QString id() const override { return QStringLiteral("cpu_load"); }
     bool runsLast() const override { return true; }   // ~30 s of full load: after the interactive tests
     void run() override;
+    void cancel() override;   // STOP: the burn threads end at once
 
     // Blocking (~30 s): loads every core and samples the temperature.
-    static CpuLoadRun runLoad(int seconds);
+    // cancel (may be null) set to true stops the load; the sampling still
+    // ends normally, and that result is then ignored.
+    static CpuLoadRun runLoad(int seconds, const std::atomic<bool>* cancel = nullptr);
 
     // Pure: sorts sampleCpu()'s readings (first = at rest) into a CpuLoadRun.
     static CpuLoadRun collect(const std::vector<CpuReading>& readings);
@@ -46,4 +51,7 @@ private:
 
     Thresholds m_thresholds;
     QFutureWatcher<CpuLoadRun> m_watcher;
+    // One flag per run, shared with its worker: a cancelled worker may still
+    // be sampling when the next run starts, and must not see that run's flag.
+    std::shared_ptr<std::atomic<bool>> m_cancel;
 };

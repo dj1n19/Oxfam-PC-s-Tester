@@ -68,17 +68,22 @@ Le test se termine tout seul quand un son est entendu.</translation>
         <translation type="unfinished">Passer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="143"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="127"/>
+        <source>Stop all tests</source>
+        <translation>Arrêter tous les tests</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="156"/>
         <source>Tone %1 of 2</source>
         <translation>Bip %1 sur 2</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="156"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="169"/>
         <source>Could not play the sound (see details)</source>
         <translation>Impossible de jouer le son (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/AudioDialog.cpp" line="217"/>
+        <location filename="../src/ui/interactive/AudioDialog.cpp" line="230"/>
         <source>No sound heard yet. Check that the microphone is not muted (key or Settings &gt; Privacy &gt; Microphone). If the bar never moves, click &quot;Microphone does not work&quot;.</source>
         <translation>Aucun son entendu pour l&apos;instant. Vérifiez que le micro n&apos;est pas coupé (touche ou Paramètres &gt; Confidentialité &gt; Microphone). Si la barre ne bouge jamais, cliquez sur « Le micro ne marche pas ».</translation>
     </message>
@@ -287,7 +292,12 @@ Le test se termine tout seul quand un son est entendu.</translation>
         <translation>Passer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/CameraDialog.cpp" line="128"/>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="51"/>
+        <source>Stop all tests</source>
+        <translation>Arrêter tous les tests</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/CameraDialog.cpp" line="135"/>
         <source>The picture stays black or uniform. Open the privacy shutter or uncover the lens. If it does not change, click &quot;Camera is broken&quot;.</source>
         <translation>L&apos;image reste noire ou uniforme. Ouvrez le cache de la caméra ou dégagez l&apos;objectif. Si rien ne change, cliquez sur « La caméra est en panne ».</translation>
     </message>
@@ -401,58 +411,58 @@ Le test se termine tout seul quand un son est entendu.</translation>
 <context>
     <name>CpuTempTest</name>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="130"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="141"/>
         <source>Could not read the CPU temperature (see details)</source>
         <translation>Impossible de lire la température CPU (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="136"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="147"/>
         <source>No CPU temperature sensor or speed counter readable on this PC</source>
         <translation>Aucun capteur de température ni compteur de vitesse CPU lisible sur ce PC</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="186"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="197"/>
         <source>No temperature reading during the load test (see details)</source>
         <translation>Aucune mesure de température pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="192"/>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="220"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="203"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="231"/>
         <source>thresholds.json missing or incomplete: copy the whole program folder again</source>
         <translation>thresholds.json absent ou incomplet : recopiez tout le dossier du programme</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="199"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="210"/>
         <source>Peak %1 C under load (idle %2 C)</source>
         <translation>Pic %1 °C en charge (au repos %2 °C)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="205"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="216"/>
         <source>Sensor barely reacted to load (%1 C): not the CPU, cannot judge</source>
         <translation>Le capteur a à peine réagi à la charge (%1 °C) : ce n&apos;est pas le CPU, impossible de juger</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="215"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="226"/>
         <source>No speed reading during the load test (see details)</source>
         <translation>Aucune mesure de vitesse pendant le test en charge (voir détails)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="234"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="245"/>
         <source>speed %1 % of base</source>
         <translation>vitesse %1 % de la fréquence de base</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="238"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="249"/>
         <source>slowed to %1 % of base speed on battery: plug in the charger and press START again</source>
         <translation>ralenti à %1 % de la fréquence de base sur batterie : branchez le chargeur et appuyez à nouveau sur DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="241"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.cpp" line="252"/>
         <source>slowed to %1 % of base speed under load: overheating? (fan, dust, thermal paste)</source>
         <translation>ralenti à %1 % de la fréquence de base en charge : surchauffe ? (ventilateur, poussière, pâte thermique)</translation>
     </message>
     <message>
-        <location filename="../src/tests/cputemp/CpuTempTest.h" line="28"/>
+        <location filename="../src/tests/cputemp/CpuTempTest.h" line="30"/>
         <source>CPU under load</source>
         <translation>CPU sous charge</translation>
     </message>
@@ -880,7 +890,12 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
         <translation>Passer (pas de clavier)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="165"/>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="100"/>
+        <source>Stop all tests</source>
+        <translation>Arrêter tous les tests</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/KeyboardDialog.cpp" line="171"/>
         <source>%1 / %2 keys done</source>
         <translation>%1 / %2 touches faites</translation>
     </message>
@@ -1009,107 +1024,117 @@ Muet, volume et Impr écran peuvent être captés par le système et rester éte
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="191"/>
+        <location filename="../src/ui/MainWindow.cpp" line="204"/>
         <source>Lazy Djin&apos;s Tester</source>
         <translation>Lazy Djin&apos;s Tester</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="262"/>
+        <location filename="../src/ui/MainWindow.cpp" line="281"/>
         <source>START</source>
         <translation>DÉMARRER</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="192"/>
+        <location filename="../src/ui/MainWindow.cpp" line="205"/>
         <source>Run this test</source>
         <translation>Lancer ce test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="193"/>
+        <location filename="../src/ui/MainWindow.cpp" line="206"/>
         <source>Remember these choices</source>
         <translation>Retenir ces choix</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="194"/>
+        <location filename="../src/ui/MainWindow.cpp" line="207"/>
         <source>The ticked tests will be ticked at the next starts</source>
         <translation>Les tests cochés seront cochés aux prochains démarrages</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="195"/>
+        <location filename="../src/ui/MainWindow.cpp" line="208"/>
         <source>Fill the delivery sheet</source>
         <translation>Remplir la fiche de pré-livraison</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>Status</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>Test</source>
         <translation>Test</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="196"/>
+        <location filename="../src/ui/MainWindow.cpp" line="209"/>
         <source>Summary</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="197"/>
+        <location filename="../src/ui/MainWindow.cpp" line="210"/>
         <source>Select a test to see the raw details.</source>
         <translation>Sélectionnez un test pour voir les détails bruts.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="211"/>
+        <location filename="../src/ui/MainWindow.cpp" line="224"/>
         <source>This PC: reading...</source>
         <translation>Ce PC : lecture...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="215"/>
+        <location filename="../src/ui/MainWindow.cpp" line="228"/>
         <source>This PC: %1</source>
         <translation>Ce PC : %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="226"/>
+        <location filename="../src/ui/MainWindow.cpp" line="239"/>
         <source>WAITING</source>
         <translation>EN ATTENTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="228"/>
+        <location filename="../src/ui/MainWindow.cpp" line="241"/>
         <source>NOT CHOSEN</source>
         <translation>NON CHOISI</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="230"/>
+        <location filename="../src/ui/MainWindow.cpp" line="243"/>
+        <source>STOPPED</source>
+        <translation>INTERROMPU</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="245"/>
         <source>RUNNING</source>
         <translation>EN COURS</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="262"/>
+        <location filename="../src/ui/MainWindow.cpp" line="279"/>
+        <source>STOP</source>
+        <translation>STOP</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MainWindow.cpp" line="281"/>
         <source>START (%1 of %2)</source>
         <translation>START (%1 sur %2)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="337"/>
+        <location filename="../src/ui/MainWindow.cpp" line="360"/>
         <source>Ticked tests remembered for the next starts (%1)</source>
         <translation>Tests cochés retenus pour les prochains démarrages (%1)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="339"/>
+        <location filename="../src/ui/MainWindow.cpp" line="362"/>
         <source>Could not remember the ticked tests (%1): %2</source>
         <translation>Impossible de retenir les tests cochés (%1) : %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="382"/>
+        <location filename="../src/ui/MainWindow.cpp" line="418"/>
         <source>This PC</source>
         <translation>Ce PC</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="391"/>
+        <location filename="../src/ui/MainWindow.cpp" line="427"/>
         <source>Details saved to %1</source>
         <translation>Détails enregistrés dans %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="393"/>
+        <location filename="../src/ui/MainWindow.cpp" line="429"/>
         <source>Could not save the details (%1): %2</source>
         <translation>Impossible d&apos;enregistrer les détails (%1) : %2</translation>
     </message>
@@ -1151,12 +1176,12 @@ Les tests qu&apos;il ne règle pas correctement sont cochés. Tests connus : %2.
 <context>
     <name>ScreenDialog</name>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="101"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="104"/>
         <source>Screen test</source>
         <translation>Test de l&apos;écran</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="106"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="109"/>
         <source>%1 plain colours will fill the whole screen, one after the other.
 Look for dead or bright dots, stains, lines and darker zones.
 
@@ -1167,46 +1192,51 @@ Cherchez les points morts ou trop lumineux, les taches, les lignes et les zones 
 Couleur suivante : clic, toucher ou Espace. Retour : flèche gauche. Arrêter : Échap.</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="114"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="117"/>
         <source>Show the colours</source>
         <translation>Afficher les couleurs</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="127"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="130"/>
         <source>No defect</source>
         <translation>Aucun défaut</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="128"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="131"/>
         <source>Small defect
 (dead pixel, light stain)</source>
         <translation>Petit défaut
 (pixel mort, tache légère)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="129"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="132"/>
         <source>Broken
 (lines, dead zone, big stain, flicker)</source>
         <translation>Cassé
 (lignes, zone morte, grosse tache, scintillement)</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="143"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="146"/>
         <source>Skip</source>
         <translation type="unfinished">Passer</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="166"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="148"/>
+        <source>Stop all tests</source>
+        <translation>Arrêter tous les tests</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="183"/>
         <source>What did you see?</source>
         <translation>Qu&apos;avez-vous vu ?</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="169"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="186"/>
         <source>See again</source>
         <translation>Revoir</translation>
     </message>
     <message>
-        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="173"/>
+        <location filename="../src/ui/interactive/ScreenDialog.cpp" line="190"/>
         <source>Stopped before the last colour: show them again, or Skip.</source>
         <translation>Arrêté avant la dernière couleur : les afficher à nouveau, ou Passer.</translation>
     </message>
@@ -1333,7 +1363,7 @@ Couleur suivante : clic, toucher ou Espace. Retour : flèche gauche. Arrêter : 
 <context>
     <name>TestRunner</name>
     <message>
-        <location filename="../src/core/TestRunner.cpp" line="87"/>
+        <location filename="../src/core/TestRunner.cpp" line="119"/>
         <source>Test did not answer within %1 s: press START again</source>
         <translation>Le test n&apos;a pas répondu en %1 s : appuyez à nouveau sur DÉMARRER</translation>
     </message>

@@ -97,7 +97,8 @@ KeyboardDialog::KeyboardDialog(const KeyLayout& layout, QWidget* parent)
     auto* buttons = new QHBoxLayout;
     auto* broken = new QPushButton(tr("A key does not work"), this);
     auto* skip = new QPushButton(tr("Skip (no keyboard)"), this);
-    for (QPushButton* b : {broken, skip}) {
+    auto* stop = new QPushButton(tr("Stop all tests"), this);
+    for (QPushButton* b : {broken, skip, stop}) {
         b->setFocusPolicy(Qt::NoFocus);
         b->setMinimumHeight(40);
         buttons->addWidget(b);
@@ -105,6 +106,11 @@ KeyboardDialog::KeyboardDialog(const KeyLayout& layout, QWidget* parent)
     top->addLayout(buttons);
     connect(broken, &QPushButton::clicked, this, [this] { finish(KeyTracker::Outcome::KeyBroken); });
     connect(skip, &QPushButton::clicked, this, [this] { finish(KeyTracker::Outcome::Skipped); });
+    // The runner stops first, so the "skipped" answer of close() is ignored.
+    connect(stop, &QPushButton::clicked, this, [this] {
+        emit stopAll();
+        close();
+    });
 
     // Deleted with the dialog, which uninstalls it.
     m_rawKeys = makeRawKeyFilter([this](int code) { keyPressed(code); });

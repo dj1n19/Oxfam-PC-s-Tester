@@ -40,6 +40,7 @@ private:
     std::vector<int> chosenRows() const;   // ticked rows, in order
     void onTestStarted(int row);
     void onTestFinished(int row, const TestResult& result);
+    void onTestStopped(int row);
     void onAllFinished();
     void saveReport(const Verdict& verdict);
     void onDeliveryClicked();

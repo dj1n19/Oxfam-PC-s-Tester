@@ -21,11 +21,16 @@ public:
     void start(std::vector<int> indexes);
     void startAll();
     void startOne(int index);   // that test alone
+    // STOP: the test running now is abandoned (its late answer ignored) and
+    // the next ones never start; testStopped for each of them, then
+    // allFinished as usual.
+    void stop();
     bool isRunning() const { return m_running; }
 
 signals:
     void testStarted(int index);
     void testFinished(int index, const TestResult& result);
+    void testStopped(int index);   // part of a stopped run, no result
     void allFinished();   // every test answered
 
 private:

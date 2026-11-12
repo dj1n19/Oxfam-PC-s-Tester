@@ -145,11 +145,19 @@ ScreenDialog::ScreenDialog(QScreen* screen, QWidget* parent) : QDialog(parent), 
 
     auto* skip = new QPushButton(tr("Skip"), this);
     skip->setAutoDefault(false);
+    auto* stop = new QPushButton(tr("Stop all tests"), this);
+    stop->setAutoDefault(false);
     auto* row = new QHBoxLayout;
     row->addStretch();
     row->addWidget(skip);
+    row->addWidget(stop);
     top->addLayout(row);
     connect(skip, &QPushButton::clicked, this, [this] { finish(screenSkipped()); });
+    // The runner stops first, so the "skipped" answer of close() is ignored.
+    connect(stop, &QPushButton::clicked, this, [this] {
+        emit stopAll();
+        close();
+    });
 
     m_patterns = std::make_unique<PatternWindow>([this](bool seenAll) { coloursClosed(seenAll); });
 }

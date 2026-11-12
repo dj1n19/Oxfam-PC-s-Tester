@@ -40,6 +40,7 @@ enum Column { ColStatus, ColTest, ColSummary, ColCount };
 constexpr int kWaiting = -1;
 constexpr int kRunning = -2;
 constexpr int kNotChosen = -3;   // unticked before START: not part of this run
+constexpr int kStopped = -4;     // STOP pressed before this test answered
 
 // Coloured text on the dark table, not coloured cells.
 void setCell(QTableWidget* table, int row, int col, const QString& text, const QColor& color,
@@ -159,6 +160,7 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
             [this] { setLanguage(m_language->currentData().toString()); });
     connect(&m_runner, &TestRunner::testStarted, this, &MainWindow::onTestStarted);
     connect(&m_runner, &TestRunner::testFinished, this, &MainWindow::onTestFinished);
+    connect(&m_runner, &TestRunner::testStopped, this, &MainWindow::onTestStopped);
     connect(&m_runner, &TestRunner::allFinished, this, &MainWindow::onAllFinished);
     connect(m_table, &QTableWidget::currentCellChanged, this, [this](int row, int, int, int) {
         showDetailsOf(row);
@@ -237,6 +239,8 @@ void MainWindow::setStatusCell(int row, int state)
         setCell(m_table, row, ColStatus, tr("WAITING"), Theme::waitingColor());
     } else if (state == kNotChosen) {
         setCell(m_table, row, ColStatus, tr("NOT CHOSEN"), Theme::dimText());
+    } else if (state == kStopped) {
+        setCell(m_table, row, ColStatus, tr("STOPPED"), Theme::dimText());
     } else if (state == kRunning) {
         setCell(m_table, row, ColStatus, tr("RUNNING"), Theme::runningColor(), Theme::runningIcon());
     } else {
@@ -267,10 +271,14 @@ void MainWindow::updateButtons()
 {
     const bool idle = !m_runner.isRunning();
     const auto chosen = static_cast<int>(chosenRows().size());
-    m_startButton->setEnabled(idle && chosen > 0);
+    // During a run the same big button is STOP (onStartClicked).
+    m_startButton->setEnabled(!idle || chosen > 0);
     // How many tests START will run, when not all: the tick boxes alone
     // were missed by a colleague (2026-10-28).
-    m_startButton->setText(chosen == m_runner.count() ? tr("START") : tr("START (%1 of %2)").arg(chosen).arg(m_runner.count()));
+    if (!idle)
+        m_startButton->setText(tr("STOP"));
+    else
+        m_startButton->setText(chosen == m_runner.count() ? tr("START") : tr("START (%1 of %2)").arg(chosen).arg(m_runner.count()));
     m_runAgainButton->setEnabled(idle && m_table->currentRow() >= 0);
     m_deliveryButton->setEnabled(idle && anyRan());
     m_language->setEnabled(idle);
@@ -311,6 +319,10 @@ bool MainWindow::anyRan() const
 
 void MainWindow::onStartClicked()
 {
+    if (m_runner.isRunning()) {   // the button reads STOP
+        m_runner.stop();          // testStopped, then allFinished: verdict and report as usual
+        return;
+    }
     const std::vector<int> rows = chosenRows();
     resetRows();
     // The unticked rows say so; they stay out of the verdict ("PARTIAL"),
@@ -363,6 +375,19 @@ void MainWindow::onTestFinished(int row, const TestResult& result)
     m_table->item(row, ColTest)->setData(Qt::UserRole, result.details);
     m_results[static_cast<size_t>(row)] = result;
     m_ran[static_cast<size_t>(row)] = true;
+    if (m_table->currentRow() == row)
+        showDetailsOf(row);
+}
+
+// A test of the stopped run: the one running at STOP, or one still to come.
+// A row that had a result before ("Run this test" stopped) loses it: stale.
+void MainWindow::onTestStopped(int row)
+{
+    m_ran[static_cast<size_t>(row)] = false;
+    m_results[static_cast<size_t>(row)] = TestResult{};
+    m_table->item(row, ColTest)->setData(Qt::UserRole, QString());
+    setCell(m_table, row, ColSummary, QString(), Theme::text());
+    setStatusCell(row, kStopped);
     if (m_table->currentRow() == row)
         showDetailsOf(row);
 }

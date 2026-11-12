@@ -1,6 +1,7 @@
 #include "core/TestRunner.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <QTimer>
 
 namespace {
@@ -22,6 +23,11 @@ void TestRunner::add(std::unique_ptr<ITest> test)
     ITest* raw = test.get();
     connect(raw, &ITest::finished, this,
             [this, raw](const TestResult& r) { onTestFinished(raw, r); });
+    // Only the test running now may stop the run (a stale dialog cannot).
+    connect(raw, &ITest::stopAllRequested, this, [this, raw] {
+        if (m_running && m_current >= 0 && m_tests[static_cast<size_t>(m_current)].get() == raw)
+            stop();
+    });
 
     // Insert before the first test of a later group: the order of add()
     // is kept inside each group.
@@ -59,6 +65,32 @@ void TestRunner::startAll()
 void TestRunner::startOne(int index)
 {
     start({index});
+}
+
+void TestRunner::stop()
+{
+    if (!m_running)
+        return;
+    const int index = m_current;
+    // The tests of this run that will now never answer: the current one and
+    // the ones not started yet.
+    std::vector<int> stopped(m_queue.begin() + static_cast<std::ptrdiff_t>(m_next), m_queue.end());
+    if (index >= 0)
+        stopped.insert(stopped.begin(), index);
+    // First forget the run, then cancel: an answer the test gives while
+    // cancelling (a dialog closing as "skipped") must be ignored too.
+    ++m_run;   // its watchdog does nothing now
+    m_running = false;
+    m_current = -1;
+    m_queue.clear();
+    m_next = 0;
+    if (index >= 0) {
+        m_waiting[static_cast<size_t>(index)] = false;
+        m_tests[static_cast<size_t>(index)]->cancel();
+    }
+    for (int i : stopped)
+        emit testStopped(i);
+    emit allFinished();
 }
 
 void TestRunner::runNext()

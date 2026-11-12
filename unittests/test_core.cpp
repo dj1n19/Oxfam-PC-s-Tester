@@ -44,6 +44,8 @@ public:
     bool needsUser() const override { return m_user; }
     bool runsLast() const override { return m_last; }
     void run() override { ++runs; }
+    void cancel() override { ++cancels; }
+    void askStopAll() { emit stopAllRequested(); }   // a dialog's "Stop all tests"
     void answer(Status s)
     {
         TestResult r;
@@ -51,6 +53,7 @@ public:
         emit finished(r);
     }
     int runs = 0;
+    int cancels = 0;
 
 private:
     bool m_user;
@@ -1563,6 +1566,63 @@ private slots:
         b->answer(Status::Pass);
         c->answer(Status::Pass);
         QCOMPARE(all.count(), 2);
+    }
+
+    // STOP: the running test is cancelled, its late answer ignored, the
+    // next ones never start; each gets testStopped, then allFinished.
+    void runnerStops()
+    {
+        TestRunner runner;
+        std::vector<FakeTest*> t;
+        for (bool user : {false, false, true}) {
+            auto test = std::make_unique<FakeTest>(user, false);
+            t.push_back(test.get());
+            runner.add(std::move(test));
+        }
+        QSignalSpy finished(&runner, &TestRunner::testFinished);
+        QSignalSpy stopped(&runner, &TestRunner::testStopped);
+        QSignalSpy all(&runner, &TestRunner::allFinished);
+
+        runner.stop();                     // not running: nothing
+        QCOMPARE(all.count(), 0);
+
+        runner.startAll();
+        t[0]->answer(Status::Pass);
+        QCOMPARE(t[1]->runs, 1);
+        runner.stop();
+        QVERIFY(!runner.isRunning());
+        QCOMPARE(t[1]->cancels, 1);
+        QCOMPARE(t[0]->cancels, 0);        // already answered
+        QCOMPARE(t[2]->runs, 0);           // never started
+        QCOMPARE(stopped.count(), 2);
+        QCOMPARE(stopped.at(0).at(0).toInt(), 1);
+        QCOMPARE(stopped.at(1).at(0).toInt(), 2);
+        QCOMPARE(all.count(), 1);
+        t[1]->answer(Status::Fail);        // late answer: ignored
+        QCOMPARE(finished.count(), 1);
+        QCOMPARE(all.count(), 1);
+
+        // "Stop all tests" in a dialog: only the test running now may stop the run.
+        runner.startAll();
+        t[0]->answer(Status::Pass);
+        t[1]->answer(Status::Pass);
+        QCOMPARE(t[2]->runs, 1);
+        t[0]->askStopAll();                // not running: ignored
+        QVERIFY(runner.isRunning());
+        t[2]->askStopAll();
+        QVERIFY(!runner.isRunning());
+        QCOMPARE(t[2]->cancels, 1);
+        t[2]->answer(Status::Skipped);     // the dialog closing: ignored
+        QCOMPARE(finished.count(), 3);
+        QCOMPARE(stopped.count(), 3);
+        QCOMPARE(all.count(), 2);
+
+        // A new START after a STOP runs normally.
+        runner.startOne(1);
+        QCOMPARE(t[1]->runs, 3);
+        t[1]->answer(Status::Warn);
+        QCOMPARE(finished.count(), 4);
+        QCOMPARE(all.count(), 3);
     }
 
     void testChoiceFile()

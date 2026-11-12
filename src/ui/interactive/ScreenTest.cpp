@@ -17,5 +17,6 @@ void ScreenTest::run()
     auto* dialog = new ScreenDialog(screen);
     dialog->setWindowModality(Qt::ApplicationModal);
     connect(dialog, &ScreenDialog::outcome, this, &ITest::finished);
+    connect(dialog, &ScreenDialog::stopAll, this, &ITest::stopAllRequested);
     dialog->show();
 }

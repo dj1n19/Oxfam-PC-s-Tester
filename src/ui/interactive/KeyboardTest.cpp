@@ -23,6 +23,7 @@ void KeyboardTest::run()
     auto* dialog = new KeyboardDialog(m_layout);
     dialog->setWindowModality(Qt::ApplicationModal);
     connect(dialog, &KeyboardDialog::outcome, this, &ITest::finished);
+    connect(dialog, &KeyboardDialog::stopAll, this, &ITest::stopAllRequested);
     dialog->show();
     dialog->activateWindow();
     dialog->setFocus();

@@ -32,6 +32,13 @@ void CameraTest::run()
     testNext();
 }
 
+void CameraTest::cancel()
+{
+    // STOP: no next camera. The current dialog closes by itself; testNext()
+    // then answers at once, and the runner ignores that answer.
+    m_cameras.clear();
+}
+
 TestResult CameraTest::withLeftOut(TestResult r) const
 {
     for (const QString& name : m_leftOut)
@@ -57,5 +64,6 @@ void CameraTest::testNext()
         // camera) before the next one opens.
         QMetaObject::invokeMethod(this, &CameraTest::testNext, Qt::QueuedConnection);
     });
+    connect(dialog, &CameraDialog::stopAll, this, &ITest::stopAllRequested);
     dialog->show();
 }

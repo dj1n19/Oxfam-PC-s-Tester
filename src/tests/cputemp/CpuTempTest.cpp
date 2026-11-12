@@ -27,12 +27,13 @@ constexpr double kMinRiseC = 5.0;
 // nothing at all (real run: "Speeds under load:" empty).
 constexpr qint64 kSettleMs = 5000;
 
-// Keeps one core busy until stop is set. The result goes to an atomic so the
-// compiler cannot remove the loop as "useless".
-void burn(const std::atomic<bool>& stop, std::atomic<double>& sink)
+// Keeps one core busy until stop (end of the load) or cancel (STOP pressed)
+// is set. The result goes to an atomic so the compiler cannot remove the loop
+// as "useless".
+void burn(const std::atomic<bool>& stop, const std::atomic<bool>& cancel, std::atomic<double>& sink)
 {
     double x = 1.0;
-    while (!stop.load(std::memory_order_relaxed)) {
+    while (!stop.load(std::memory_order_relaxed) && !cancel.load(std::memory_order_relaxed)) {
         for (int i = 0; i < 100000; ++i)
             x = std::sqrt(x + i);
     }
@@ -51,11 +52,21 @@ CpuTempTest::CpuTempTest(Thresholds thresholds, QObject* parent)
 
 void CpuTempTest::run()
 {
-    m_watcher.setFuture(QtConcurrent::run(&CpuTempTest::runLoad, kLoadSeconds));
+    m_cancel = std::make_shared<std::atomic<bool>>(false);
+    // The lambda keeps the flag alive as long as the worker runs.
+    m_watcher.setFuture(QtConcurrent::run([cancel = m_cancel] { return runLoad(kLoadSeconds, cancel.get()); }));
 }
 
-CpuLoadRun CpuTempTest::runLoad(int seconds)
+void CpuTempTest::cancel()
 {
+    if (m_cancel)
+        m_cancel->store(true);
+}
+
+CpuLoadRun CpuTempTest::runLoad(int seconds, const std::atomic<bool>* cancel)
+{
+    static const std::atomic<bool> never{false};
+    const std::atomic<bool>& cancelled = cancel ? *cancel : never;
     // Plain QThreads, not the QtConcurrent pool: this function already runs
     // in that pool. Low priority so the readings still get CPU time.
     std::atomic<bool> stop{false};
@@ -65,11 +76,11 @@ CpuLoadRun CpuTempTest::runLoad(int seconds)
     // Called by sampleCpu() after the reading at rest: load only if there is
     // something to watch (do not heat the CPU for nothing).
     const auto startLoad = [&](const CpuReading& idle) {
-        if (!idle.error.isEmpty() || (!idle.hasTemp && !idle.hasSpeed))
+        if (!idle.error.isEmpty() || (!idle.hasTemp && !idle.hasSpeed) || cancelled.load())
             return false;
         threads = std::max(1, QThread::idealThreadCount());
         for (int i = 0; i < threads; ++i) {
-            workers.emplace_back(QThread::create(burn, std::cref(stop), std::ref(sink)));
+            workers.emplace_back(QThread::create(burn, std::cref(stop), std::cref(cancelled), std::ref(sink)));
             workers.back()->start(QThread::LowPriority);
         }
         return true;

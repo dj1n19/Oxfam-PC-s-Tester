@@ -20,7 +20,13 @@ public:
     // Automatic tests only: the runner gives up (Error) after this long.
     virtual int timeoutMs() const { return 60'000; }
     virtual void run() = 0;
+    // The technician pressed STOP during this test: stop what costs (CPU
+    // load, next camera). finished() may still come; the runner ignores it.
+    virtual void cancel() {}
 
 signals:
     void finished(const TestResult& result);
+    // "Stop all tests" in an interactive test's dialog (the main window's
+    // STOP cannot be reached behind a modal dialog).
+    void stopAllRequested();
 };

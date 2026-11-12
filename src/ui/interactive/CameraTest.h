@@ -17,6 +17,7 @@ public:
     QString id() const override { return QStringLiteral("camera"); }
     bool needsUser() const override { return true; }
     void run() override;
+    void cancel() override;   // STOP: no next camera
 
 private:
     void testNext();

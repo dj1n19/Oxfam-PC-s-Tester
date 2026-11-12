@@ -27,6 +27,7 @@ public:
 
 signals:
     void outcome(const TestResult& result);   // emitted exactly once
+    void stopAll();   // "Stop all tests": emitted just before the dialog closes
 
 protected:
     void closeEvent(QCloseEvent* e) override;

@@ -49,5 +49,6 @@ void AudioTest::run()
     auto* dialog = new AudioDialog(device, format);
     dialog->setWindowModality(Qt::ApplicationModal);
     connect(dialog, &AudioDialog::outcome, this, &ITest::finished);
+    connect(dialog, &AudioDialog::stopAll, this, &ITest::stopAllRequested);
     dialog->show();
 }

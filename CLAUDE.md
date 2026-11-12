@@ -77,13 +77,20 @@ Never add `Qt6::Widgets` or `Qt6::Gui` to `oxcore`.
   - **Error** = the test could not run (no permission, tool missing, bad output, timeout).
   - **Never show green for an Error.** A missing threshold or unparsable output is an Error.
 - `ITest` (QObject): `name()` (translated), `id()` (stable English key of `config/tests.json`, never translated),
-  `needsUser()`, `run()`, signal `finished(const TestResult&)`.
+  `needsUser()`, `run()`, `cancel()`, signals `finished(const TestResult&)` and `stopAllRequested()`.
   `run()` **must emit `finished` exactly once**, now or later.
 - `TestRunner`: runs tests one at a time; `add()` places automatic tests, then interactive ones, then tests with
   `runsLast()` (only `CpuTempTest`: run during the interactive tests, its full load made the keyboard and audio
   dialogs freeze on real hardware, developer's report 2026-10-14). Each automatic test has its own
   watchdog, `ITest::timeoutMs()` (60 s), Error if silent; late or duplicate answers are ignored.
   `startOne(index)` runs one test alone (same path: a sequence from index to index, watchdog, `allFinished`).
+  `stop()` (developer's request 2026-11-12: STOP at once, not after the current test): the current test gets
+  `ITest::cancel()` (default: nothing; `CpuTempTest` ends its burn threads, `CameraTest` opens no next camera) and its
+  late answer is ignored, the next ones never start; `testStopped(index)` for each of them, then `allFinished`. The
+  main window's START reads STOP during a run; each interactive dialog has "Stop all tests" (the main window is
+  blocked behind it): the dialog emits `stopAll()`, its test `ITest::stopAllRequested()`, the runner stops only if
+  that test is the current one, then the dialog closes (its "skipped" answer is ignored). Stopped rows read
+  "STOPPED", count as never run (PARTIAL verdict), lose an older result, and the run report is written as usual.
 - `TestResult`: `status`, one-line `summary` (list), `details` (raw readings shown on row selection). **Always put raw tool output in `details`**: it is how problems are diagnosed on real machines.
 - **Error summaries tell the technician what to do.** If they can fix it (password cancelled, smartctl or a config
   file missing, camera busy): say how, e.g. "...: press START again and type it". If not: say what failed and end

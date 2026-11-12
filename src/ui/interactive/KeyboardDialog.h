@@ -14,6 +14,7 @@ public:
 
 signals:
     void outcome(const TestResult& result);   // emitted exactly once
+    void stopAll();   // "Stop all tests": emitted just before the dialog closes
 
 protected:
     bool event(QEvent* e) override;           // catches Tab, Esc... before Qt uses them

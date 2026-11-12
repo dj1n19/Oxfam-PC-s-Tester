@@ -48,8 +48,9 @@ CameraDialog::CameraDialog(const QCameraDevice& device, int number, int total, Q
 
     auto* broken = new QPushButton(tr("Camera is broken"), this);
     auto* skip = new QPushButton(tr("Skip"), this);
+    auto* stop = new QPushButton(tr("Stop all tests"), this);
     auto* row = new QHBoxLayout;
-    for (QPushButton* b : {broken, skip}) {
+    for (QPushButton* b : {broken, skip, stop}) {
         b->setAutoDefault(false);
         b->setMinimumHeight(40);
         row->addWidget(b);
@@ -57,6 +58,12 @@ CameraDialog::CameraDialog(const QCameraDevice& device, int number, int total, Q
     top->addLayout(row);
     connect(broken, &QPushButton::clicked, this, [this] { finish(CameraOutcome::Broken); });
     connect(skip, &QPushButton::clicked, this, [this] { finish(CameraOutcome::Skipped); });
+    // The runner stops first (and CameraTest opens no next camera), so the
+    // "skipped" answer of close() is ignored.
+    connect(stop, &QPushButton::clicked, this, [this] {
+        emit stopAll();
+        close();
+    });
 
     m_session.setCamera(&m_camera);
     m_session.setVideoOutput(&m_sink);   // frames come to us, not to a widget
