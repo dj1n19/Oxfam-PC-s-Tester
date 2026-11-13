@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QTimer>
 
+#include "core/CrashNote.h"
 #include "core/ProgramFolder.h"
 #include "core/TestChoice.h"
 #include "core/TestRunner.h"
@@ -32,6 +33,8 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Lazy Djin's Tester"));
     QApplication::setApplicationVersion(QStringLiteral(OX_APP_VERSION));   // set by CMake (APP_VERSION)
+    // A crash leaves "<date> CRASH.txt" in logs/ (a crash writes no run report).
+    installCrashNote(folderAroundProgram().filePath(QStringLiteral("logs")));
     // The djinn, in every size we have: Qt picks the closest one for the title bar,
     // the taskbar and Alt+Tab. Set on the application, so every dialog gets it too.
     QIcon icon;
@@ -113,6 +116,13 @@ int main(int argc, char* argv[])
                                          "Known tests: %2.")
                                  .arg(problems.join(QStringLiteral("; ")), ids.join(QStringLiteral(", "))));
     }
+
+    // The crash note names the test running (id: English, stable).
+    QObject::connect(&runner, &TestRunner::testStarted, [&runner](int index) {
+        const ITest& t = runner.test(index);
+        setCrashContext(t.id() + QStringLiteral(" (") + t.name() + QLatin1Char(')'));
+    });
+    QObject::connect(&runner, &TestRunner::allFinished, [] { setCrashContext(QString()); });
 
     MainWindow window(runner, delivery, ticked);
     window.show();

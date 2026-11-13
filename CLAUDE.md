@@ -182,6 +182,7 @@ CI: `.github/workflows/build.yml`.
 src/
   core/        TestResult.h ITest.h Verdict.h Thresholds.{h,cpp} TestRunner.{h,cpp} ProgramFolder.{h,cpp}
                hidefile_linux.cpp hidefile_win.cpp   (hideFile(): Windows hidden attribute)
+               CrashNote.{h,cpp} crashnote_linux.cpp crashnote_win.cpp   (crash note in logs/)
   tests/
     battery/   BatteryInfo.h BatteryTest.{h,cpp} ChargeTest.{h,cpp} battery_linux.cpp battery_win.cpp
     sysinfo/   SystemInfo.h SystemInfoTest.{h,cpp} Smbios.cpp (raw table parser) SystemInfoParsing.cpp
@@ -301,6 +302,13 @@ App icon done: the "cool djinn" (winking pixel-art djinn, developer's choice, no
 summary, details. Status/name/summary/verdict in the UI language, details English. Text mode (CRLF on Windows),
 UTF-8, QSaveFile, `\r\n` in raw output made `\n` first (else `\r\r\n`). Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
 real run (2026-10-15): the file appears beside the program folder.
+**Crash note** (developer's request 2026-11-13: a Lenovo L13 quit without a word at every CPU test): `installCrashNote()`
+(main.cpp) makes a crash write `<root>/logs/yyyy-MM-dd HH-mm-ss CRASH.txt`: version, test running (`setCrashContext()`,
+from the runner's signals in main.cpp), Qt fatal message or uncaught C++ exception text, Windows exception code + module
++ offset (`SetUnhandledExceptionFilter`, then `EXCEPTION_CONTINUE_SEARCH`: the Event Viewer still gets it) or Linux
+signal, the thread (main or worker) and the call stack (Windows `CaptureStackBackTrace` as module + offset, Linux
+`backtrace_symbols_fd`). Handlers use fixed buffers and plain system calls, no Qt. Not caught: Windows fast fail
+0xC0000409. Linux verified (kill -SEGV / -ABRT: notes written, exit codes unchanged); Windows not yet run.
 **Root folder** (beta packaging, 2026-10-26): `folderAroundProgram()` = the folder above the program's folder
 (Windows: the .exe's; Linux: the `.AppImage` file's). It holds `app/` (exe + DLLs + tools/ + the AppImage +
 `start-linux.sh`), `config/`, `logs/`, `delivery-sheets/`, two launchers and `LISEZMOI.txt`. Config is read only from

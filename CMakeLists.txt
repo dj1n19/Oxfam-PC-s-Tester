@@ -52,6 +52,8 @@ add_library(oxcore STATIC
     src/core/TestRunner.cpp
     src/core/ProgramFolder.h
     src/core/ProgramFolder.cpp            # the root folder: app/, config/, logs/, delivery-sheets/
+    src/core/CrashNote.h
+    src/core/CrashNote.cpp                # crash note in logs/: shared text (handlers in crashnote_*.cpp)
     src/tests/battery/BatteryInfo.h
     src/tests/battery/BatteryTest.h
     src/tests/battery/BatteryTest.cpp
@@ -104,6 +106,7 @@ add_library(oxcore STATIC
 if(WIN32)
     target_sources(oxcore PRIVATE
         src/core/hidefile_win.cpp
+        src/core/crashnote_win.cpp
         src/tests/battery/battery_win.cpp
         src/tests/sysinfo/sysinfo_win.cpp
         src/tests/drivers/drivers_win.cpp
@@ -121,6 +124,7 @@ if(WIN32)
 else()
     target_sources(oxcore PRIVATE
         src/core/hidefile_linux.cpp
+        src/core/crashnote_linux.cpp
         src/tests/battery/battery_linux.cpp
         src/tests/sysinfo/sysinfo_linux.cpp
         src/tests/drivers/drivers_linux.cpp
