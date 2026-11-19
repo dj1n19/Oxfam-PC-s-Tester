@@ -164,6 +164,17 @@ jobs:
           New-Item -ItemType Directory dist | Out-Null
           Copy-Item build/Release/lazy-djin-tester.exe dist/
           windeployqt --release dist/lazy-djin-tester.exe
+          # The Visual C++ runtime (msvcp140.dll...) of THIS compiler, next to the exe:
+          # without it Windows takes the one in System32, which may be older. A
+          # Lenovo L13 had such an old one: the CPU test crashed at once in
+          # msvcp140.dll (std::mutex of VS 2022 17.10+ needs runtime 14.40+;
+          # QThread::create uses std::future). The exe's folder is searched first.
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
+          $crt = Get-ChildItem "$vs\VC\Redist\MSVC\*\x64\Microsoft.VC143.CRT" -Directory | Sort-Object FullName | Select-Object -Last 1
+          if (-not $crt) { throw "Visual C++ runtime folder not found under $vs" }
+          Copy-Item "$($crt.FullName)\*.dll" dist/
+          if (-not (Test-Path dist/msvcp140.dll)) { throw "msvcp140.dll not copied" }
+          Get-ChildItem dist/*140*.dll | ForEach-Object { "$($_.Name) $($_.VersionInfo.FileVersion)" }
           # The UAC manifest must be embedded, otherwise SMART silently needs "Run as administrator"
           if (-not (Select-String -Path dist/lazy-djin-tester.exe -Pattern requireAdministrator -SimpleMatch -Quiet)) {
             throw "requireAdministrator manifest missing from lazy-djin-tester.exe"

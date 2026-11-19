@@ -169,7 +169,8 @@ QT_QPA_PLATFORM=offscreen ctest --test-dir build   # if no display
 
 CI: `.github/workflows/build.yml`.
 - `linux` job: Ubuntu 24.04, Qt 6.4 from apt, builds and runs ctest. **Do not use APIs newer than Qt 6.4** without checking.
-- `windows` job: Qt 6.8 MSVC via `install-qt-action`, builds Release, runs `windeployqt` into `dist/`, uploads the portable folder as an artifact.
+- `windows` job: Qt 6.8 MSVC via `install-qt-action`, builds Release, runs `windeployqt` into `dist/`, copies the
+  compiler's Visual C++ runtime DLLs there (never rely on the PC's: see "Crash note"), uploads the portable folder as an artifact.
 - `version` job: tag name or `dev-<sha>`, passed as `-DAPP_VERSION` to `windows` and `appimage`.
 - `package` job (after both): assembles the "Lazy Djin's Tester" folder (see "Root folder", section 8) from the two
   artifacts, `config/` and `.github/package/` (launchers, `start-linux.sh`, `LISEZMOI.txt`), and uploads it as the
@@ -308,7 +309,11 @@ from the runner's signals in main.cpp), Qt fatal message or uncaught C++ excepti
 + offset (`SetUnhandledExceptionFilter`, then `EXCEPTION_CONTINUE_SEARCH`: the Event Viewer still gets it) or Linux
 signal, the thread (main or worker) and the call stack (Windows `CaptureStackBackTrace` as module + offset, Linux
 `backtrace_symbols_fd`). Handlers use fixed buffers and plain system calls, no Qt. Not caught: Windows fast fail
-0xC0000409. Linux verified (kill -SEGV / -ABRT: notes written, exit codes unchanged); Windows not yet run.
+0xC0000409. Linux verified (kill -SEGV / -ABRT: notes written, exit codes unchanged); Windows verified by the L13's
+own crash (2026-11-13): access violation reading 0x0 in `MSVCP140.dll`, in a CPU burn thread (`QThread::create` uses
+std::future, so std::mutex). Cause: no Visual C++ runtime was shipped, the L13's System32 one was older than the
+compiler's (VS 2022 17.10+ std::mutex needs runtime 14.40+). Fix: the `windows` CI job copies the compiler's
+`Microsoft.VC143.CRT` DLLs next to the exe (found with vswhere). Not yet rerun on the L13.
 **Root folder** (beta packaging, 2026-10-26): `folderAroundProgram()` = the folder above the program's folder
 (Windows: the .exe's; Linux: the `.AppImage` file's). It holds `app/` (exe + DLLs + tools/ + the AppImage +
 `start-linux.sh`), `config/`, `logs/`, `delivery-sheets/`, two launchers and `LISEZMOI.txt`. Config is read only from
