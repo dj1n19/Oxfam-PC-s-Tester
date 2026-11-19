@@ -13,6 +13,7 @@ namespace {
 
 // Fixed buffers, filled in advance: the crash handler only reads them.
 char s_context[256] = "";
+char s_pc[256] = "";
 char s_fatal[1024] = "";
 QtMessageHandler s_previousHandler = nullptr;
 
@@ -58,6 +59,11 @@ void setCrashContext(const QString& text)
     copyTo(s_context, sizeof s_context, text.toUtf8());
 }
 
+void setCrashPc(const QString& text)
+{
+    copyTo(s_pc, sizeof s_pc, text.toUtf8());
+}
+
 void installCrashNoteCommon()
 {
     s_previousHandler = qInstallMessageHandler(onQtMessage);
@@ -79,6 +85,7 @@ void crashAppend(char* buffer, std::size_t size, std::size_t& used, const char* 
 void crashAppendHeader(char* buffer, std::size_t size, std::size_t& used, const char* newline)
 {
     crashAppend(buffer, size, used, "Lazy Djin's Tester %s stopped by a crash.%s", OX_APP_VERSION, newline);
+    crashAppend(buffer, size, used, "PC: %s%s", s_pc[0] ? s_pc : "not read yet", newline);
     crashAppend(buffer, size, used, "Test running: %s%s", s_context[0] ? s_context : "none", newline);
     if (s_fatal[0])
         crashAppend(buffer, size, used, "%s%s", s_fatal, newline);

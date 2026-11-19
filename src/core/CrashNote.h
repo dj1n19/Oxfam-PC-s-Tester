@@ -21,6 +21,9 @@ void installCrashNote(const QString& logsFolder);
 // Called on the UI thread when a test starts and when the run ends.
 void setCrashContext(const QString& text);
 
+// Which PC ("LENOVO 20R4S3FJ00 | S/N PF1ABCDE"), once the system info is read.
+void setCrashPc(const QString& text);
+
 // --- For crashnote_win.cpp / crashnote_linux.cpp only (CrashNote.cpp) ---
 
 // Qt fatal messages and uncaught C++ exceptions (both end in abort()):

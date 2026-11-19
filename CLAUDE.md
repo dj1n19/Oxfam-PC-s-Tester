@@ -304,7 +304,8 @@ summary, details. Status/name/summary/verdict in the UI language, details Englis
 UTF-8, QSaveFile, `\r\n` in raw output made `\n` first (else `\r\r\n`). Path or error shown in the status bar (no dialog: automatic). Verified by the developer after a
 real run (2026-10-15): the file appears beside the program folder.
 **Crash note** (developer's request 2026-11-13: a Lenovo L13 quit without a word at every CPU test): `installCrashNote()`
-(main.cpp) makes a crash write `<root>/logs/yyyy-MM-dd HH-mm-ss CRASH.txt`: version, test running (`setCrashContext()`,
+(main.cpp) makes a crash write `<root>/logs/yyyy-MM-dd HH-mm-ss CRASH.txt`: version, PC (model + serial, `setCrashPc()` from
+MainWindow once the system info is read: the first note had none), test running (`setCrashContext()`,
 from the runner's signals in main.cpp), Qt fatal message or uncaught C++ exception text, Windows exception code + module
 + offset (`SetUnhandledExceptionFilter`, then `EXCEPTION_CONTINUE_SEARCH`: the Event Viewer still gets it) or Linux
 signal, the thread (main or worker) and the call stack (Windows `CaptureStackBackTrace` as module + offset, Linux

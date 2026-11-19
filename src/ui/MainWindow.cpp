@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 #include <QtConcurrent>
 
+#include "core/CrashNote.h"
 #include "core/ProgramFolder.h"
 #include "core/TestChoice.h"
 #include "core/TestRunner.h"
@@ -184,6 +185,9 @@ MainWindow::MainWindow(TestRunner& runner, DeliveryLinks delivery, const std::ve
                 m_pc.screenPixels = s->size() * s->devicePixelRatio();   // native pixels, not scaled ones
         }
         m_pcRead = true;
+        // A crash note says which PC (it has no run report to say it).
+        setCrashPc(SystemInfoTest::evaluate(m_pc).note + QStringLiteral(" | S/N ")
+                   + (m_pc.serial.isEmpty() ? QStringLiteral("unknown") : m_pc.serial));
         showPcInfo();
     });
     m_pcWatcher.setFuture(QtConcurrent::run(&readSystemInfo));
