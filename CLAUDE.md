@@ -390,7 +390,8 @@ the keyboard and audio tests on the first run only (developer's report 2026-10-1
   stripe). All squares and no ghost = Pass with no question; Esc, Alt+F4 or 10 s without a new square = back to the
   dialog: "Again", "Touch does not work properly" (Fail), "Skip (touch)". Ghost touches = Fail whatever the grid.
   Row = `screenWithTouch()` "screen | touch", worse wins. Logic `src/tests/screen/TouchCheck` (unit tested); the grid
-  map (#/.) is in the details. Not yet run on a real touch screen.
+  map (#/.) is in the details. Not yet run on a real touch screen: it never showed on the Surfaces (2026-11-18) because
+Qt on Windows names its touch device "" and an empty name list meant "no touch screen" (fixed: unnamed devices count).
 - CMake project, `oxcore` library + `lazy-djin-tester` app + `unittests`, CI workflow.
 - Core: `ITest`, `TestRunner`, `TestResult`, `Thresholds`, `Verdict`.
 - UI: `MainWindow` with START button, "Run this test" (selected row, any time: since 2026-10-27 a test can run alone

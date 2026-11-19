@@ -281,8 +281,11 @@ QString touchScreens()
 {
     QStringList names;
     for (const QInputDevice* d : QInputDevice::devices()) {
+        // Qt on Windows gives its touch screen an EMPTY name (TODO in Qt's
+        // createTouchDevice()): an empty name must still count as a device,
+        // or the touch part never shows on a Surface (2026-11-18).
         if (d->type() == QInputDevice::DeviceType::TouchScreen)
-            names << d->name();
+            names << (d->name().isEmpty() ? QStringLiteral("(no name given by the system)") : d->name());
     }
     return names.join(QStringLiteral(", "));
 }
